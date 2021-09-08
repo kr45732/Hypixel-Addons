@@ -1,0 +1,9 @@
+{
+  "package": "com.kr45732.hypixeladdons.mixins",
+  "refmap": "mixins.hypixeladdons.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinGuiContainer",
+    "MixinNetHandlerPlayClient"
+  ]
+}

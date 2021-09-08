@@ -1,0 +1,35 @@
+# Eclipse
+eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
+
+# Idea
+out
+classes
+*.ipr
+*.iws
+*.iml
+.idea
+
+# Gradle
+build
+.gradle
+
+# Netbeans
+.nb-gradle
+.nb-gradle-properties
+
+# Other
+run
+.DS_Store
+Thumbs.db
+
+/src/main/java/com/kr45732/hypixeladdons/gui/MOTDEditorGui
+/src/main/java/com/kr45732/hypixeladdons/gui/MOTDBoxGui
+/src/main/java/com/kr45732/hypixeladdons/commands/guild/MOTDCommand
+/src/main/java/com/kr45732/hypixeladdons/commands/price/BidsCommand.java
+/src/main/java/com/kr45732/hypixeladdons/commands/price/BinCommand.java
