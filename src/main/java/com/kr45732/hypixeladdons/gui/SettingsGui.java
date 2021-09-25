@@ -1,18 +1,18 @@
 /*
  * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021 kr45732
+ * Copyright (c) 2021-2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -214,8 +214,8 @@ public class SettingsGui extends GuiScreen {
 			() -> {
 				GlStateManager.scale(2, 2, 1);
 				fontRendererObj.drawStringWithShadow("Hypixel Addons", guiX / 2F + 5, guiY / 2F + 5, 0xFF28709e);
-				drawHorizontalLine(guiX / 2 + 5, (guiX + guiWidth) / 2 - 5, guiY / 2 + 16, 0xFF28709e);
-				drawVerticalLine(guiX / 2 + 45, guiY / 2 + 16, (guiY + guiHeight) / 2 - 5, 0xFF28709e);
+				GuiUtils.drawHorizontalLine(guiX / 2 + 5, (guiX + guiWidth) / 2 - 5, guiY / 2 + 16, 0xFF28709e);
+				GuiUtils.drawVerticalLine(guiX / 2 + 45, guiY / 2 + 16, (guiY + guiHeight) / 2 - 5, 0xFF28709e);
 			}
 		);
 
@@ -550,7 +550,7 @@ public class SettingsGui extends GuiScreen {
 			return 0;
 		}
 
-		double percentScroll = (scrollbarY - 36.0) / (guiHeight - scrollbarHeight - 47); // (Should / please) range from 0 to 1
+		double percentScroll = (scrollbarY - 36.0) / (guiHeight - scrollbarHeight - 47); // Should (please) range from 0 to 1
 		double totalContent = (pageMap.get(pageNum).getSettings().size() - 1) * 90 + 80; // Total content height
 		double visibleHeight = guiHeight - 47; // Gui height - top offset - bottom offset
 		// (Total content height - visible height) * % scroll

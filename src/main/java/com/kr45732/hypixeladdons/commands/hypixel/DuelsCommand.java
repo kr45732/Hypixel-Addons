@@ -1,30 +1,29 @@
 /*
  * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021 kr45732
+ * Copyright (c) 2021-2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.kr45732.hypixeladdons.commands.hypixel;
 
-import static com.kr45732.hypixeladdons.utils.Constants.DUELS_GAME_ID_TO_NAME;
 import static com.kr45732.hypixeladdons.utils.Utils.*;
+import static com.kr45732.hypixeladdons.utils.api.HypixelPlayer.DuelsMode.NONE;
 
 import com.kr45732.hypixeladdons.utils.api.HypixelPlayer;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
-import java.util.Map;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
@@ -47,101 +46,81 @@ public class DuelsCommand extends CommandBase {
 			return getFailCause(player);
 		}
 
-		IChatComponent output = empty()
-			.appendSibling(player.getLink())
+		IChatComponent output = player
+			.defaultPlayerComponent()
 			.appendText(
 				"\n\n" +
 				label("Statistics") +
 				"\n" +
 				arrow() +
-				labelWithDesc("Overall division", player.getOverallDivision()) +
+				labelWithDesc("Overall division", player.getDuelsOverallDivision()) +
 				"\n" +
 				arrow() +
-				labelWithDesc("Coins", formatNumber(player.getDuelsStat("coins"))) +
+				labelWithDesc("Coins", formatNumber(player.getDuelsCoins())) +
 				"\n" +
 				arrow() +
 				labelWithDesc(
 					"Kills | Deaths",
-					formatNumber(player.getDuelsStat("kills")) + " | " + formatNumber(player.getDuelsStat("deaths"))
+					formatNumber(player.getDuelsKills(NONE)) + " | " + formatNumber(player.getDuelsDeaths(NONE))
 				) +
 				"\n" +
 				arrow() +
 				labelWithDesc(
 					"Wins | Losses",
-					formatNumber(player.getDuelsStat("wins")) + " | " + formatNumber(player.getDuelsStat("losses"))
+					formatNumber(player.getDuelsWins(NONE)) + " | " + formatNumber(player.getDuelsLosses(NONE))
 				) +
 				"\n" +
 				arrow() +
-				labelWithDesc("K/D", roundAndFormat(divide(player.getDuelsStat("kills"), player.getDuelsStat("deaths")))) +
+				labelWithDesc("K/D", roundAndFormat(divide(player.getDuelsKills(NONE), player.getDuelsDeaths(NONE)))) +
 				"\n" +
 				arrow() +
-				labelWithDesc("W/L", roundAndFormat(divide(player.getDuelsStat("wins"), player.getDuelsStat("losses")))) +
+				labelWithDesc("W/L", roundAndFormat(divide(player.getDuelsWins(NONE), player.getDuelsLosses(NONE)))) +
 				"\n" +
 				arrow() +
-				labelWithDesc("Current winstreak", formatNumber(player.getDuelsStat("current_winstreak"))) +
+				labelWithDesc("Current winstreak", formatNumber(player.getDuelsWinstreak(NONE))) +
 				"\n" +
 				arrow() +
-				labelWithDesc("Best winstreak", formatNumber(player.getDuelsStat("best_overall_winstreak"))) +
+				labelWithDesc("Best winstreak", formatNumber(player.getDuelsInt("best_overall_winstreak", NONE))) +
 				"\n" +
 				arrow() +
-				labelWithDesc(
-					"Melee accuracy",
-					roundAndFormat(divide(player.getDuelsStat("melee_hits"), player.getDuelsStat("melee_swings")))
-				) +
+				labelWithDesc("Melee accuracy", roundAndFormat(player.getDuelsMeleeAccuracy(NONE))) +
 				"\n" +
 				arrow() +
-				labelWithDesc(
-					"Arrow hit accuracy",
-					roundAndFormat(divide(player.getDuelsStat("bow_hits"), player.getDuelsStat("bow_swings")))
-				)
+				labelWithDesc("Arrow hit accuracy", roundAndFormat(player.getDuelsArrowAccuracy(NONE)))
 			)
 			.appendText("\n\n" + label("Modes"));
 
-		for (Map.Entry<String, String> mode : DUELS_GAME_ID_TO_NAME.entrySet()) {
-			String modeId = mode.getKey();
-
+		for (HypixelPlayer.DuelsMode mode : HypixelPlayer.DuelsMode.getModes()) {
 			output.appendSibling(
-				new ChatText("\n" + arrow() + label(mode.getValue()))
+				new ChatText("\n" + arrow() + label(mode.getName()))
 					.setHoverEvent(
-						mode.getValue(),
+						mode.getName(),
 						arrow() +
 						labelWithDesc(
 							"Kills | Deaths",
-							formatNumber(player.getDuelsStat("kills", modeId)) + " | " + formatNumber(player.getDuelsStat("deaths", modeId))
+							formatNumber(player.getDuelsKills(mode)) + " | " + formatNumber(player.getDuelsDeaths(mode))
 						) +
 						"\n" +
 						arrow() +
 						labelWithDesc(
 							"Wins | Losses",
-							formatNumber(player.getDuelsStat("wins", modeId)) + " | " + formatNumber(player.getDuelsStat("losses", modeId))
+							formatNumber(player.getDuelsWins(mode)) + " | " + formatNumber(player.getDuelsLosses(mode))
 						) +
 						"\n" +
 						arrow() +
-						labelWithDesc(
-							"K/D",
-							roundAndFormat(divide(player.getDuelsStat("kills", modeId), player.getDuelsStat("deaths", modeId)))
-						) +
+						labelWithDesc("K/D", roundAndFormat(divide(player.getDuelsKills(mode), player.getDuelsDeaths(mode)))) +
 						"\n" +
 						arrow() +
-						labelWithDesc(
-							"W/L",
-							roundAndFormat(divide(player.getDuelsStat("wins", modeId), player.getDuelsStat("losses", modeId)))
-						) +
+						labelWithDesc("W/L", roundAndFormat(divide(player.getDuelsWins(mode), player.getDuelsLosses(mode)))) +
 						"\n" +
 						arrow() +
-						labelWithDesc("Current winstreak", formatNumber(player.getDuelsStat("current_winstreak", modeId))) +
+						labelWithDesc("Current winstreak", formatNumber(player.getDuelsWinstreak(mode))) +
 						"\n" +
 						arrow() +
-						labelWithDesc(
-							"Melee accuracy",
-							roundAndFormat(divide(player.getDuelsStat("melee_hits", modeId), player.getDuelsStat("melee_swings", modeId)))
-						) +
+						labelWithDesc("Melee accuracy", roundAndFormat(player.getDuelsMeleeAccuracy(mode))) +
 						"\n" +
 						arrow() +
-						labelWithDesc(
-							"Arrow hit accuracy",
-							roundAndFormat(divide(player.getDuelsStat("bow_hits", modeId), player.getDuelsStat("bow_swings", modeId)))
-						)
+						labelWithDesc("Arrow hit accuracy", roundAndFormat(player.getDuelsArrowAccuracy(mode)))
 					)
 					.build()
 			);

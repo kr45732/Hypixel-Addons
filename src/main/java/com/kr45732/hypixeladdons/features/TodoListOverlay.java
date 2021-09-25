@@ -1,23 +1,24 @@
 /*
  * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021 kr45732
+ * Copyright (c) 2021-2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.kr45732.hypixeladdons.features;
 
+import com.kr45732.hypixeladdons.gui.GuiUtils;
 import com.kr45732.hypixeladdons.gui.TodoListGui;
 import com.kr45732.hypixeladdons.utils.chat.C;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
@@ -62,10 +63,11 @@ public class TodoListOverlay {
 		GlStateManager.scale(1.3, 1.3, 1.3);
 		fr.drawStringWithShadow("Todo List", ConfigUtils.todoListX / 1.3F + 5, ConfigUtils.todoListY / 1.3F + 4, 0xFF28709e);
 		GlStateManager.popMatrix();
-		TodoListOverlay.drawHorizontalLine(
+		GuiUtils.drawHorizontalLine(
 			ConfigUtils.todoListX + 5,
 			ConfigUtils.todoListX + ConfigUtils.todoListWidth - 5,
-			ConfigUtils.todoListY + fr.FONT_HEIGHT + 9
+			ConfigUtils.todoListY + fr.FONT_HEIGHT + 9,
+			-14126946
 		);
 
 		int yPos = ConfigUtils.todoListY + fr.FONT_HEIGHT + 15;
@@ -81,15 +83,5 @@ public class TodoListOverlay {
 
 			yPos += fr.splitStringWidth(C.DARK_GREEN + "✔ " + C.DARK_AQUA + curTodo, ConfigUtils.todoListWidth) + 3;
 		}
-	}
-
-	private static void drawHorizontalLine(int startX, int endX, int y) {
-		if (endX < startX) {
-			int i = startX;
-			startX = endX;
-			endX = i;
-		}
-
-		GuiScreen.drawRect(startX, y, endX, y + 1, -14126946);
 	}
 }

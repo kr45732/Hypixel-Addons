@@ -1,18 +1,18 @@
 /*
  * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021 kr45732
+ * Copyright (c) 2021-2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -20,6 +20,7 @@ package com.kr45732.hypixeladdons.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
@@ -61,5 +62,27 @@ public class GuiUtils {
 
 	public static boolean isPointInRegion(int x, int y, int width, int height, int pointX, int pointY) {
 		return pointX >= x && pointX < x + width && pointY >= y && pointY < y + height;
+	}
+
+	// GuiScreen#drawHorizontalLine is weird and increases endX by 1
+	public static void drawHorizontalLine(int startX, int endX, int y, int color) {
+		if (endX < startX) {
+			int i = startX;
+			startX = endX;
+			endX = i;
+		}
+
+		GuiScreen.drawRect(startX, y, endX, y + 1, color);
+	}
+
+	// GuiScreen#drawVerticalLine is weird and increases startY by 1
+	public static void drawVerticalLine(int x, int startY, int endY, int color) {
+		if (endY < startY) {
+			int i = startY;
+			startY = endY;
+			endY = i;
+		}
+
+		GuiScreen.drawRect(x, startY, x + 1, endY, color);
 	}
 }

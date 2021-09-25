@@ -1,18 +1,18 @@
 /*
  * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021 kr45732
+ * Copyright (c) 2021-2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -20,9 +20,8 @@ package com.kr45732.hypixeladdons.utils.api;
 
 import static com.kr45732.hypixeladdons.utils.Constants.*;
 import static com.kr45732.hypixeladdons.utils.Utils.*;
-import static com.kr45732.hypixeladdons.utils.api.Hypixel.playerFromUuid;
+import static com.kr45732.hypixeladdons.utils.api.ApiHandler.playerFromUuid;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.kr45732.hypixeladdons.utils.Utils;
 import com.kr45732.hypixeladdons.utils.chat.C;
@@ -32,8 +31,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StringUtils;
@@ -146,37 +144,47 @@ public class HypixelPlayer {
 		return formatNumber(higherDepth(playerJson, path, 0));
 	}
 
-	/* Bedwars */
-	public int getBedwarsStatistic(String statisticType) {
-		return getBedwarsStatistic(statisticType, "");
+	public String getDiscordTag() {
+		return higherDepth(playerJson, "socialMedia.links.DISCORD") != null
+			? higherDepth(playerJson, "socialMedia.links.DISCORD").getAsString()
+			: null;
 	}
 
-	public int getBedwarsStatistic(String statisticType, String mode) {
-		JsonElement bedwarsStats = higherDepth(playerJson, "stats.Bedwars");
-		mode = mode.length() > 0 ? mode + "_" : "";
+	/* Bedwars */
+	public int getBedwarsKills(BedwarsMode mode) {
+		return getBedwarsInt("kills_bedwars", mode);
+	}
 
-		switch (statisticType) {
-			case "kills":
-				return higherDepth(bedwarsStats, mode + "kills_bedwars", 0);
-			case "deaths":
-				return higherDepth(bedwarsStats, mode + "deaths_bedwars", 0);
-			case "wins":
-				return higherDepth(bedwarsStats, mode + "wins_bedwars", 0);
-			case "losses":
-				return higherDepth(bedwarsStats, mode + "losses_bedwars", 0);
-			case "final_kills":
-				return higherDepth(bedwarsStats, mode + "final_kills_bedwars", 0);
-			case "final_deaths":
-				return higherDepth(bedwarsStats, mode + "final_deaths_bedwars", 0);
-			case "experience":
-				return higherDepth(bedwarsStats, "Experience", 0);
-			default:
-				return 0;
-		}
+	public int getBedwarsDeaths(BedwarsMode mode) {
+		return getBedwarsInt("deaths_bedwars", mode);
+	}
+
+	public int getBedwarsWins(BedwarsMode mode) {
+		return getBedwarsInt("wins_bedwars", mode);
+	}
+
+	public int getBedwarsLosses(BedwarsMode mode) {
+		return getBedwarsInt("losses_bedwars", mode);
+	}
+
+	public int getBedwarsFinalKills(BedwarsMode mode) {
+		return getBedwarsInt("final_kills_bedwars", mode);
+	}
+
+	public int getBedwarsFinalDeaths(BedwarsMode mode) {
+		return getBedwarsInt("final_deaths_bedwars", mode);
+	}
+
+	public int getBedwarsExperience() {
+		return getBedwarsInt("Experience", BedwarsMode.NONE);
+	}
+
+	public int getBedwarsInt(String type, BedwarsMode mode) {
+		return higherDepth(higherDepth(playerJson, "stats.Bedwars"), mode.getId() + type, 0);
 	}
 
 	public double getBedwarsLevel() {
-		double exp = getBedwarsStatistic("experience");
+		double exp = getBedwarsExperience();
 
 		int prestige = (int) (exp / BEDWARS_EXP_PER_PRESTIGE);
 		exp = exp % BEDWARS_EXP_PER_PRESTIGE;
@@ -201,28 +209,56 @@ public class HypixelPlayer {
 		return (exp / 5000 + 4) + (prestige * BEDWARS_LEVELS_PER_PRESTIGE);
 	}
 
-	/* Skywars */
-	public int getSkywarsStatistic(String statisticType) {
-		return getSkywarsStatistic(statisticType, "");
+	public enum BedwarsMode {
+		NONE("", ""),
+		SOLO("eight_one", "Solo"),
+		DOUBLES("eight_two", "Doubles"),
+		THREES("four_three", "3v3v3v3"),
+		FOURS("four_four", "4v4v4v4"),
+		TWO_FOUR("two_four", "4v4");
+
+		private final String name;
+		private final String id;
+
+		BedwarsMode(String id, String name) {
+			this.id = id;
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getId() {
+			return id.length() > 0 ? id + "_" : id;
+		}
+
+		public static List<BedwarsMode> getModes() {
+			List<BedwarsMode> values = new ArrayList<>(Arrays.asList(values()));
+			values.removeIf(value -> value == NONE);
+			return values;
+		}
 	}
 
-	public int getSkywarsStatistic(String statisticType, String mode) {
-		JsonElement skywarsStats = higherDepth(playerJson, "stats.SkyWars");
-		mode = mode.length() > 0 ? "_" + mode : "";
-		switch (statisticType) {
-			case "kills":
-				return higherDepth(skywarsStats, "kills" + mode, 0);
-			case "deaths":
-				return higherDepth(skywarsStats, "deaths" + mode, 0);
-			case "wins":
-				return higherDepth(skywarsStats, "wins" + mode, 0);
-			case "losses":
-				return higherDepth(skywarsStats, "losses" + mode, 0);
-			case "heads":
-				return higherDepth(skywarsStats, "heads", 0);
-			default:
-				return 0;
-		}
+	/* Skywars */
+	public int getSkywarsKills(SkywarsMode mode) {
+		return getSkywarsInt("kills", mode);
+	}
+
+	public int getSkywarsDeaths(SkywarsMode mode) {
+		return getSkywarsInt("deaths", mode);
+	}
+
+	public int getSkywarsWins(SkywarsMode mode) {
+		return getSkywarsInt("wins", mode);
+	}
+
+	public int getSkywarsLosses(SkywarsMode mode) {
+		return getSkywarsInt("losses", mode);
+	}
+
+	public int getSkywarsInt(String type, SkywarsMode mode) {
+		return higherDepth(playerJson, "stats.SkyWars." + type + mode.getId(), 0);
 	}
 
 	public int getSkywarsLevel() {
@@ -257,29 +293,172 @@ public class HypixelPlayer {
 		return SKYWARS_PRESTIGE_LIST.size() > index ? SKYWARS_PRESTIGE_LIST.get(index) : "Iron";
 	}
 
+	public enum SkywarsMode {
+		NONE("", ""),
+		RANKED("ranked", "Ranked"),
+		SOLO_NORMAL("solo_normal", "Solo Normal"),
+		SOLO_INSANE("solo_insane", "Solo Insane"),
+		TEAM_NORMAL("team_normal", "Team Normal"),
+		TEAM_INSANE("team_insane", "Team Insane"),
+		MEGA("mega", "Mega"),
+		MEGA_DOUBLES("mega_doubles", "Mega Doubles");
+
+		private final String name;
+		private final String id;
+
+		SkywarsMode(String id, String name) {
+			this.id = id;
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getId() {
+			return id.length() > 0 ? "_" + id : id;
+		}
+
+		public static List<SkywarsMode> getModes() {
+			List<SkywarsMode> values = new ArrayList<>(Arrays.asList(values()));
+			values.removeIf(value -> value == NONE);
+			return values;
+		}
+	}
+
 	/* Arcade */
-	public String getArcadeStatStr(String type) {
-		return higherDepth(playerJson, "stats.Arcade." + type) != null
-			? higherDepth(playerJson, "stats.Arcade." + type).getAsString()
-			: "none";
+	public int getArcadeCoins() {
+		return getArcadeInt("coins", ArcadeMode.NONE);
 	}
 
-	public int getArcadeStatInt(String type) {
-		return higherDepth(playerJson, "stats.Arcade." + type, 0);
+	public int getArcadeWins(ArcadeMode mode) {
+		return getArcadeInt("wins", mode);
 	}
 
-	public String getArcadeStatIntFormatted(String type) {
-		return formatNumber(higherDepth(playerJson, "stats.Arcade." + type, 0));
+	public int getArcadeKills(ArcadeMode mode) {
+		return getArcadeInt("kills", mode);
+	}
+
+	public int getArcadeDeaths(ArcadeMode mode) {
+		return getArcadeInt("deaths", mode);
+	}
+
+	public String getArcadeStr(String type) {
+		return higherDepth(playerJson, "stats.Arcade." + type, "none");
+	}
+
+	public int getArcadeInt(String type, ArcadeMode mode) {
+		return higherDepth(
+			playerJson,
+			"stats.Arcade." +
+			(mode != ArcadeMode.NONE ? (mode == ArcadeMode.GALAXY_WARS ? mode.getId() + "_" + type : type + "_" + mode.getId()) : type),
+			0
+		);
+	}
+
+	public enum ArcadeMode {
+		NONE("", ""),
+		BLOCKING_DEAD("dayone", "Blocking Dead"),
+		BOUNTY_HUNTERS("oneinthequiver", "Bounty Hunters"),
+		DRAGON_WARS("dragonwars2", "Dragon Wars"),
+		EASTER_SIMULATOR("easter_simulator", "Easter Simulator"),
+		ENDER_SPLEEF("ender", "Ender Spleef"),
+		FARM_HUNT("farm_hunt", "Farm Hunt"),
+		FOOTBALL("soccer", "Football"),
+		GALAXY_WARS("sw", "Galaxy Wars"),
+		GRINCH_SIMULATOR_V2("grinch_simulator_v2", "Grinch Simulator v2"),
+		HOLE_IN_THE_WALL("hole_in_the_wall", "Hole in the Wall"),
+		SIMON_SAYS("simon_says", "Hypixel Says"),
+		PARTY_GAMES("party", "Party Games"),
+		PARTY_GAMES_2("party_2", "Party Games"),
+		PARTY_GAMES_3("party_3", "Party Games"),
+		SCUBA_SIMULATOR("scuba_simulator", "Scuba Simulator"),
+		THROW_OUT("throw_out", "Throw Out"),
+		MINI_WALLS("mini_walls", "Mini Walls"),
+		ZOMBIES("zombies", "Zombies");
+
+		private final String name;
+		private final String id;
+
+		ArcadeMode(String id, String name) {
+			this.id = id;
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getId() {
+			return id.length() > 0 ? id + "_" : id;
+		}
 	}
 
 	/* Arena */
-	public int getArenaStat(String type) {
-		return higherDepth(playerJson, "stats.Arena." + type, 0);
+	public int getArenaCoins() {
+		return getArenaInt("coins", ArenaMode.NONE);
+	}
+
+	public int getArenaWins(ArenaMode mode) {
+		return getArenaInt("wins", mode);
+	}
+
+	public int getArenaKills(ArenaMode mode) {
+		return getArenaInt("kills", mode);
+	}
+
+	public int getArenaDeaths(ArenaMode mode) {
+		return getArenaInt("deaths", mode);
+	}
+
+	public int getArenaLosses(ArenaMode mode) {
+		return getArenaInt("losses", mode);
+	}
+
+	public int getArenaWinstreak(ArenaMode mode) {
+		return getArenaInt("win_streaks", mode);
+	}
+
+	public int getArenaInt(String type, ArenaMode mode) {
+		if (mode == ArenaMode.ALL) {
+			return ArenaMode.getModes().stream().mapToInt(arenaMode -> getArenaInt(type, arenaMode)).sum();
+		}
+
+		return higherDepth(playerJson, "stats.Arena." + type + mode.getId(), 0);
+	}
+
+	public enum ArenaMode {
+		NONE("", ""),
+		DUOS("2v2", "2v2"),
+		FOURS("4v4", "4v4"),
+		ALL("", "");
+
+		private final String name;
+		private final String id;
+
+		ArenaMode(String id, String name) {
+			this.id = id;
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getId() {
+			return id.length() > 0 ? "_" + id : id;
+		}
+
+		public static List<ArenaMode> getModes() {
+			List<ArenaMode> values = new ArrayList<>(Arrays.asList(values()));
+			values.removeIf(value -> value == NONE || value == ALL);
+			return values;
+		}
 	}
 
 	/* Duels */
-	public String getOverallDivision() {
-		int totalWins = getDuelsStat("wins");
+	public String getDuelsOverallDivision() {
+		int totalWins = getDuelsInt("wins", DuelsMode.NONE);
 
 		String prevVal = "Rookie";
 		for (Map.Entry<Integer, String> winToDivision : TOTAL_WINS_TO_DIVISION_MAP.entrySet()) {
@@ -292,19 +471,197 @@ public class HypixelPlayer {
 		return prevVal;
 	}
 
-	public int getDuelsStat(String type) {
-		return getDuelsStat(type, "");
+	public int getDuelsCoins() {
+		return getDuelsInt("coins", DuelsMode.NONE);
 	}
 
-	public int getDuelsStat(String type, String mode) {
-		mode = mode.length() > 0 ? mode + "_" : mode;
+	public int getDuelsWins(DuelsMode mode) {
+		return getDuelsInt("wins", mode);
+	}
 
-		return higherDepth(playerJson, "stats.Duels." + mode + type, 0);
+	public int getDuelsKills(DuelsMode mode) {
+		return getDuelsInt("kills", mode);
+	}
+
+	public int getDuelsDeaths(DuelsMode mode) {
+		return getDuelsInt("deaths", mode);
+	}
+
+	public int getDuelsLosses(DuelsMode mode) {
+		return getDuelsInt("losses", mode);
+	}
+
+	public int getDuelsWinstreak(DuelsMode mode) {
+		return getDuelsInt("current_winstreak", mode);
+	}
+
+	public double getDuelsMeleeAccuracy(DuelsMode mode) {
+		return divide(getDuelsInt("melee_hits", mode), getDuelsInt("melee_swings", mode));
+	}
+
+	public double getDuelsArrowAccuracy(DuelsMode mode) {
+		return divide(getDuelsInt("bow_hits", mode), getDuelsInt("bow_swings", mode));
+	}
+
+	public int getDuelsInt(String type, DuelsMode mode) {
+		return higherDepth(playerJson, "stats.Duels." + mode.getId() + type, 0);
+	}
+
+	public enum DuelsMode {
+		NONE("", ""),
+		UHC("uhc_duel", "UHC 1v1"),
+		UHC_DOUBLES("uhc_doubles", "UHC 2v2"),
+		UHC_FOURS("uhc_four", "UHC 4v4"),
+		OP("op_duel", "OP 1v1"),
+		OP_DOUBLES("op_doubles", "OP 2v2"),
+		SKYWARS("sw_duel", "SkyWars 1v1"),
+		SKYWARS_DOUBLES("sw_doubles", "SkyWars 2v2"),
+		BOW_SPLEFF("bowspleef_duel", "Bow Spleef 1v1"),
+		BOW("bow_duel", "Bow 1v1"),
+		BLITZ("blitz_duel", "Blitz 1v1"),
+		MEGA_WALLS("mw_duel", "Mega Walls 1v1"),
+		MEGA_WALLS_DOUBLES("mw_doubles", "Mega Walls 2v2"),
+		SUMO("sumo_duel", "Sumo 1v1"),
+		CLASSIC("classical_duel", "Classic 1v1"),
+		COMBO("combo_duel", "Combo 1v1"),
+		BRIDGE_SOLO("bridge_duel", "Bridge 1v1"),
+		BRIDGE_DOUBLES("bridge_doubles", "Bridge 2v2"),
+		BRIDGE_2V2V2V2("bridge_2v2v2v2", "Bridge 2v2v2v2"),
+		BRIDGE_THREES("bridge_3v3v3v3", "Bridge 3v3v3v3"),
+		BRIDGE_FOURS("bridge_four", "Bridge 4v4");
+
+		private final String name;
+		private final String id;
+
+		DuelsMode(String id, String name) {
+			this.id = id;
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getId() {
+			return id.length() > 0 ? id + "_" : id;
+		}
+
+		public static List<DuelsMode> getModes() {
+			List<DuelsMode> values = new ArrayList<>(Arrays.asList(values()));
+			values.removeIf(value -> value == NONE);
+			return values;
+		}
+	}
+
+	/* Murder mystery */
+	public int getMurderMysteryCoins() {
+		return getMurderMysteryInt("coins", MurderMysteryMode.NONE);
+	}
+
+	public int getMurderMysteryKills(MurderMysteryMode mode) {
+		return getMurderMysteryInt("kills", mode);
+	}
+
+	public int getMurderMysteryDeaths(MurderMysteryMode mode) {
+		return getMurderMysteryInt("deaths", mode);
+	}
+
+	public int getMurderMysteryWins(MurderMysteryMode mode) {
+		return getMurderMysteryInt("wins", mode);
+	}
+
+	public int getMurderMysteryLosses(MurderMysteryMode mode) {
+		return getMurderMysteryInt("losses", mode);
+	}
+
+	public double getMurderMysteryKDR(MurderMysteryMode mode) {
+		return divide(getMurderMysteryKills(mode), getMurderMysteryDeaths(mode));
+	}
+
+	public double getMurderMysteryWLR(MurderMysteryMode mode) {
+		return divide(getMurderMysteryWins(mode), getMurderMysteryLosses(mode));
+	}
+
+	public int getMurderMysteryInt(String type, MurderMysteryMode mode) {
+		return higherDepth(playerJson, "stats.MurderMystery." + type + "_" + mode.getId(), 0);
+	}
+
+	public enum MurderMysteryMode {
+		NONE("", ""),
+		CLASSIC("MURDER_CLASSIC", "Classic"),
+		INFECTION("MURDER_INFECTION", "Infection"),
+		ASSASSINS("MURDER_ASSASSINS", "Assassins"),
+		DOUBLE_UP("MURDER_DOUBLE_UP", "Double Up");
+
+		private final String name;
+		private final String id;
+
+		MurderMysteryMode(String id, String name) {
+			this.id = id;
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+		public static List<MurderMysteryMode> getModes() {
+			List<MurderMysteryMode> values = new ArrayList<>(Arrays.asList(values()));
+			values.removeIf(value -> value == NONE);
+			return values;
+		}
+	}
+
+	/* Build Battle */
+	public int getBuildBattleCoins() {
+		return getBuildBattleInt("coins", BuildBattleMode.NONE);
+	}
+
+	public int getBuildBattleWins(BuildBattleMode mode) {
+		return getBuildBattleInt("wins", mode);
+	}
+
+	public int getBuildBattleInt(String type, BuildBattleMode mode) {
+		return higherDepth(playerJson, "stats.BuildBattle." + type + mode.getId(), 0);
+	}
+
+	public enum BuildBattleMode {
+		NONE("", ""),
+		SOLO("solo_normal", "Solo"),
+		PRO("solo_pro", "Pro"),
+		TEAMS("teams_normal", "Teams"),
+		GUESS_THE_BUILD("guess_the_build", "Guess The Build");
+
+		private final String name;
+		private final String id;
+
+		BuildBattleMode(String id, String name) {
+			this.id = id;
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getId() {
+			return id.length() > 0 ? "_" + id : id;
+		}
+
+		public static List<BuildBattleMode> getModes() {
+			List<BuildBattleMode> values = new ArrayList<>(Arrays.asList(values()));
+			values.removeIf(value -> value == NONE);
+			return values;
+		}
 	}
 
 	/* Helper methods */
 	private boolean usernameToUuid(String username) {
-		UsernameUuidStruct response = Hypixel.usernameUuid(username);
+		UsernameUuidStruct response = ApiHandler.usernameUuid(username);
 		if (response.isNotValid()) {
 			failCause = response.failCause;
 			return true;
@@ -315,9 +672,7 @@ public class HypixelPlayer {
 		return false;
 	}
 
-	public String getDiscordTag() {
-		return higherDepth(playerJson, "socialMedia.links.DISCORD") != null
-			? higherDepth(playerJson, "socialMedia.links.DISCORD").getAsString()
-			: null;
+	public IChatComponent defaultPlayerComponent() {
+		return empty().appendSibling(getLink());
 	}
 }

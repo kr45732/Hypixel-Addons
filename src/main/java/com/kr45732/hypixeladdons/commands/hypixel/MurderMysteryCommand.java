@@ -19,30 +19,26 @@
 package com.kr45732.hypixeladdons.commands.hypixel;
 
 import static com.kr45732.hypixeladdons.utils.Utils.*;
-import static com.kr45732.hypixeladdons.utils.api.HypixelPlayer.ArenaMode.ALL;
-import static com.kr45732.hypixeladdons.utils.api.HypixelPlayer.ArenaMode.NONE;
 
 import com.kr45732.hypixeladdons.utils.api.HypixelPlayer;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
+import java.util.Collections;
+import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
 
-public class ArenaCommand extends CommandBase {
+public class MurderMysteryCommand extends CommandBase {
 
-	public static ArenaCommand INSTANCE = new ArenaCommand();
+	public static MurderMysteryCommand INSTANCE = new MurderMysteryCommand();
 
-	public static IChatComponent getArenaString(String[] args) {
-		if (args.length != 1) {
-			return getUsage(INSTANCE);
-		}
-
+	public static IChatComponent getMurderMysteryString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
 
-		HypixelPlayer player = new HypixelPlayer(args[0]);
+		HypixelPlayer player = new HypixelPlayer(getUsername(args, 0));
 		if (!player.isValid()) {
 			return getFailCause(player);
 		}
@@ -54,57 +50,55 @@ public class ArenaCommand extends CommandBase {
 				label("Statistics") +
 				"\n" +
 				arrow() +
+				labelWithDesc("Coins", roundAndFormat(player.getMurderMysteryCoins())) +
+				"\n" +
+				arrow() +
 				labelWithDesc(
 					"Kills | Deaths",
-					formatNumber(player.getArenaKills(ALL)) + " | " + formatNumber(player.getArenaDeaths(ALL))
+					roundAndFormat(player.getMurderMysteryKills(HypixelPlayer.MurderMysteryMode.NONE)) +
+					" | " +
+					roundAndFormat(player.getMurderMysteryDeaths(HypixelPlayer.MurderMysteryMode.NONE))
 				) +
 				"\n" +
 				arrow() +
-				labelWithDesc("Wins | Losses", formatNumber(player.getArenaWins(ALL)) + " | " + formatNumber(player.getArenaLosses(ALL))) +
+				labelWithDesc(
+					"Wins | Losses",
+					roundAndFormat(player.getMurderMysteryWins(HypixelPlayer.MurderMysteryMode.NONE)) +
+					" | " +
+					roundAndFormat(player.getMurderMysteryLosses(HypixelPlayer.MurderMysteryMode.NONE))
+				) +
 				"\n" +
 				arrow() +
-				labelWithDesc("K/D", roundAndFormat(divide(player.getArenaKills(ALL), player.getArenaDeaths(ALL)))) +
+				labelWithDesc("K/D", roundAndFormat(player.getMurderMysteryKDR(HypixelPlayer.MurderMysteryMode.NONE))) +
 				"\n" +
 				arrow() +
-				labelWithDesc("W/L", roundAndFormat(divide(player.getArenaWins(ALL), player.getArenaLosses(ALL)))) +
-				"\n" +
-				arrow() +
-				labelWithDesc("Winstreak", formatNumber(player.getArenaWinstreak(ALL))) +
-				"\n" +
-				arrow() +
-				labelWithDesc("Coins", formatNumber(player.getArenaCoins())) +
-				"\n" +
-				arrow() +
-				labelWithDesc("Keys", formatNumber(player.getArenaInt("keys", NONE))) +
+				labelWithDesc("W/L", roundAndFormat(player.getMurderMysteryWLR(HypixelPlayer.MurderMysteryMode.NONE))) +
 				"\n\n" +
 				label("Modes")
 			);
 
-		for (HypixelPlayer.ArenaMode mode : HypixelPlayer.ArenaMode.getModes()) {
+		for (HypixelPlayer.MurderMysteryMode mode : HypixelPlayer.MurderMysteryMode.getModes()) {
 			output.appendSibling(
-				new ChatText("\n" + arrow() + label(mode.getName()))
+				new ChatText("\n" + arrow() + label(capitalizeString(mode.getName())))
 					.setHoverEvent(
-						mode.getName() + " statistics",
+						capitalizeString(mode.getName()) + " statistics",
 						arrow() +
 						labelWithDesc(
 							"Kills | Deaths",
-							formatNumber(player.getArenaKills(mode)) + " | " + formatNumber(player.getArenaDeaths(mode))
+							formatNumber(player.getMurderMysteryKills(mode)) + " | " + formatNumber(player.getMurderMysteryDeaths(mode))
 						) +
 						"\n" +
 						arrow() +
 						labelWithDesc(
 							"Wins | Losses",
-							formatNumber(player.getArenaWins(mode)) + " | " + formatNumber(player.getArenaLosses(mode))
+							formatNumber(player.getMurderMysteryWins(mode)) + " | " + formatNumber(player.getMurderMysteryLosses(mode))
 						) +
 						"\n" +
 						arrow() +
-						labelWithDesc("K/D", roundAndFormat(divide(player.getArenaKills(mode), player.getArenaDeaths(mode)))) +
+						labelWithDesc("K/D", roundAndFormat(player.getMurderMysteryKDR(mode))) +
 						"\n" +
 						arrow() +
-						labelWithDesc("W/L", roundAndFormat(divide(player.getArenaWins(mode), player.getArenaLosses(mode)))) +
-						"\n" +
-						arrow() +
-						labelWithDesc("Winstreak", formatNumber(player.getArenaWinstreak(mode)))
+						labelWithDesc("W/L", roundAndFormat(player.getMurderMysteryWLR(mode)))
 					)
 					.build()
 			);
@@ -115,12 +109,17 @@ public class ArenaCommand extends CommandBase {
 
 	@Override
 	public String getCommandName() {
-		return "hpa:arena";
+		return "hpa:murder_mystery";
+	}
+
+	@Override
+	public List<String> getCommandAliases() {
+		return Collections.singletonList("hpa:mm");
 	}
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "/" + getCommandName() + " <player>";
+		return "/" + getCommandName() + " [player]";
 	}
 
 	@Override
@@ -130,6 +129,6 @@ public class ArenaCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		executor.submit(() -> sender.addChatMessage(getArenaString(args)));
+		executor.submit(() -> sender.addChatMessage(getMurderMysteryString(args)));
 	}
 }

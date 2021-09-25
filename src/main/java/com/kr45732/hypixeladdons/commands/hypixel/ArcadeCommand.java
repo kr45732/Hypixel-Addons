@@ -1,24 +1,26 @@
 /*
  * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021 kr45732
+ * Copyright (c) 2021-2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.kr45732.hypixeladdons.commands.hypixel;
 
-import com.kr45732.hypixeladdons.utils.Utils;
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+import static com.kr45732.hypixeladdons.utils.api.HypixelPlayer.ArcadeMode.*;
+
 import com.kr45732.hypixeladdons.utils.api.HypixelPlayer;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
@@ -32,311 +34,300 @@ public class ArcadeCommand extends CommandBase {
 
 	public static IChatComponent getArcadeString(String[] args) {
 		if (args.length != 1) {
-			return Utils.getUsage(INSTANCE);
+			return getUsage(INSTANCE);
 		}
 
 		if (ConfigUtils.getHypixelKey() == null) {
-			return Utils.invalidKey();
+			return invalidKey();
 		}
 
 		HypixelPlayer player = new HypixelPlayer(args[0]);
 		if (!player.isValid()) {
-			return Utils.getFailCause(player);
+			return getFailCause(player);
 		}
 
-		IChatComponent output = Utils.empty().appendSibling(player.getLink());
-		output
+		IChatComponent output = player
+			.defaultPlayerComponent()
 			.appendText(
 				"\n\n" +
-				Utils.labelWithDesc(
+				labelWithDesc(
 					"Arcade coins",
-					player.getArcadeStatIntFormatted("coins") +
+					player.getArcadeCoins() +
 					"\n" +
-					Utils.labelWithDesc("Total wins", player.getPropertyFormatted("achievements.arcade_arcade_winner"))
+					labelWithDesc("Total wins", player.getPropertyFormatted("achievements.arcade_arcade_winner")) +
+					"\n\n" +
+					label("Modes")
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Blocking Dead",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", player.getArcadeStatIntFormatted("wins_dayone")) +
+					arrow() +
+					labelWithDesc("Wins", formatNumber(player.getArcadeWins(BLOCKING_DEAD))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Kills", player.getArcadeStatIntFormatted("kills_dayone")) +
+					arrow() +
+					labelWithDesc("Kills", formatNumber(player.getArcadeKills(BLOCKING_DEAD))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Headshots", player.getArcadeStatIntFormatted("headshots_dayone"))
+					arrow() +
+					labelWithDesc("Headshots", formatNumber(player.getArcadeInt("headshots_dayone", NONE)))
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Bounty Hunters",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", player.getArcadeStatIntFormatted("wins_oneinthequiver")) +
+					arrow() +
+					labelWithDesc("Wins", formatNumber(player.getArcadeWins(BOUNTY_HUNTERS))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Kills", player.getArcadeStatIntFormatted("kills_oneinthequiver")) +
+					arrow() +
+					labelWithDesc("Kills", formatNumber(player.getArcadeKills(BOUNTY_HUNTERS))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Deaths", player.getArcadeStatIntFormatted("deaths_oneinthequiver")) +
+					arrow() +
+					labelWithDesc("Deaths", formatNumber(player.getArcadeDeaths(BOUNTY_HUNTERS))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc(
+					arrow() +
+					labelWithDesc(
 						"Kill/death ratio",
-						Utils.roundAndFormat(
-							Utils.divide(player.getArcadeStatInt("kills_oneinthequiver"), player.getArcadeStatInt("deaths_oneinthequiver"))
-						)
+						roundAndFormat(divide(player.getArcadeKills(BOUNTY_HUNTERS), player.getArcadeDeaths(BOUNTY_HUNTERS)))
 					)
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Capture The Wool",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", player.getPropertyFormatted("achievements.arcade_ctw_slayer")) +
+					arrow() +
+					labelWithDesc("Wins", player.getPropertyFormatted("achievements.arcade_ctw_slayer")) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Wool captures", player.getPropertyFormatted("achievements.arcade_ctw_oh_sheep"))
+					arrow() +
+					labelWithDesc("Wool captures", player.getPropertyFormatted("achievements.arcade_ctw_oh_sheep"))
 				)
 			)
 			.appendSibling(
-				getGame("Creeper Attack", Utils.arrow() + Utils.labelWithDesc("Best wave", player.getArcadeStatIntFormatted("max_wave")))
+				getGame("Creeper Attack", arrow() + labelWithDesc("Best wave", formatNumber(player.getArcadeInt("max_wave", NONE))))
 			)
 			.appendSibling(
 				getGame(
 					"Dragon Wars",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", player.getArcadeStatIntFormatted("wins_dragonwars2")) +
+					arrow() +
+					labelWithDesc("Wins", formatNumber(player.getArcadeWins(DRAGON_WARS))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Kills", player.getArcadeStatIntFormatted("kills_dragonwars2"))
+					arrow() +
+					labelWithDesc("Kills", formatNumber(player.getArcadeKills(DRAGON_WARS)))
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Easter Simulator",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", player.getArcadeStatIntFormatted("wins_easter_simulator")) +
+					arrow() +
+					labelWithDesc("Wins", formatNumber(player.getArcadeWins(EASTER_SIMULATOR))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Eggs found", player.getArcadeStatIntFormatted("eggs_found_easter_simulator"))
+					arrow() +
+					labelWithDesc("Eggs found", formatNumber(player.getArcadeInt("eggs_found_easter_simulator", NONE)))
 				)
 			)
-			.appendSibling(
-				getGame("Ender Spleef", Utils.arrow() + Utils.labelWithDesc("Wins", player.getArcadeStatIntFormatted("wins_ender")))
-			)
+			.appendSibling(getGame("Ender Spleef", arrow() + labelWithDesc("Wins", formatNumber(player.getArcadeWins(ENDER_SPLEEF)))))
 			.appendSibling(
 				getGame(
 					"Farm Hunt",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", player.getArcadeStatIntFormatted("wins_farm_hunt")) +
+					arrow() +
+					labelWithDesc("Wins", formatNumber(player.getArcadeWins(FARM_HUNT))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Poop collected", player.getArcadeStatIntFormatted("poop_collected"))
+					arrow() +
+					labelWithDesc("Poop collected", formatNumber(player.getArcadeInt("poop_collected", NONE)))
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Football",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", player.getArcadeStatIntFormatted("wins_soccer")) +
+					arrow() +
+					labelWithDesc("Wins", formatNumber(player.getArcadeWins(FOOTBALL))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Goals", player.getArcadeStatIntFormatted("goals_soccer")) +
+					arrow() +
+					labelWithDesc("Goals", formatNumber(player.getArcadeInt("goals_soccer", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Kicks", player.getArcadeStatIntFormatted("kicks_soccer")) +
+					arrow() +
+					labelWithDesc("Kicks", formatNumber(player.getArcadeInt("kicks_soccer", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Powerkicks", player.getArcadeStatIntFormatted("powerkicks_soccer"))
+					arrow() +
+					labelWithDesc("Powerkicks", formatNumber(player.getArcadeInt("powerkicks_soccer", NONE)))
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Galaxy Wars",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", player.getArcadeStatIntFormatted("sw_game_wins")) +
+					arrow() +
+					labelWithDesc("Wins", formatNumber(player.getArcadeWins(GALAXY_WARS))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Kills", player.getArcadeStatIntFormatted("sw_kills")) +
+					arrow() +
+					labelWithDesc("Kills", formatNumber(player.getArcadeKills(GALAXY_WARS))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Empire kills", player.getArcadeStatIntFormatted("sw_empire_kills")) +
+					arrow() +
+					labelWithDesc("Empire kills", formatNumber(player.getArcadeInt("sw_empire_kills", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Rebel kills", player.getArcadeStatIntFormatted("sw_rebel_kills")) +
+					arrow() +
+					labelWithDesc("Rebel kills", formatNumber(player.getArcadeInt("sw_rebel_kills", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Rebel kills", player.getArcadeStatIntFormatted("sw_rebel_kills")) +
+					arrow() +
+					labelWithDesc("Rebel kills", formatNumber(player.getArcadeInt("sw_rebel_kills", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Deaths", player.getArcadeStatIntFormatted("sw_deaths")) +
+					arrow() +
+					labelWithDesc("Deaths", formatNumber(player.getArcadeDeaths(GALAXY_WARS))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc(
+					arrow() +
+					labelWithDesc(
 						"Kill/death ratio",
-						Utils.roundAndFormat(Utils.divide(player.getArcadeStatInt("sw_kills"), player.getArcadeStatInt("sw_deaths")))
+						roundAndFormat(divide(player.getArcadeKills(GALAXY_WARS), player.getArcadeDeaths(GALAXY_WARS)))
 					) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Shots fired", player.getArcadeStatIntFormatted("sw_shots_fired"))
+					arrow() +
+					labelWithDesc("Shots fired", formatNumber(player.getBedwarsInt("sw_shots_fired", HypixelPlayer.BedwarsMode.NONE)))
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Grinch Simulator v2",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", player.getArcadeStatIntFormatted("wins_grinch_simulator_v2")) +
+					arrow() +
+					labelWithDesc("Wins", formatNumber(player.getArcadeWins(GRINCH_SIMULATOR_V2))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Presents stolen", player.getArcadeStatIntFormatted("gifts_grinch_simulator_v2"))
+					arrow() +
+					labelWithDesc("Presents stolen", formatNumber(player.getArcadeInt("gifts_grinch_simulator_v2", NONE)))
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Halloween Simulator",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", "where is this located") +
+					arrow() +
+					labelWithDesc("Wins", "where is this located") +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Candy found", "where is this located")
+					arrow() +
+					labelWithDesc("Candy found", "where is this located")
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Hide and Seek",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins as seeker", "where is this located") +
+					arrow() +
+					labelWithDesc("Wins as seeker", "where is this located") +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins as hider", "where is this located")
+					arrow() +
+					labelWithDesc("Wins as hider", "where is this located")
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Hole in the Wall",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", player.getArcadeStatIntFormatted("wins_hole_in_the_wall")) +
+					arrow() +
+					labelWithDesc("Wins", formatNumber(player.getArcadeWins(HOLE_IN_THE_WALL))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Highest score qualifications", player.getArcadeStatIntFormatted("hitw_record_q")) +
+					arrow() +
+					labelWithDesc("Highest score qualifications", formatNumber(player.getArcadeInt("hitw_record_q", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Highest score finals", player.getArcadeStatIntFormatted("hitw_record_f"))
+					arrow() +
+					labelWithDesc("Highest score finals", formatNumber(player.getArcadeInt("hitw_record_f", NONE)))
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Hypixel Says",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", player.getArcadeStatIntFormatted("wins_simon_says")) +
+					arrow() +
+					labelWithDesc("Wins", formatNumber(player.getArcadeWins(SIMON_SAYS))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Rounds", player.getArcadeStatIntFormatted("rounds_simon_says"))
+					arrow() +
+					labelWithDesc("Rounds", formatNumber(player.getArcadeInt("rounds_simon_says", NONE)))
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Party Games",
-					Utils.arrow() +
-					Utils.labelWithDesc(
+					arrow() +
+					labelWithDesc(
 						"Wins",
-						Utils.formatNumber(
-							player.getArcadeStatInt("wins_party") +
-							player.getArcadeStatInt("wins_party_2") +
-							player.getArcadeStatInt("wins_party_3")
+						formatNumber(
+							player.getArcadeWins(PARTY_GAMES) + player.getArcadeWins(PARTY_GAMES_2) + player.getArcadeWins(PARTY_GAMES_3)
 						)
 					)
 				)
 			)
-			.appendSibling(getGame("Pixel Painters", Utils.arrow() + Utils.labelWithDesc("Wins", "where is this located")))
+			.appendSibling(getGame("Pixel Painters", arrow() + labelWithDesc("Wins", "where is this located")))
 			.appendSibling(
 				getGame(
 					"Santa Simulator",
-					Utils.arrow() +
-					Utils.labelWithDesc("Presents delivered", player.getArcadeStatIntFormatted("delivered_santa_simulator")) +
+					arrow() +
+					labelWithDesc("Presents delivered", formatNumber(player.getArcadeInt("delivered_santa_simulator", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Times spotted", player.getArcadeStatIntFormatted("spotted_santa_simulator"))
+					arrow() +
+					labelWithDesc("Times spotted", formatNumber(player.getArcadeInt("spotted_santa_simulator", NONE)))
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Scuba Simulator",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", player.getArcadeStatIntFormatted("wins_scuba_simulator")) +
+					arrow() +
+					labelWithDesc("Wins", formatNumber(player.getArcadeWins(SCUBA_SIMULATOR))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Items found", player.getArcadeStatIntFormatted("items_found_scuba_simulator")) +
+					arrow() +
+					labelWithDesc("Items found", formatNumber(player.getArcadeInt("items_found_scuba_simulator", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Total points", player.getArcadeStatIntFormatted("total_points_scuba_simulator"))
+					arrow() +
+					labelWithDesc("Total points", formatNumber(player.getArcadeInt("total_points_scuba_simulator", NONE)))
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Throw Out",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", player.getArcadeStatIntFormatted("wins_throw_out")) +
+					arrow() +
+					labelWithDesc("Wins", formatNumber(player.getArcadeWins(THROW_OUT))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Kills", player.getArcadeStatIntFormatted("kills_throw_out")) +
+					arrow() +
+					labelWithDesc("Kills", formatNumber(player.getArcadeKills(THROW_OUT))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Deaths", player.getArcadeStatIntFormatted("deaths_throw_out")) +
+					arrow() +
+					labelWithDesc("Deaths", formatNumber(player.getArcadeDeaths(THROW_OUT))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc(
+					arrow() +
+					labelWithDesc(
 						"Kill/death ratio",
-						Utils.roundAndFormat(
-							Utils.divide(player.getArcadeStatInt("kills_throw_out"), player.getArcadeStatInt("deaths_throw_out"))
-						)
+						roundAndFormat(divide(player.getArcadeKills(THROW_OUT), player.getArcadeDeaths(THROW_OUT)))
 					)
 				)
 			)
 			.appendSibling(
 				getGame(
 					"Mini Walls",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", player.getArcadeStatIntFormatted("wins_mini_walls")) +
+					arrow() +
+					labelWithDesc("Wins", formatNumber(player.getArcadeWins(MINI_WALLS))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Kit", player.getArcadeStatStr("miniwalls_activeKit")) +
+					arrow() +
+					labelWithDesc("Kit", player.getArcadeStr("miniwalls_activeKit")) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Withers Killed", player.getArcadeStatIntFormatted("wither_kills_mini_walls")) +
+					arrow() +
+					labelWithDesc("Withers Killed", formatNumber(player.getArcadeInt("wither_kills_mini_walls", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Kills", player.getArcadeStatIntFormatted("kills_mini_walls")) +
+					arrow() +
+					labelWithDesc("Kills", formatNumber(player.getArcadeKills(MINI_WALLS))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Final kills", player.getArcadeStatIntFormatted("final_kills_mini_walls")) +
+					arrow() +
+					labelWithDesc("Final kills", formatNumber(player.getArcadeInt("final_kills_mini_walls", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Deaths", player.getArcadeStatIntFormatted("deaths_mini_walls")) +
+					arrow() +
+					labelWithDesc("Deaths", formatNumber(player.getArcadeDeaths(MINI_WALLS))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc(
+					arrow() +
+					labelWithDesc(
 						"Kill/death ratio",
-						Utils.roundAndFormat(
-							Utils.divide(player.getArcadeStatInt("kills_mini_walls"), player.getArcadeStatInt("deaths_mini_walls"))
-						)
+						roundAndFormat(divide(player.getArcadeKills(MINI_WALLS), player.getArcadeDeaths(MINI_WALLS)))
 					) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Arrows hit", player.getArcadeStatIntFormatted("arrows_hit_mini_walls")) +
+					arrow() +
+					labelWithDesc("Arrows hit", formatNumber(player.getArcadeInt("arrows_hit_mini_walls", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Arrows shot", player.getArcadeStatIntFormatted("arrows_shot_mini_walls")) +
+					arrow() +
+					labelWithDesc("Arrows shot", formatNumber(player.getArcadeInt("arrows_shot_mini_walls", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc(
+					arrow() +
+					labelWithDesc(
 						"Arrow hit accuracy",
-						Utils.roundAndFormat(
-							Utils.divide(
-								player.getArcadeStatInt("arrows_hit_mini_walls"),
-								player.getArcadeStatInt("arrows_shot_mini_walls")
-							)
+						roundAndFormat(
+							divide(player.getArcadeInt("arrows_hit_mini_walls", NONE), player.getArcadeInt("arrows_shot_mini_walls", NONE))
 						)
 					)
 				)
@@ -344,62 +335,62 @@ public class ArcadeCommand extends CommandBase {
 			.appendSibling(
 				getGame(
 					"Zombies",
-					Utils.arrow() +
-					Utils.labelWithDesc("Wins", "wins_zombies") +
+					arrow() +
+					labelWithDesc("Wins", formatNumber(player.getArcadeWins(ZOMBIES))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Rounds survived", player.getArcadeStatStr("total_rounds_survived_zombies")) +
+					arrow() +
+					labelWithDesc("Rounds survived", formatNumber(player.getArcadeInt("total_rounds_survived_zombies", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Best round", player.getArcadeStatIntFormatted("best_round_zombies")) +
+					arrow() +
+					labelWithDesc("Best round", formatNumber(player.getArcadeInt("best_round_zombies", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Zombies killed", player.getArcadeStatIntFormatted("zombie_kills_zombies")) +
+					arrow() +
+					labelWithDesc("Zombies killed", formatNumber(player.getArcadeInt("zombie_kills_zombies", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Bullets hit", player.getArcadeStatIntFormatted("bullets_hit_zombies")) +
+					arrow() +
+					labelWithDesc("Bullets hit", formatNumber(player.getArcadeInt("bullets_hit_zombies", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Bullets shot", player.getArcadeStatIntFormatted("bullets_shot_zombies")) +
+					arrow() +
+					labelWithDesc("Bullets shot", formatNumber(player.getArcadeInt("bullets_shot_zombies", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc(
+					arrow() +
+					labelWithDesc(
 						"Bullets hit accuracy",
-						Utils.roundAndFormat(
-							Utils.divide(player.getArcadeStatInt("bullets_hit_zombies"), player.getArcadeStatInt("bullets_shot_zombies"))
+						roundAndFormat(
+							divide(player.getArcadeInt("bullets_hit_zombies", NONE), player.getArcadeInt("bullets_shot_zombies", NONE))
 						)
 					) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Headshots", player.getArcadeStatIntFormatted("headshots_zombies")) +
+					arrow() +
+					labelWithDesc("Headshots", formatNumber(player.getArcadeInt("headshots_zombies", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc(
+					arrow() +
+					labelWithDesc(
 						"Headshot accuracy",
-						Utils.roundAndFormat(
-							Utils.divide(player.getArcadeStatInt("headshots_zombies"), player.getArcadeStatInt("bullets_hit_zombies"))
+						roundAndFormat(
+							divide(player.getArcadeInt("headshots_zombies", NONE), player.getArcadeInt("bullets_hit_zombies", NONE))
 						)
 					) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Players revived", player.getArcadeStatIntFormatted("players_revived_zombies")) +
+					arrow() +
+					labelWithDesc("Players revived", formatNumber(player.getArcadeInt("players_revived_zombies", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Times knocked down", player.getArcadeStatIntFormatted("times_knocked_down_zombies")) +
+					arrow() +
+					labelWithDesc("Times knocked down", formatNumber(player.getArcadeInt("times_knocked_down_zombies", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Doors opened", "doors_opened_zombies") +
+					arrow() +
+					labelWithDesc("Doors opened", formatNumber(player.getArcadeInt("doors_opened_zombies", NONE))) +
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc("Windows repaired", player.getArcadeStatIntFormatted("windows_repaired_zombies"))
+					arrow() +
+					labelWithDesc("Windows repaired", formatNumber(player.getArcadeInt("windows_repaired_zombies", NONE)))
 				)
 			);
 
-		return Utils.wrapText(output);
+		return wrapText(output);
 	}
 
 	public static IChatComponent getGame(String name, String desc) {
-		return new ChatText("\n" + Utils.arrow() + Utils.label(name)).setHoverEvent(name, desc).build();
+		return new ChatText("\n" + arrow() + label(name)).setHoverEvent(name, desc).build();
 	}
 
 	@Override
@@ -419,6 +410,6 @@ public class ArcadeCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		Utils.executor.submit(() -> sender.addChatMessage(getArcadeString(args)));
+		executor.submit(() -> sender.addChatMessage(getArcadeString(args)));
 	}
 }

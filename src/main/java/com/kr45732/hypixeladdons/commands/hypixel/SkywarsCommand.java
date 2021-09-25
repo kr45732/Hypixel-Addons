@@ -1,25 +1,25 @@
 /*
  * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021 kr45732
+ * Copyright (c) 2021-2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.kr45732.hypixeladdons.commands.hypixel;
 
-import static com.kr45732.hypixeladdons.utils.Constants.SKYWARS_GAME_IDS;
 import static com.kr45732.hypixeladdons.utils.Utils.*;
+import static com.kr45732.hypixeladdons.utils.api.HypixelPlayer.SkywarsMode.NONE;
 
 import com.kr45732.hypixeladdons.utils.api.HypixelPlayer;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
@@ -48,13 +48,13 @@ public class SkywarsCommand extends CommandBase {
 			return getFailCause(player);
 		}
 
-		int kills = player.getSkywarsStatistic("kills");
-		int deaths = player.getSkywarsStatistic("deaths");
-		int wins = player.getSkywarsStatistic("wins");
-		int losses = player.getSkywarsStatistic("losses");
+		int kills = player.getSkywarsKills(NONE);
+		int deaths = player.getSkywarsDeaths(NONE);
+		int wins = player.getSkywarsWins(NONE);
+		int losses = player.getSkywarsLosses(NONE);
 
-		IChatComponent output = empty()
-			.appendSibling(player.getLink())
+		IChatComponent output = player
+			.defaultPlayerComponent()
 			.appendText(
 				"\n\n" +
 				label("Statistics") +
@@ -81,21 +81,21 @@ public class SkywarsCommand extends CommandBase {
 				labelWithDesc("W/L", roundAndFormat(divide(wins, losses))) +
 				"\n" +
 				arrow() +
-				labelWithDesc("Heads", formatNumber(player.getSkywarsStatistic("heads")))
+				labelWithDesc("Heads", formatNumber(player.getSkywarsInt("heads", NONE)))
 			);
 
 		output.appendText("\n\n" + label("Modes"));
 
-		for (String mode : SKYWARS_GAME_IDS) {
-			int modeKills = player.getSkywarsStatistic("kills", mode);
-			int modeDeaths = player.getSkywarsStatistic("deaths", mode);
-			int modeWins = player.getSkywarsStatistic("wins", mode);
-			int modeLosses = player.getSkywarsStatistic("losses", mode);
+		for (HypixelPlayer.SkywarsMode mode : HypixelPlayer.SkywarsMode.getModes()) {
+			int modeKills = player.getSkywarsKills(mode);
+			int modeDeaths = player.getSkywarsDeaths(mode);
+			int modeWins = player.getSkywarsWins(mode);
+			int modeLosses = player.getSkywarsLosses(mode);
 
 			output.appendSibling(
-				new ChatText("\n" + arrow() + label(capitalizeString(mode.replace("_", " "))))
+				new ChatText("\n" + arrow() + label(capitalizeString(mode.getName())))
 					.setHoverEvent(
-						capitalizeString(mode.replace("_", " ")) + " statistics",
+						mode.getName() + " statistics",
 						arrow() +
 						labelWithDesc("Kills | Deaths", formatNumber(modeKills) + " | " + formatNumber(modeDeaths)) +
 						"\n" +
@@ -116,39 +116,33 @@ public class SkywarsCommand extends CommandBase {
 	}
 
 	public static String getSkywarsChat(String[] args) {
-		try {
-			if (args.length != 1) {
-				return getUsageChat(INSTANCE);
-			}
-
-			if (ConfigUtils.getHypixelKey() == null) {
-				return invalidKeyChat();
-			}
-
-			HypixelPlayer player = new HypixelPlayer(args[0]);
-			if (!player.isValid()) {
-				return getFailCauseChat(player);
-			}
-
-			int kills = player.getSkywarsStatistic("kills");
-			int deaths = player.getSkywarsStatistic("deaths");
-			int wins = player.getSkywarsStatistic("wins");
-			int losses = player.getSkywarsStatistic("losses");
-
-			return (
-				player.getStrippedFormattedUsername() +
-				", Skywars level: " +
-				player.getSkywarsLevelFormatted() +
-				", K/D: " +
-				roundAndFormat(divide(kills, deaths)) +
-				", W/L: " +
-				roundAndFormat(divide(wins, losses))
-			);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (args.length != 1) {
+			return getUsageChat(INSTANCE);
 		}
 
-		return "oops";
+		if (ConfigUtils.getHypixelKey() == null) {
+			return invalidKeyChat();
+		}
+
+		HypixelPlayer player = new HypixelPlayer(args[0]);
+		if (!player.isValid()) {
+			return getFailCauseChat(player);
+		}
+
+		int kills = player.getSkywarsKills(NONE);
+		int deaths = player.getSkywarsDeaths(NONE);
+		int wins = player.getSkywarsWins(NONE);
+		int losses = player.getSkywarsLosses(NONE);
+
+		return (
+			player.getStrippedFormattedUsername() +
+			", Skywars level: " +
+			player.getSkywarsLevelFormatted() +
+			", K/D: " +
+			roundAndFormat(divide(kills, deaths)) +
+			", W/L: " +
+			roundAndFormat(divide(wins, losses))
+		);
 	}
 
 	@Override

@@ -1,18 +1,18 @@
 /*
  * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021 kr45732
+ * Copyright (c) 2021-2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -78,8 +78,8 @@ public class HypixelAddons {
 			// Price
 			AuctionsCommand.INSTANCE,
 			BazaarCommand.INSTANCE,
-			//			BinCommand.INSTANCE, TODO: fix?
-			//			BidsCommand.INSTANCE,
+			//	BinCommand.INSTANCE, TODO: fix?
+			//	BidsCommand.INSTANCE,
 			BitsCommand.INSTANCE,
 			// Hypixel
 			HypixelCommand.INSTANCE,
@@ -88,6 +88,8 @@ public class HypixelAddons {
 			ArcadeCommand.INSTANCE,
 			ArenaCommand.INSTANCE,
 			DuelsCommand.INSTANCE,
+			MurderMysteryCommand.INSTANCE,
+			BuildBattleCommand.INSTANCE,
 			// Miscellaneous
 			BankCommand.INSTANCE,
 			WeightCommand.INSTANCE,
@@ -107,15 +109,15 @@ public class HypixelAddons {
 					new ChatCommand(SkillsCommand.INSTANCE, event -> SkillsCommand.getSkillsChat(event.getArgs())),
 					new ChatCommand(AuctionsCommand.INSTANCE, event -> AuctionsCommand.getAuctionsChat(event.getArgs())),
 					new ChatCommand(BazaarCommand.INSTANCE, event -> BazaarCommand.getBazaarChat(event.getArgs())),
-					//					new ChatCommand(BidsCommand.INSTANCE, event -> BidsCommand.getBidsChat(event.getArgs())),
-					//					new ChatCommand(BinCommand.INSTANCE, event -> BinCommand.getBinChat(event.getArgs())),
+					//	new ChatCommand(BidsCommand.INSTANCE, event -> BidsCommand.getBidsChat(event.getArgs())),
+					//	new ChatCommand(BinCommand.INSTANCE, event -> BinCommand.getBinChat(event.getArgs())),
 					new ChatCommand(BitsCommand.INSTANCE, event -> BitsCommand.getBitsChat(event.getArgs())),
 					new ChatCommand(BankCommand.INSTANCE, event -> BankCommand.getBankChat(event.getArgs())),
 					new ChatCommand(WeightCommand.INSTANCE, event -> WeightCommand.getWeightChat(event.getArgs())),
 					new ChatCommand(DungeonsCommand.INSTANCE, event -> DungeonsCommand.getDungeonsChat(event.getArgs())),
 					new ChatCommand(PartyFinderCommand.INSTANCE, event -> PartyFinderCommand.getPartyFinderChat(event.getArgs())),
 					new ChatCommand(GuildCommand.INSTANCE, event -> GuildCommand.getGuildChat(event.getArgs())),
-					// new ChatCommand(SkywarsCommand.INSTANCE, event -> SkywarsCommand.getSkywarsChat(event.getArgs())), TODO: this is broken for some reason
+					new ChatCommand(SkywarsCommand.INSTANCE, event -> SkywarsCommand.getSkywarsChat(event.getArgs())),
 					new ChatCommand(BedwarsCommand.INSTANCE, event -> BedwarsCommand.getBedwarsChat(event.getArgs())),
 					new ChatCommand(HypixelCommand.INSTANCE, event -> HypixelCommand.getHypixelChat(event.getArgs()))
 				);

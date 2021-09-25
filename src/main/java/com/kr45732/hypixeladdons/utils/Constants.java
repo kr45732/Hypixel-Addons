@@ -1,18 +1,18 @@
 /*
  * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021 kr45732
+ * Copyright (c) 2021-2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -60,19 +60,8 @@ public class Constants {
 	public static final Map<String, Double[]> SKILL_WEIGHTS = new HashMap<>();
 	public static final Map<String, Double> DUNGEON_CLASS_WEIGHTS = new HashMap<>();
 	public static final Map<String, Double> DUNGEON_WEIGHTS = new HashMap<>();
-	public static final Map<String, String> BEDWARS_GAME_ID_TO_NAME = new HashMap<>();
 	public static final List<Integer> SKYWARS_LEVELING_XP = Arrays.asList(0, 2, 7, 15, 25, 50, 100, 200, 350, 600, 1000, 1500);
-	public static final Map<String, String> DUELS_GAME_ID_TO_NAME = new HashMap<>();
 	public static final Map<Integer, String> TOTAL_WINS_TO_DIVISION_MAP = new HashMap<>();
-	public static final List<String> SKYWARS_GAME_IDS = Arrays.asList(
-		"ranked",
-		"solo_normal",
-		"solo_insane",
-		"team_normal",
-		"team_insane",
-		"mega",
-		"mega_doubles"
-	);
 	public static final int BEDWARS_EXP_PER_PRESTIGE = 489000;
 	public static final int BEDWARS_LEVELS_PER_PRESTIGE = 100;
 	public static final List<String> META_ITEMS = Arrays.asList(
@@ -211,23 +200,6 @@ public class Constants {
 
 			/* dungeonWeights */
 			DUNGEON_WEIGHTS.put("catacombs", 0.0002149604615D);
-
-			/* bedwarsGameIdToName */
-			BEDWARS_GAME_ID_TO_NAME.put("eight_one", "solo");
-			BEDWARS_GAME_ID_TO_NAME.put("eight_two", "doubles");
-			BEDWARS_GAME_ID_TO_NAME.put("four_three", "3v3v3v3");
-			BEDWARS_GAME_ID_TO_NAME.put("four_four", "4v4v4v4");
-			BEDWARS_GAME_ID_TO_NAME.put("two_four", "4v4");
-
-			/* duelsGameToId */
-			DUELS_GAME_ID_TO_NAME.put("uhc_duel", "UHC 1v1");
-			DUELS_GAME_ID_TO_NAME.put("sw_doubles", "SkyWars 2v2");
-			DUELS_GAME_ID_TO_NAME.put("blitz_duel", "Blitz 1v1");
-			DUELS_GAME_ID_TO_NAME.put("sumo_duel", "Sumo 1v1");
-			DUELS_GAME_ID_TO_NAME.put("classical_duel", "Classic 1v1");
-			DUELS_GAME_ID_TO_NAME.put("combo_duel", "Combo 1v1");
-			DUELS_GAME_ID_TO_NAME.put("bridge_duel", "Bridge 1v1");
-			DUELS_GAME_ID_TO_NAME.put("bridge_doubles", "Bridge 2v2");
 
 			/* totalWinsToDivisionMap */
 			TOTAL_WINS_TO_DIVISION_MAP.put(100, "Rookie");

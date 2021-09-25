@@ -1,18 +1,18 @@
 /*
  * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021 kr45732
+ * Copyright (c) 2021-2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -20,6 +20,7 @@ package com.kr45732.hypixeladdons.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
@@ -33,7 +34,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiMultiLineTextField extends Gui {
+public class MultiLineTextField extends Gui {
 
 	/** Reference of the minecraft instance for convenience **/
 	private final Minecraft mc;
@@ -46,7 +47,7 @@ public class GuiMultiLineTextField extends Gui {
 	/** Width of the textbox **/
 	private final int width;
 	/** Calculated height of the textbox **/
-	private final int height;
+	private int height;
 	/** Calculated height of each line **/
 	private final int lineHeight;
 	/** Max lines the textbox can have **/
@@ -75,7 +76,7 @@ public class GuiMultiLineTextField extends Gui {
 	 * @param width Width in pixels of the textbox
 	 * @param maxLines Max lines the textbox can have
 	 */
-	public GuiMultiLineTextField(int id, int x, int y, int width, int maxLines) {
+	public MultiLineTextField(int id, int x, int y, int width, int maxLines) {
 		this.id = id;
 		this.x = x;
 		this.y = y;
@@ -104,46 +105,62 @@ public class GuiMultiLineTextField extends Gui {
 			}
 
 			if (isFocused) {
-				if(cursorLineNumber != selectionLineNumber || cursorCharNumber != selectionCharNumber){ // Selected text highlight
+				if (hasSelection()) { // Selected text highlight
 					int startLine = Math.min(cursorLineNumber, selectionLineNumber);
 					int endLine = Math.max(cursorLineNumber, selectionLineNumber);
 
-					if(startLine == endLine){
-						int startX = x + mc.fontRendererObj.getStringWidth(lines.get(cursorLineNumber).substring(0, Math.min(cursorCharNumber, selectionCharNumber)));
+					if (startLine == endLine) {
+						int startX =
+							x +
+							mc.fontRendererObj.getStringWidth(
+								lines.get(cursorLineNumber).substring(0, Math.min(cursorCharNumber, selectionCharNumber))
+							);
 						int startY = y + Math.min(cursorLineNumber, selectionLineNumber) * lineHeight;
-						int endX = x + mc.fontRendererObj.getStringWidth(lines.get(cursorLineNumber).substring(0, Math.max(cursorCharNumber, selectionCharNumber)));
+						int endX =
+							x +
+							mc.fontRendererObj.getStringWidth(
+								lines.get(cursorLineNumber).substring(0, Math.max(cursorCharNumber, selectionCharNumber))
+							);
 						int endY = startY + lineHeight;
 
 						drawHighlight(startX, startY, endX, endY);
-					}else{
-						for(int i= startLine; i<=endLine; i++){
+					} else {
+						for (int i = startLine; i <= endLine; i++) {
 							int startX;
 							int startY;
 							int endX;
 							int endY;
-							if(i == startLine){
-								startX = x + mc.fontRendererObj.getStringWidth(lines.get(i).substring(0, Math.min(cursorCharNumber, selectionCharNumber)));
+							if (i == startLine) {
+								startX =
+									x +
+									mc.fontRendererObj.getStringWidth(
+										lines.get(i).substring(0, Math.min(cursorCharNumber, selectionCharNumber))
+									);
 								startY = y + i * lineHeight;
 								endX = x + mc.fontRendererObj.getStringWidth(lines.get(i));
 								endY = startY + lineHeight;
-							} else if(i == endLine){
+							} else if (i == endLine) {
 								startX = x;
 								startY = y + i * lineHeight;
-								endX = x + mc.fontRendererObj.getStringWidth(lines.get(i).substring(0, Math.max(cursorCharNumber, selectionCharNumber)));
+								endX =
+									x +
+									mc.fontRendererObj.getStringWidth(
+										lines.get(i).substring(0, Math.max(cursorCharNumber, selectionCharNumber))
+									);
 								endY = startY + lineHeight;
-							}else{
+							} else {
 								startX = x;
 								startY = y + i * lineHeight;
 								endX = x + mc.fontRendererObj.getStringWidth(lines.get(i));
 								endY = startY + lineHeight;
 							}
 
-//							System.out.println(startX + " - " + startY + " - " + endX + " - " + endY);
+							//							System.out.println(startX + " - " + startY + " - " + endX + " - " + endY);
 
 							drawHighlight(startX, startY, endX, endY);
 						}
 					}
-				}else if(cursorCount / 8 % 2 != 0) { // Blink (hide) every 8 cursorCount
+				} else if (cursorCount / 8 % 2 != 0) { // Blink (hide) every 8 cursorCount
 					// Cursor (why are you so complicated)
 					int totalLines = 1;
 
@@ -183,10 +200,13 @@ public class GuiMultiLineTextField extends Gui {
 					GuiScreen.drawRect(left, top, left + 1, top - lineHeight, 0xFF000000);
 				}
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private boolean hasSelection() {
+		return cursorLineNumber != selectionLineNumber || cursorCharNumber != selectionCharNumber;
 	}
 
 	/**
@@ -243,7 +263,6 @@ public class GuiMultiLineTextField extends Gui {
 
 			System.out.println(keyCode + " - " + cursorLineNumber + " - " + cursorCharNumber + " - " + lines);
 
-			// Todo: keybinds (ctrl a, c, v, etc)
 			if (GuiScreen.isKeyComboCtrlA(keyCode)) {
 				setCursorLine(lines.size() - 1);
 				setCursorChar(lines.get(cursorLineNumber).length());
@@ -253,18 +272,50 @@ public class GuiMultiLineTextField extends Gui {
 			} else if (GuiScreen.isKeyComboCtrlC(keyCode)) {
 				GuiScreen.setClipboardString(getSelectedText());
 			} else if (GuiScreen.isKeyComboCtrlV(keyCode)) {
-				String newText = trimToMaxLength(new StringBuilder(lines.get(cursorLineNumber)).insert(cursorCharNumber, ChatAllowedCharacters.filterAllowedCharacters(GuiScreen.getClipboardString())).toString().replaceAll("(?i)&(?=[0-9A-FK-OR])", "§"));
+				String newText = trimToMaxLength(
+					new StringBuilder(lines.get(cursorLineNumber))
+						.insert(cursorCharNumber, ChatAllowedCharacters.filterAllowedCharacters(GuiScreen.getClipboardString()))
+						.toString()
+						.replaceAll("(?i)&(?=[0-9A-FK-OR])", "§")
+				);
 				lines.set(cursorLineNumber, newText);
 				setCursorChar(cursorCharNumber + newText.length());
-			} else if (
-				GuiScreen.isKeyComboCtrlX(keyCode)
-			) {
-
 			} else {
 				switch (keyCode) {
 					case 14: // Back key
 					case 211: // Delete key
-						if (cursorCharNumber == 0) { // Go to previous line
+						if (hasSelection()) { // Delete the selection
+							int startLine = Math.min(cursorLineNumber, selectionLineNumber);
+							int endLine = Math.max(cursorLineNumber, selectionLineNumber);
+							int charMin = Math.min(cursorCharNumber, selectionCharNumber);
+							int charMax = Math.max(cursorCharNumber, selectionCharNumber);
+
+							if (startLine == endLine) { // Selection is on one line
+								String newStr = new StringBuilder(lines.get(cursorLineNumber)).delete(charMin, charMax).toString();
+								if (newStr.length() > 0) {
+									lines.set(cursorLineNumber, newStr);
+								} else {
+									removeLine(cursorLineNumber);
+								}
+							} else { // Selection is on multiple lines
+								for (int i = endLine; i > startLine - 1; i--) {
+									String newStr;
+									if (i == startLine) {
+										newStr = lines.get(i).substring(0, charMin);
+									} else if (i == endLine) {
+										newStr = lines.get(i).substring(charMax);
+									} else {
+										newStr = "";
+									}
+
+									if (newStr.length() > 0) {
+										lines.set(i, newStr);
+									} else {
+										removeLine(i);
+									}
+								}
+							}
+						} else if (cursorCharNumber == 0) { // Go to previous line
 							if (cursorLineNumber > 0) { // Isn't the first line
 								String thisLine = lines.get(cursorLineNumber);
 								lines.remove(cursorLineNumber);
@@ -275,14 +326,11 @@ public class GuiMultiLineTextField extends Gui {
 						} else { // Delete a char on this line
 							StringBuilder thisLine = new StringBuilder(lines.get(cursorLineNumber));
 
-							if(cursorCharNumber - 2 >= 0 && thisLine.charAt(cursorCharNumber - 2) == '§'){ // Undo color formatting codes if part of formatting code was deleted
+							if (cursorCharNumber - 2 >= 0 && thisLine.charAt(cursorCharNumber - 2) == '§') { // Undo color formatting codes if part of formatting code was deleted
 								thisLine.setCharAt(cursorCharNumber - 2, '&');
 							}
 
-							lines.set(
-								cursorLineNumber,
-									trimToMaxLength(thisLine.deleteCharAt(cursorCharNumber - 1).toString())
-							);
+							lines.set(cursorLineNumber, trimToMaxLength(thisLine.deleteCharAt(cursorCharNumber - 1).toString()));
 							setCursorChar(cursorCharNumber - 1);
 						}
 						break;
@@ -337,6 +385,8 @@ public class GuiMultiLineTextField extends Gui {
 						}
 				}
 			}
+
+			updateHeight();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -363,6 +413,34 @@ public class GuiMultiLineTextField extends Gui {
 		this.maxLineLength = maxLineLength;
 	}
 
+	/**
+	 * @return The content of all lines where each line is separated by a new line
+	 */
+	public String getText() {
+		return String.join("\n", lines).replaceAll("(?i)§(?=[0-9A-FK-OR])", "&");
+	}
+
+	public List<String> getLines() {
+		return lines.stream().map(line -> line.replaceAll("(?i)§(?=[0-9A-FK-OR])", "&")).collect(Collectors.toList());
+	}
+
+	/**
+	 * Sets the lines of the textbox and filters allowed characters
+	 * @param text The new lines to set the text to
+	 */
+	public void setText(String[] text) {
+		lines.clear();
+		for (String line : text) {
+			lines.add(ChatAllowedCharacters.filterAllowedCharacters(line).replaceAll("(?i)&(?=[0-9A-FK-OR])", "§"));
+		}
+
+		if (lines.size() == 0) {
+			lines.add("");
+		}
+
+		updateHeight();
+	}
+
 	private void setFocused(boolean focused) {
 		if (focused && !isFocused) {
 			cursorCount = 0;
@@ -371,45 +449,53 @@ public class GuiMultiLineTextField extends Gui {
 		isFocused = focused;
 	}
 
-	private String trimToMaxLength(String text){
+	private String trimToMaxLength(String text) {
 		return text.length() > maxLineLength ? text.substring(0, maxLineLength) : text;
 	}
 
-	private void setCursorLine(int lineNumber){
-		setCursor(lineNumber, cursorCharNumber);
-	}
-
-	private void setCursorChar(int charNumber){
-		setCursor(cursorLineNumber, charNumber);
-	}
-
-	private void setCursor(int lineNumber, int charNumber){
-		cursorLineNumber = MathHelper.clamp_int(lineNumber, 0, lines.size() - 1);
-		cursorCharNumber = MathHelper.clamp_int(charNumber, 0, lines.get(lineNumber).length());
+	private void setCursorLine(int lineNumber) {
+		cursorLineNumber = lineNumber;
 
 		resetSelection();
 	}
 
-	private void resetSelection(){
+	private void setCursorChar(int charNumber) {
+		cursorCharNumber = charNumber;
+
+		resetSelection();
+	}
+
+	private void removeLine(int lineNumber) {
+		lines.remove(lineNumber);
+		setCursorLine(cursorLineNumber - 1);
+		setCursorChar(0);
+		if (lines.size() == 0) {
+			setCursorLine(0);
+			lines.add("");
+		}
+	}
+
+	private void resetSelection() {
 		selectionLineNumber = cursorLineNumber;
 		selectionCharNumber = cursorCharNumber;
 	}
 
-	private String getSelectedText()
-	{
+	private String getSelectedText() {
 		int startLine = Math.min(cursorLineNumber, selectionLineNumber);
 		int endLine = Math.max(cursorLineNumber, selectionLineNumber);
 
-		if(startLine == endLine){
-			return lines.get(cursorLineNumber).substring(Math.min(cursorCharNumber, selectionCharNumber), Math.max(cursorCharNumber, selectionCharNumber));
-		}else{
+		if (startLine == endLine) {
+			return lines
+				.get(cursorLineNumber)
+				.substring(Math.min(cursorCharNumber, selectionCharNumber), Math.max(cursorCharNumber, selectionCharNumber));
+		} else {
 			String output = "";
-			for(int i= startLine; i<=endLine; i++){
-				if(i == startLine){
+			for (int i = startLine; i <= endLine; i++) {
+				if (i == startLine) {
 					output += lines.get(i).substring(Math.min(cursorCharNumber, selectionCharNumber));
-				} else if(i == endLine){
+				} else if (i == endLine) {
 					output += "\n" + lines.get(i).substring(0, Math.max(cursorCharNumber, selectionCharNumber));
-				}else{
+				} else {
 					output += "\n" + lines.get(i);
 				}
 			}
@@ -418,30 +504,24 @@ public class GuiMultiLineTextField extends Gui {
 		}
 	}
 
-
-	private void drawHighlight(int startX, int startY, int endX, int endY)
-	{
-		if (startX < endX)
-		{
+	private void drawHighlight(int startX, int startY, int endX, int endY) {
+		if (startX < endX) {
 			int i = startX;
 			startX = endX;
 			endX = i;
 		}
 
-		if (startY < endY)
-		{
+		if (startY < endY) {
 			int j = startY;
 			startY = endY;
 			endY = j;
 		}
 
-		if (endX > this.x + this.width)
-		{
+		if (endX > this.x + this.width) {
 			endX = this.x + this.width;
 		}
 
-		if (startX > this.x + this.width)
-		{
+		if (startX > this.x + this.width) {
 			startX = this.x + this.width;
 		}
 
@@ -459,5 +539,13 @@ public class GuiMultiLineTextField extends Gui {
 		tessellator.draw();
 		GlStateManager.disableColorLogic();
 		GlStateManager.enableTexture2D();
+	}
+
+	private void updateHeight() {
+		int extraLines = 0;
+		for (String line : lines) {
+			extraLines += Math.max(0, mc.fontRendererObj.listFormattedStringToWidth(line, width).size() - 1);
+		}
+		this.height = (maxLines + extraLines) * lineHeight;
 	}
 }

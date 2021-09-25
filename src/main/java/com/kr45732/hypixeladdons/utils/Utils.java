@@ -1,24 +1,24 @@
 /*
  * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021 kr45732
+ * Copyright (c) 2021-2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.kr45732.hypixeladdons.utils;
 
-import static com.kr45732.hypixeladdons.utils.api.Hypixel.playerFromUuid;
+import static com.kr45732.hypixeladdons.utils.api.ApiHandler.playerFromUuid;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -559,6 +559,20 @@ public class Utils {
 		}
 	}
 
+	public static String higherDepth(JsonElement element, String path, String defaultVal) {
+		String[] paths = path.split("\\.");
+
+		try {
+			for (String key : paths) {
+				element = element.getAsJsonObject().get(key);
+			}
+			return element.getAsString();
+		} catch (Exception e) {
+			return defaultVal;
+		}
+	}
+
+	// Hi, is it Skyblock or SkyBlock
 	public static int higherDepth(JsonElement element, String path, int defaultVal) {
 		String[] paths = path.split("\\.");
 
@@ -603,6 +617,7 @@ public class Utils {
 		return closestMatch;
 	}
 
+	// Java docs are boring
 	public static String capitalizeString(String str) {
 		return Stream
 			.of(str.trim().split("\\s"))
@@ -611,6 +626,7 @@ public class Utils {
 			.collect(Collectors.joining(" "));
 	}
 
+	// Not like anyone is going to look at my code
 	public static String instantToDHM(Duration duration) {
 		if (duration.toMinutes() < 1) {
 			return instantToMS(duration);
@@ -626,6 +642,7 @@ public class Utils {
 		return timeUntil.length() > 0 ? timeUntil.trim() : "0m";
 	}
 
+	// But if you are seeing this then hello!
 	public static String instantToMS(Duration duration) {
 		long secondsDuration = duration.toMillis() / 1000;
 		long minutesUntil = secondsDuration / 60 % 60;
@@ -639,6 +656,7 @@ public class Utils {
 
 	/**
 	 * Do I really need javadocs for this
+	 * Answer: yes
 	 */
 	public static double divide(double d1, double d2) {
 		return d2 == 0 ? 0 : (d1 / d2);
@@ -719,6 +737,10 @@ public class Utils {
 		}
 
 		return p[n];
+	}
+
+	public static String getUsername(String[] args, int idx) {
+		return args.length > idx ? args[idx] : Minecraft.getMinecraft().thePlayer.getName();
 	}
 }
 /*

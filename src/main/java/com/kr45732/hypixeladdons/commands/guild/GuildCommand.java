@@ -1,18 +1,18 @@
 /*
  * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021 kr45732
+ * Copyright (c) 2021-2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -21,7 +21,7 @@ package com.kr45732.hypixeladdons.commands.guild;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.kr45732.hypixeladdons.utils.*;
-import com.kr45732.hypixeladdons.utils.api.Hypixel;
+import com.kr45732.hypixeladdons.utils.api.ApiHandler;
 import com.kr45732.hypixeladdons.utils.api.HypixelResponse;
 import com.kr45732.hypixeladdons.utils.chat.C;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
@@ -79,7 +79,7 @@ public class GuildCommand extends CommandBase {
 					"\n" +
 					Utils.labelWithDesc(
 						"Guild master",
-						Hypixel.usernameUuid(Utils.higherDepth(currentMember, "uuid").getAsString()).playerUsername
+						ApiHandler.usernameUuid(Utils.higherDepth(currentMember, "uuid").getAsString()).playerUsername
 					);
 				break;
 			}
@@ -119,12 +119,12 @@ public class GuildCommand extends CommandBase {
 		}
 
 		if (args.length == 1) {
-			UsernameUuidStruct uuidUsername = Hypixel.usernameUuid(args[0]);
+			UsernameUuidStruct uuidUsername = ApiHandler.usernameUuid(args[0]);
 			if (uuidUsername.isNotValid()) {
 				return Utils.getFailCause(uuidUsername);
 			}
 
-			HypixelResponse response = Hypixel.getGuildFromPlayer(uuidUsername.playerUuid);
+			HypixelResponse response = ApiHandler.getGuildFromPlayer(uuidUsername.playerUuid);
 			if (response.isNotValid()) {
 				return Utils.getFailCause(response);
 			}
@@ -157,12 +157,12 @@ public class GuildCommand extends CommandBase {
 		}
 
 		if (args.length == 1) {
-			UsernameUuidStruct uuidUsername = Hypixel.usernameUuid(args[0]);
+			UsernameUuidStruct uuidUsername = ApiHandler.usernameUuid(args[0]);
 			if (uuidUsername.isNotValid()) {
 				return Utils.getFailCauseChat(uuidUsername);
 			}
 
-			HypixelResponse response = Hypixel.getGuildFromPlayer(uuidUsername.playerUuid);
+			HypixelResponse response = ApiHandler.getGuildFromPlayer(uuidUsername.playerUuid);
 			if (response.isNotValid()) {
 				return Utils.getFailCauseChat(response);
 			}

@@ -1,25 +1,25 @@
 /*
  * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021 kr45732
+ * Copyright (c) 2021-2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.kr45732.hypixeladdons.utils.api;
 
-import static com.kr45732.hypixeladdons.utils.api.Hypixel.playerFromUuid;
-import static com.kr45732.hypixeladdons.utils.api.Hypixel.skyblockProfilesFromUuid;
+import static com.kr45732.hypixeladdons.utils.api.ApiHandler.playerFromUuid;
+import static com.kr45732.hypixeladdons.utils.api.ApiHandler.skyblockProfilesFromUuid;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
@@ -563,7 +563,7 @@ public class Player {
 
 	/* Helper methods */
 	private boolean usernameToUuid(String username) {
-		UsernameUuidStruct response = Hypixel.usernameUuid(username);
+		UsernameUuidStruct response = ApiHandler.usernameUuid(username);
 		if (response.isNotValid()) {
 			failCause = response.failCause;
 			return true;
