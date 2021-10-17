@@ -2,13 +2,13 @@ name: Java CI with gradle
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths-ignore:
       - 'README.md'
       - 'LICENSE'
       - '.gitignore'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths-ignore:
       - 'README.md'
       - 'LICENSE'
@@ -27,6 +27,13 @@ jobs:
           cache: "gradle"
       - name: Build with Gradle
         run: chmod +x gradlew && ./gradlew setupCIWorkspace build --no-daemon
+      - name: Format code
+        uses: lwerner-lshigh/prettier_action_java@v1.1.1
+        with:
+          branch: ${{ github.head_ref }}
+          commit_message: Automatically format code
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      - uses: actions/upload-artifact@v2
 #        with:
 #          path: build/libs/*.jar
