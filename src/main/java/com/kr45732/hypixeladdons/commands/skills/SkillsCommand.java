@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,22 +31,20 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 public class SkillsCommand extends CommandBase {
 
-	public static SkillsCommand INSTANCE = new SkillsCommand();
+	public static final SkillsCommand INSTANCE = new SkillsCommand();
 
 	public static IChatComponent getSkillsString(String[] args) {
-		if (args.length != 1 && args.length != 2) {
-			return Utils.getUsage(INSTANCE);
-		}
-
 		if (ConfigUtils.getHypixelKey() == null) {
-			return Utils.invalidKey();
+			return invalidKey();
 		}
 
-		Player player = args.length == 1 ? new Player(args[0]) : new Player(args[1], args[1]);
+		Player player = newPlayer(args);
 		if (!player.isValid()) {
-			return Utils.getFailCause(player);
+			return getFailCause(player);
 		}
 
 		List<IChatComponent> skillComponents = new ArrayList<>();
@@ -58,63 +56,62 @@ public class SkillsCommand extends CommandBase {
 				skillComponents.add(
 					new ChatText(
 						"\n" +
-						Utils.arrow() +
-						Utils.labelWithDesc(Utils.capitalizeString(skillInfo.skillName), Utils.roundAndFormat(skillInfo.getProgressLevel()))
+						arrow() +
+						labelWithDesc(capitalizeString(skillInfo.getName()), roundAndFormat(skillInfo.getProgressLevel()))
 					)
 						.setHoverEvent(
-							Utils.capitalizeString(skillInfo.skillName),
-							Utils.labelWithDesc(
+							capitalizeString(skillInfo.getName()),
+							labelWithDesc(
 								"XP progress",
-								Utils.simplifyNumber(skillInfo.expCurrent) + " / " + Utils.simplifyNumber(skillInfo.expForNext)
+								simplifyNumber(skillInfo.getExpCurrent()) + " / " + simplifyNumber(skillInfo.getExpForNext())
 							) +
 							"\n" +
-							Utils.labelWithDesc("Total XP", Utils.simplifyNumber(skillInfo.totalSkillExp)) +
+							labelWithDesc("Total XP", simplifyNumber(skillInfo.getTotalExp())) +
 							"\n" +
-							Utils.labelWithDesc(
+							labelWithDesc(
 								"Progress",
-								(skillInfo.skillLevel == skillInfo.maxSkillLevel ? "MAX" : Utils.roundProgress(skillInfo.progressToNext))
+								(skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext()))
 							)
 						)
 						.build()
 				);
 
 				if (!skill.equals("runecrafting") && !skill.equals("carpentry")) {
-					trueSA += skillInfo.skillLevel;
+					trueSA += skillInfo.getCurrentLevel();
 					progressSA += skillInfo.getProgressLevel();
 				}
 			} else {
-				skillComponents.add(new ChatComponentText("\n" + Utils.arrow() + Utils.labelWithDesc(Utils.capitalizeString(skill), "??")));
+				skillComponents.add(new ChatComponentText("\n" + arrow() + labelWithDesc(capitalizeString(skill), "??")));
 			}
 		}
 		trueSA /= Constants.SKILL_NAMES.size();
 		progressSA /= Constants.SKILL_NAMES.size();
 
-		IChatComponent output = Utils.empty().appendSibling(player.getLink());
-		output.appendText(
+		IChatComponent output = player.defaultComponent().appendText(
 			"\n\n" +
-			Utils.labelWithDesc("True skill average", Utils.roundAndFormat(trueSA)) +
+			labelWithDesc("True skill average", roundAndFormat(trueSA)) +
 			"\n" +
-			Utils.labelWithDesc("Progress skill average", Utils.roundAndFormat(progressSA) + "\n")
+			labelWithDesc("Progress skill average", roundAndFormat(progressSA) + "\n")
 		);
 		for (IChatComponent skillComponent : skillComponents) {
 			output.appendSibling(skillComponent);
 		}
 
-		return Utils.wrapText(output);
+		return wrapText(output);
 	}
 
 	public static String getSkillsChat(String[] args) {
 		if (args.length != 1 && args.length != 2) {
-			return Utils.getUsageChat(INSTANCE);
+			return getUsageChat(INSTANCE);
 		}
 
 		if (ConfigUtils.getHypixelKey() == null) {
-			return Utils.invalidKeyChat();
+			return invalidKeyChat();
 		}
 
-		Player player = args.length == 1 ? new Player(args[0]) : new Player(args[1], args[1]);
+		Player player = newPlayer(args);
 		if (!player.isValid()) {
-			return Utils.getFailCauseChat(player);
+			return getFailCauseChat(player);
 		}
 
 		StringBuilder output = new StringBuilder();
@@ -124,12 +121,12 @@ public class SkillsCommand extends CommandBase {
 			if (skillInfo != null) {
 				progressSA += skillInfo.getProgressLevel();
 			} else {
-				output.append(", ").append(Utils.capitalizeString(skill)).append(": ??");
+				output.append(", ").append(capitalizeString(skill)).append(": ??");
 			}
 		}
 		progressSA /= Constants.SKILL_NAMES.size();
 
-		output.insert(0, player.getUsername() + " has a progress skill average of " + Utils.roundAndFormat(progressSA));
+		output.insert(0, player.getUsername() + " has a progress skill average of " + roundAndFormat(progressSA));
 
 		return output.toString();
 	}
@@ -146,7 +143,7 @@ public class SkillsCommand extends CommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "/" + getCommandName() + " <player> [profile]";
+		return "/" + getCommandName() + " [player] [profile]";
 	}
 
 	@Override
@@ -156,6 +153,6 @@ public class SkillsCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		Utils.executor.submit(() -> sender.addChatMessage(getSkillsString(args)));
+		executor.submit(() -> sender.addChatMessage(getSkillsString(args)));
 	}
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 #
-# Hypixel Addons - A quality of life mod for Hypixel
+# Hypixel Addons - A customizable quality of life mod for Hypixel
 # Copyright (c) 2021 kr45732
 #
 # This program is free software: you can redistribute it and/or modify

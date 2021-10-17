@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -105,7 +105,7 @@ public class ConfigUtils {
 			/* MOTD */
 			motdText = config.initialize("motd", "text", "");
 		} catch (Exception e) {
-			HypixelAddons.INSTANCE.logger.error("An error occurred when initializing the configuration", e);
+			HypixelAddons.INSTANCE.getLogger().error("An error occurred when initializing the configuration", e);
 		}
 	}
 

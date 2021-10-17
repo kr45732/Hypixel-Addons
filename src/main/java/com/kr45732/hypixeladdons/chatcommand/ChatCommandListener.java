@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,18 +33,18 @@ import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class ChatCommandHandler {
+public class ChatCommandListener {
 
 	private final List<ChatCommand> chatCommands;
 	private final HashMap<String, OffsetDateTime> cooldowns;
 	private final Pattern guildChatRegex = Pattern.compile("Guild > (?:\\[.*?] )?(\\w++).*?: (.*)");
 
-	public ChatCommandHandler() {
+	public ChatCommandListener() {
 		this.chatCommands = new ArrayList<>();
 		this.cooldowns = new HashMap<>();
 	}
 
-	public ChatCommandHandler addChatCommands(ChatCommand... commands) {
+	public ChatCommandListener addChatCommands(ChatCommand... commands) {
 		chatCommands.addAll(Arrays.asList(commands));
 		return this;
 	}

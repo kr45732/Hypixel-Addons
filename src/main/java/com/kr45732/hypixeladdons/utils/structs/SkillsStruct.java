@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,56 +20,57 @@ package com.kr45732.hypixeladdons.utils.structs;
 
 public class SkillsStruct {
 
-	public final String skillName;
-	public final int skillLevel;
-	public final int maxSkillLevel;
-	public final long totalSkillExp;
-	public final long expCurrent;
-	public final long expForNext;
-	public final double progressToNext;
+	private final String name;
+	private final int currentLevel;
+	private final int maxLevel;
+	private final long totalExp;
+	private final long expCurrent;
+	private final long expForNext;
+	private final double progressToNext;
 
-	public SkillsStruct(
-		String skillName,
-		int skillLevel,
-		int maxSkillLevel,
-		long totalSkillExp,
-		long expCurrent,
-		long expForNext,
-		double progressToNext
-	) {
-		this.skillName = skillName;
-		this.skillLevel = skillLevel;
-		this.maxSkillLevel = maxSkillLevel;
-		this.totalSkillExp = totalSkillExp;
+	public SkillsStruct(String name, int currentLevel, int maxLevel, long totalExp, long expCurrent, long expForNext, double progressToNext) {
+		this.name = name;
+		this.currentLevel = currentLevel;
+		this.maxLevel = maxLevel;
+		this.totalExp = totalExp;
 		this.expCurrent = expCurrent;
 		this.expForNext = expForNext;
 		this.progressToNext = progressToNext;
 	}
 
-	public double getProgressLevel() {
-		return skillLevel + progressToNext;
+	public String getName() {
+		return name;
 	}
 
-	@Override
-	public String toString() {
-		return (
-			"SkillsStruct{" +
-			"skillName='" +
-			skillName +
-			'\'' +
-			", skillLevel=" +
-			skillLevel +
-			", maxSkillLevel=" +
-			maxSkillLevel +
-			", totalSkillExp=" +
-			totalSkillExp +
-			", expCurrent=" +
-			expCurrent +
-			", expForNext=" +
-			expForNext +
-			", progressToNext=" +
-			progressToNext +
-			'}'
-		);
+	public int getCurrentLevel() {
+		return currentLevel;
+	}
+
+	public int getMaxLevel() {
+		return maxLevel;
+	}
+
+	public long getTotalExp() {
+		return totalExp;
+	}
+
+	public long getExpCurrent() {
+		return expCurrent;
+	}
+
+	public long getExpForNext() {
+		return expForNext;
+	}
+
+	public double getProgressToNext() {
+		return progressToNext;
+	}
+
+	public boolean isMaxed() {
+		return currentLevel == maxLevel;
+	}
+
+	public double getProgressLevel() {
+		return currentLevel + progressToNext;
 	}
 }

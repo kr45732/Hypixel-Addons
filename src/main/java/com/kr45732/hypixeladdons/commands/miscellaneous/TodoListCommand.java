@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,6 +43,6 @@ public class TodoListCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		Utils.executor.submit(() -> HypixelAddons.INSTANCE.eventListener.setGuiToOpen(new TodoListGui()));
+		Utils.executor.submit(() -> HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(new TodoListGui()));
 	}
 }

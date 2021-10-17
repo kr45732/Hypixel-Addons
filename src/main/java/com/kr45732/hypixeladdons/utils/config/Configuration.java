@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,9 +36,9 @@ public class Configuration {
 		gson = new GsonBuilder().setPrettyPrinting().create();
 		try {
 			configuration = new JsonParser().parse(new FileReader(configFilePath)).getAsJsonObject();
-			HypixelAddons.INSTANCE.logger.info("Successfully loaded existing configuration");
+			HypixelAddons.INSTANCE.getLogger().info("Successfully loaded existing configuration");
 		} catch (FileNotFoundException e) {
-			HypixelAddons.INSTANCE.logger.error("Unable to get existing configuration. Creating a new configuration", e);
+			HypixelAddons.INSTANCE.getLogger().error("Unable to get existing configuration. Creating a new configuration", e);
 
 			try {
 				File file = new File(configFilePath);
@@ -50,10 +50,10 @@ public class Configuration {
 
 				configuration = new JsonParser().parse(new FileReader(file)).getAsJsonObject();
 			} catch (IOException ex) {
-				HypixelAddons.INSTANCE.logger.error("Unable to create a new configuration file", ex);
+				HypixelAddons.INSTANCE.getLogger().error("Unable to create a new configuration file", ex);
 			}
 		} catch (IllegalStateException e) {
-			HypixelAddons.INSTANCE.logger.error("Existing configuration is not formatted properly. Remaking configuration", e);
+			HypixelAddons.INSTANCE.getLogger().error("Existing configuration is not formatted properly. Remaking configuration", e);
 			try {
 				File file = new File(configFilePath);
 				file.delete();
@@ -65,7 +65,7 @@ public class Configuration {
 
 				configuration = new JsonParser().parse(new FileReader(file)).getAsJsonObject();
 			} catch (IOException ex) {
-				HypixelAddons.INSTANCE.logger.error("Unable to reset configuration", ex);
+				HypixelAddons.INSTANCE.getLogger().error("Unable to reset configuration", ex);
 			}
 		}
 	}
@@ -123,7 +123,7 @@ public class Configuration {
 				return higherDepth(configuration, category + "." + key).getAsBoolean();
 			}
 		} catch (Exception e) {
-			HypixelAddons.INSTANCE.logger.error("Exception when reading a boolean", e);
+			HypixelAddons.INSTANCE.getLogger().error("Exception when reading a boolean", e);
 		}
 
 		return defaultValue;
@@ -135,7 +135,7 @@ public class Configuration {
 				return higherDepth(configuration, category + "." + key).getAsString();
 			}
 		} catch (Exception e) {
-			HypixelAddons.INSTANCE.logger.error("Exception when reading a string", e);
+			HypixelAddons.INSTANCE.getLogger().error("Exception when reading a string", e);
 		}
 		return defaultValue;
 	}
@@ -146,7 +146,7 @@ public class Configuration {
 				return higherDepth(configuration, category + "." + key).getAsInt();
 			}
 		} catch (Exception e) {
-			HypixelAddons.INSTANCE.logger.error("Exception when reading an integer", e);
+			HypixelAddons.INSTANCE.getLogger().error("Exception when reading an integer", e);
 		}
 		return defaultValue;
 	}
@@ -157,7 +157,7 @@ public class Configuration {
 				return higherDepth(configuration, category + "." + key).getAsDouble();
 			}
 		} catch (Exception e) {
-			HypixelAddons.INSTANCE.logger.error("Exception when reading a double", e);
+			HypixelAddons.INSTANCE.getLogger().error("Exception when reading a double", e);
 		}
 		return defaultValue;
 	}
@@ -172,7 +172,7 @@ public class Configuration {
 				return output;
 			}
 		} catch (Exception e) {
-			HypixelAddons.INSTANCE.logger.error("Exception when reading a string list", e);
+			HypixelAddons.INSTANCE.getLogger().error("Exception when reading a string list", e);
 		}
 		return defaultValue;
 	}
@@ -188,7 +188,7 @@ public class Configuration {
 			configuration.add(category, categoryJson);
 			save();
 		} catch (Exception e) {
-			HypixelAddons.INSTANCE.logger.error("Exception when writing a boolean", e);
+			HypixelAddons.INSTANCE.getLogger().error("Exception when writing a boolean", e);
 		}
 	}
 
@@ -202,7 +202,7 @@ public class Configuration {
 			configuration.add(category, categoryJson);
 			save();
 		} catch (Exception e) {
-			HypixelAddons.INSTANCE.logger.error("Exception when writing a string", e);
+			HypixelAddons.INSTANCE.getLogger().error("Exception when writing a string", e);
 		}
 	}
 
@@ -216,7 +216,7 @@ public class Configuration {
 			configuration.add(category, categoryJson);
 			save();
 		} catch (Exception e) {
-			HypixelAddons.INSTANCE.logger.error("Exception when writing an integer", e);
+			HypixelAddons.INSTANCE.getLogger().error("Exception when writing an integer", e);
 		}
 	}
 
@@ -230,7 +230,7 @@ public class Configuration {
 			configuration.add(category, categoryJson);
 			save();
 		} catch (Exception e) {
-			HypixelAddons.INSTANCE.logger.error("Exception when writing a double", e);
+			HypixelAddons.INSTANCE.getLogger().error("Exception when writing a double", e);
 		}
 	}
 
@@ -245,7 +245,7 @@ public class Configuration {
 			configuration.add(category, categoryJson);
 			save();
 		} catch (Exception e) {
-			HypixelAddons.INSTANCE.logger.error("Exception when writing a double", e);
+			HypixelAddons.INSTANCE.getLogger().error("Exception when writing a double", e);
 		}
 	}
 
@@ -255,7 +255,7 @@ public class Configuration {
 			gson.toJson(configuration, writer);
 			writer.flush();
 		} catch (IOException e) {
-			HypixelAddons.INSTANCE.logger.error("Error saving configuration", e);
+			HypixelAddons.INSTANCE.getLogger().error("Error saving configuration", e);
 		}
 		configuration = new JsonParser().parse(new FileReader(configFilePath)).getAsJsonObject();
 	}
@@ -264,7 +264,7 @@ public class Configuration {
 		try {
 			return configuration.has(category) && higherDepth(configuration, category + "." + key) != null;
 		} catch (Exception e) {
-			HypixelAddons.INSTANCE.logger.error("Exception when reading configuration", e);
+			HypixelAddons.INSTANCE.getLogger().error("Exception when reading configuration", e);
 		}
 		return false;
 	}

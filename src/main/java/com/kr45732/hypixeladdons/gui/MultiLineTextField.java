@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -489,18 +489,18 @@ public class MultiLineTextField extends Gui {
 				.get(cursorLineNumber)
 				.substring(Math.min(cursorCharNumber, selectionCharNumber), Math.max(cursorCharNumber, selectionCharNumber));
 		} else {
-			String output = "";
+			StringBuilder output = new StringBuilder();
 			for (int i = startLine; i <= endLine; i++) {
 				if (i == startLine) {
-					output += lines.get(i).substring(Math.min(cursorCharNumber, selectionCharNumber));
+					output.append(lines.get(i).substring(Math.min(cursorCharNumber, selectionCharNumber)));
 				} else if (i == endLine) {
-					output += "\n" + lines.get(i).substring(0, Math.max(cursorCharNumber, selectionCharNumber));
+					output.append("\n").append(lines.get(i).substring(0, Math.max(cursorCharNumber, selectionCharNumber)));
 				} else {
-					output += "\n" + lines.get(i);
+					output.append("\n").append(lines.get(i));
 				}
 			}
 
-			return output;
+			return output.toString();
 		}
 	}
 

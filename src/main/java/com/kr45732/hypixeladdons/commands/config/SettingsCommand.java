@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,11 +20,13 @@ package com.kr45732.hypixeladdons.commands.config;
 
 import com.kr45732.hypixeladdons.HypixelAddons;
 import com.kr45732.hypixeladdons.gui.SettingsGui;
-import com.kr45732.hypixeladdons.utils.Utils;
-import java.util.Arrays;
-import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static com.kr45732.hypixeladdons.utils.Utils.executor;
 
 public class SettingsCommand extends CommandBase {
 
@@ -50,6 +52,6 @@ public class SettingsCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		Utils.executor.submit(() -> HypixelAddons.INSTANCE.eventListener.setGuiToOpen(new SettingsGui()));
+		executor.submit(() -> HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(new SettingsGui()));
 	}
 }

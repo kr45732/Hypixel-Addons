@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -154,13 +154,7 @@ public class EventListener {
 			return getFailCause("Guild join request helper\n ⚠ " + player.getFailCause());
 		}
 
-		IChatComponent output = empty()
-			.appendSibling(
-				new ChatText(labelWithDesc("Player", C.UNDERLINE + player.getFormattedUsername()))
-					.setClickEvent(ClickEvent.Action.OPEN_URL, player.skyblockStatsLink())
-					.build()
-			)
-			.appendText("\n\n");
+		IChatComponent output = player.defaultComponent().appendText("\n\n");
 
 		StringBuilder skillBreakdown = new StringBuilder();
 		double progressSA = 0;
@@ -170,7 +164,7 @@ public class EventListener {
 				skillBreakdown
 					.append("\n")
 					.append(arrow())
-					.append(labelWithDesc(capitalizeString(skillInfo.skillName), roundAndFormat(skillInfo.getProgressLevel())));
+					.append(labelWithDesc(capitalizeString(skillInfo.getName()), roundAndFormat(skillInfo.getProgressLevel())));
 
 				if (!skill.equals("runecrafting") && !skill.equals("carpentry")) {
 					progressSA += skillInfo.getProgressLevel();
@@ -214,22 +208,22 @@ public class EventListener {
 			);
 		}
 
-		SkillsStruct skillInfo = player.getCatacombsSkill();
+		SkillsStruct skillInfo = player.getCatacombs();
 		output
 			.appendText("\n\n" + label("Dungeons") + "\n" + arrow() + labelWithDesc("Secrets", formatNumber(player.getDungeonSecrets())))
 			.appendSibling(
 				new ChatText(
-					"\n" + arrow() + labelWithDesc(capitalizeString(skillInfo.skillName), roundAndFormat(skillInfo.getProgressLevel()))
+					"\n" + arrow() + labelWithDesc(capitalizeString(skillInfo.getName()), roundAndFormat(skillInfo.getProgressLevel()))
 				)
 					.setHoverEvent(
-						capitalizeString(skillInfo.skillName),
-						labelWithDesc("XP progress", simplifyNumber(skillInfo.expCurrent) + " / " + simplifyNumber(skillInfo.expForNext)) +
+						capitalizeString(skillInfo.getName()),
+						labelWithDesc("XP progress", simplifyNumber(skillInfo.getExpCurrent()) + " / " + simplifyNumber(skillInfo.getExpForNext())) +
 						"\n" +
-						labelWithDesc("Total XP", simplifyNumber(skillInfo.totalSkillExp)) +
+						labelWithDesc("Total XP", simplifyNumber(skillInfo.getTotalExp())) +
 						"\n" +
 						labelWithDesc(
 							"Progress",
-							(skillInfo.skillLevel == skillInfo.maxSkillLevel ? "MAX" : roundProgress(skillInfo.progressToNext))
+							(skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext()))
 						)
 					)
 					.build()

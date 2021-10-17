@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,7 @@
 
 package com.kr45732.hypixeladdons.commands.slayer;
 
-import static com.kr45732.hypixeladdons.utils.Utils.roundAndFormat;
+import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 import com.kr45732.hypixeladdons.utils.*;
 import com.kr45732.hypixeladdons.utils.api.Player;
@@ -33,20 +33,16 @@ import net.minecraft.util.IChatComponent;
 
 public class SlayerCommand extends CommandBase {
 
-	public static SlayerCommand INSTANCE = new SlayerCommand();
+	public static final SlayerCommand INSTANCE = new SlayerCommand();
 
 	public static IChatComponent getSlayerString(String[] args) {
-		if (args.length != 1 && args.length != 2) {
-			return Utils.getUsage(INSTANCE);
-		}
-
 		if (ConfigUtils.getHypixelKey() == null) {
-			return Utils.invalidKey();
+			return invalidKey();
 		}
 
-		Player player = args.length == 1 ? new Player(args[0]) : new Player(args[1], args[1]);
+		Player player = newPlayer(args);
 		if (!player.isValid()) {
-			return Utils.getFailCause(player);
+			return getFailCause(player);
 		}
 
 		int svenOneKills = player.getSlayerBossKills("wolf", 0);
@@ -90,12 +86,11 @@ public class SlayerCommand extends CommandBase {
 			50000L *
 			endermanFourKills;
 
-		IChatComponent output = Utils.empty().appendSibling(player.getLink());
-		output.appendText(
+		IChatComponent output = player.defaultComponent().appendText(
 			"\n\n" +
-			Utils.labelWithDesc("Total slayer", Utils.formatNumber(player.getTotalSlayer()) + " XP") +
+			labelWithDesc("Total slayer", formatNumber(player.getTotalSlayer()) + " XP") +
 			"\n" +
-			Utils.labelWithDesc("Total coins spent", Utils.simplifyNumber(coinsSpentOnSlayers) + "\n")
+			labelWithDesc("Total coins spent", simplifyNumber(coinsSpentOnSlayers) + "\n")
 		);
 
 		for (Map.Entry<String, String> slayerName : Constants.SLAYER_NAMES_MAP.entrySet()) {
@@ -103,46 +98,46 @@ public class SlayerCommand extends CommandBase {
 			int maxTier = slayerName.getValue().equals("zombie") ? 5 : 4;
 			for (int i = 1; i <= maxTier; i++) {
 				curSlayerKills
-					.append(Utils.labelWithDesc("Tier " + i, "" + player.getSlayerBossKills(slayerName.getValue(), i - 1)))
+					.append(labelWithDesc("Tier " + i, "" + player.getSlayerBossKills(slayerName.getValue(), i - 1)))
 					.append(i != maxTier ? "\n" : "");
 			}
 
 			output.appendSibling(
 				new ChatText(
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc(
-						Utils.capitalizeString(slayerName.getValue()) + " (" + player.getSlayerLevel(slayerName.getKey()) + ")",
-						Utils.simplifyNumber(player.getSlayer(slayerName.getKey())) + " XP"
+					arrow() +
+					labelWithDesc(
+						capitalizeString(slayerName.getValue()) + " (" + player.getSlayerLevel(slayerName.getKey()) + ")",
+						simplifyNumber(player.getSlayer(slayerName.getKey())) + " XP"
 					)
 				)
-					.setHoverEvent(Utils.capitalizeString(slayerName.getValue()) + " - Boss Kills", curSlayerKills.toString())
+					.setHoverEvent(capitalizeString(slayerName.getValue()) + " - Boss Kills", curSlayerKills.toString())
 					.build()
 			);
 		}
-		return Utils.wrapText(output);
+		return wrapText(output);
 	}
 
 	public static String getSlayerChat(String[] args) {
 		if (args.length != 1 && args.length != 2) {
-			return Utils.getUsageChat(INSTANCE);
+			return getUsageChat(INSTANCE);
 		}
 
 		if (ConfigUtils.getHypixelKey() == null) {
-			return Utils.invalidKeyChat();
+			return invalidKeyChat();
 		}
 
-		Player player = args.length == 1 ? new Player(args[0]) : new Player(args[1], args[1]);
+		Player player = newPlayer(args);
 		if (!player.isValid()) {
-			return Utils.getFailCauseChat(player);
+			return getFailCauseChat(player);
 		}
 
-		StringBuilder output = new StringBuilder(player.getUsername() + " has " + Utils.formatNumber(player.getTotalSlayer()) + " XP");
+		StringBuilder output = new StringBuilder(player.getUsername() + " has " + formatNumber(player.getTotalSlayer()) + " XP");
 
 		for (Map.Entry<String, String> slayerName : Constants.SLAYER_NAMES_MAP.entrySet()) {
 			output
 				.append(", ")
-				.append(Utils.capitalizeString(slayerName.getValue()))
+				.append(capitalizeString(slayerName.getValue()))
 				.append(" ")
 				.append(roundAndFormat(player.getSlayerLevel(slayerName.getKey()))); // TODO: with progress
 		}
@@ -162,7 +157,7 @@ public class SlayerCommand extends CommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "/" + getCommandName() + " <player> [profile]";
+		return "/" + getCommandName() + " [player] [profile]";
 	}
 
 	@Override
@@ -172,6 +167,6 @@ public class SlayerCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		Utils.executor.submit(() -> sender.addChatMessage(getSlayerString(args)));
+		executor.submit(() -> sender.addChatMessage(getSlayerString(args)));
 	}
 }

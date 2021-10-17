@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,69 +19,101 @@
 package com.kr45732.hypixeladdons.commands.dungeons;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.kr45732.hypixeladdons.utils.Constants;
-import com.kr45732.hypixeladdons.utils.Utils;
+import com.kr45732.hypixeladdons.utils.api.Player;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
+import java.util.Map;
+
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 public class EssenceCommand extends CommandBase {
 
-	public static EssenceCommand INSTANCE = new EssenceCommand();
+	public static final EssenceCommand INSTANCE = new EssenceCommand();
 
 	public static IChatComponent getEssenceString(String[] args) {
-		args = String.join(" ", args).split(" ", 2);
-		if (args.length != 2 || args[1].length() == 0) {
-			return Utils.getUsage(INSTANCE);
+		if (args.length < 1) {
+			return getUsage(INSTANCE);
 		}
 
 		if (args[0].equals("information") || args[0].equals("info")) {
-			JsonElement essenceCostsJson = Utils.getEssenceCostsJson();
-			String itemId = Utils.nameToId(args[1]);
+			if(args.length < 2){
+				return getUsage(INSTANCE);
+			}
+			args = convertArgs(args, 2);
 
-			if (Utils.higherDepth(essenceCostsJson, itemId) == null) {
-				String closestMatch = Utils.getClosestMatch(itemId, Constants.ESSENCE_ITEM_NAMES);
+			JsonElement essenceCostsJson = getEssenceCostsJson();
+			String itemId = nameToId(args[1]);
+
+			if (higherDepth(essenceCostsJson, itemId) == null) {
+				String closestMatch = getClosestMatch(itemId, Constants.ESSENCE_ITEM_NAMES);
 				itemId = closestMatch != null ? closestMatch : itemId;
 			}
 
-			JsonElement itemJson = Utils.higherDepth(essenceCostsJson, itemId);
-			IChatComponent output = Utils
-				.empty()
-				.appendSibling(new ChatComponentText(Utils.labelWithDesc("Item", Utils.idToName(itemId)) + "\n"));
-			String essenceType = Utils.higherDepth(itemJson, "type").getAsString().toLowerCase();
-			for (String level : Utils.getJsonKeys(itemJson)) {
-				switch (level) {
+			JsonObject itemJson = higherDepth(essenceCostsJson, itemId).getAsJsonObject();
+			IChatComponent output = empty()
+				.appendSibling(new ChatComponentText(labelWithDesc("Item", idToName(itemId)) + "\n"));
+			String essenceType = higherDepth(itemJson, "type").getAsString().toLowerCase();
+			for (Map.Entry<String, JsonElement> entry : itemJson.entrySet()) {
+				switch (entry.getKey()) {
 					case "type":
-						output.appendText(Utils.labelWithDesc("Essence Type", Utils.capitalizeString(essenceType) + " essence") + "\n");
+						output.appendText(labelWithDesc("Essence Type", capitalizeString(essenceType) + " essence"));
 						break;
 					case "dungeonize":
 						output.appendText(
 							"\n" +
-							Utils.arrow() +
-							Utils.labelWithDesc(
+							arrow() +
+							labelWithDesc(
 								"Dungeonize item",
-								Utils.higherDepth(itemJson, level).getAsString() + " " + essenceType + " essence"
+									entry.getValue().getAsString() + " " + essenceType + " essence"
 							)
 						);
 						break;
 					default:
 						output.appendText(
 							"\n" +
-							Utils.arrow() +
-							Utils.labelWithDesc(
-								level + (level.equals("1") ? " star" : " stars"),
-								Utils.higherDepth(itemJson, level).getAsString() + " " + essenceType + " essence"
+							arrow() +
+							labelWithDesc(
+								entry.getKey() + (entry.getKey().equals("1") ? " star" : " stars"),
+								entry.getValue().getAsString() + " " + essenceType + " essence"
 							)
 						);
 						break;
 				}
 			}
 
-			return Utils.wrapText(output);
+			return wrapText(output);
+		}else if(args[0].equals("player")){
+			Player player = newPlayer(args, 1);
+			if(!player.isValid()){
+				return getFailCause(player);
+			}
+
+			IChatComponent output = player.defaultComponent();
+			output.appendText("\n\n" + label("Essence Amounts") + "\n");
+			for (Map.Entry<String, JsonElement> entry : player.profileJson().getAsJsonObject().entrySet()) {
+				if (entry.getKey().startsWith("essence_")) {
+					output.appendText(arrow() +
+							labelWithDesc(capitalizeString(entry.getKey().split("essence_")[1]) +
+									" essence",
+									formatNumber(entry.getValue().getAsInt()) + "\n")
+					);
+				}
+			}
+
+			output.appendText("\n" + label("Dungeon Upgrades"));
+			for (Map.Entry<String, JsonElement> perk : higherDepth(player.profileJson(), "perks").getAsJsonObject().entrySet()) {
+				output.appendText("\n" + arrow() + labelWithDesc(capitalizeString(perk.getKey().replace("_", " ")) ,  "" + perk.getValue().getAsInt()));
+			}
+
+			return output;
 		}
 
-		return Utils.getUsage(INSTANCE);
+		return getUsage(INSTANCE);
 	}
 
 	@Override
@@ -91,7 +123,7 @@ public class EssenceCommand extends CommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "/" + getCommandName() + " information <item>";
+		return "/" + getCommandName() + " information <item>\n/" + getCommandName() + "/essence player [player] [profile]";
 	}
 
 	@Override
@@ -101,6 +133,6 @@ public class EssenceCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		Utils.executor.submit(() -> sender.addChatMessage(getEssenceString(args)));
+		executor.submit(() -> sender.addChatMessage(getEssenceString(args)));
 	}
 }

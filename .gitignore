@@ -28,8 +28,5 @@ run
 .DS_Store
 Thumbs.db
 
-/src/main/java/com/kr45732/hypixeladdons/gui/MOTDEditorGui
-/src/main/java/com/kr45732/hypixeladdons/gui/MOTDBoxGui
-/src/main/java/com/kr45732/hypixeladdons/commands/guild/MOTDCommand
 /src/main/java/com/kr45732/hypixeladdons/commands/price/BidsCommand.java
 /src/main/java/com/kr45732/hypixeladdons/commands/price/BinCommand.java

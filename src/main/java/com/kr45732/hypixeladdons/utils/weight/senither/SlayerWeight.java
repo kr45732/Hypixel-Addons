@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Skyblock Plus - A Skyblock focused Discord bot with many commands and customizable features to improve the experience of Skyblock players and guild staff!
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -16,22 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.kr45732.hypixeladdons.utils.weight;
+package com.kr45732.hypixeladdons.utils.weight.senither;
 
-import static com.kr45732.hypixeladdons.utils.Constants.SLAYER_WEIGHTS;
-
-import com.google.gson.JsonElement;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.structs.WeightStruct;
 
+import static com.kr45732.hypixeladdons.utils.Constants.SLAYER_WEIGHTS;
+
 public class SlayerWeight {
 
-	private final JsonElement profile;
 	private final Player player;
 	private final WeightStruct weightStruct;
 
-	public SlayerWeight(JsonElement profile, Player player) {
-		this.profile = profile;
+	public SlayerWeight(Player player) {
 		this.player = player;
 		this.weightStruct = new WeightStruct();
 	}
@@ -67,7 +64,7 @@ public class SlayerWeight {
 		double divider = curWeights[0];
 		double modifier = curWeights[1];
 
-		int currentSlayerXp = player.getSlayer(profile, slayerName);
+		int currentSlayerXp = player.getSlayer(slayerName);
 
 		if (currentSlayerXp <= 1000000) {
 			return weightStruct.add(new WeightStruct(currentSlayerXp == 0 ? 0 : currentSlayerXp / divider));

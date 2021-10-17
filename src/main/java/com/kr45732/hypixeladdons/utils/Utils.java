@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.kr45732.hypixeladdons.utils;
 
 import static com.kr45732.hypixeladdons.utils.api.ApiHandler.playerFromUuid;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -61,14 +62,13 @@ public class Utils {
 
 	public static final CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 	public static final ExecutorService executor = new ExceptionExecutor();
-	private static final Pattern SERVER_BRAND_PATTERN = Pattern.compile("(.+) <- .+");
+    public static final Gson gson = new Gson();
+    private static final Pattern SERVER_BRAND_PATTERN = Pattern.compile("(.+) <- .+");
 	public static boolean onSkyblock;
 	private static JsonElement levelingJson;
-	private static JsonElement enchantsJson;
 	private static JsonObject internalJsonMappings;
 	private static JsonElement essenceCostsJson;
 	private static JsonElement bazaarJson;
-	private static JsonElement petNumsJson;
 	private static JsonElement bitPricesJson;
 	private static Instant bazaarJsonLastUpdated = Instant.now();
 
@@ -79,13 +79,6 @@ public class Utils {
 		}
 
 		return bitPricesJson;
-	}
-
-	public static JsonElement getPetNumsJson() {
-		if (petNumsJson == null) {
-			petNumsJson = getJson("https://raw.githubusercontent.com/Moulberry/NotEnoughUpdates-REPO/master/constants/petnums.json");
-		}
-		return petNumsJson;
 	}
 
 	public static JsonElement getBazaarJson() {
@@ -112,11 +105,11 @@ public class Utils {
 		return levelingJson;
 	}
 
-	public static JsonElement getEnchantsJson() {
-		if (enchantsJson == null) {
-			enchantsJson = getJson("https://raw.githubusercontent.com/Moulberry/NotEnoughUpdates-REPO/master/constants/enchants.json");
+	public static void setInternalJsonMappings() {
+		if (internalJsonMappings == null) {
+			internalJsonMappings =
+					getJson("https://raw.githubusercontent.com/kr45732/skyblock-plus-data/main/InternalNameMappings.json").getAsJsonObject();
 		}
-		return enchantsJson;
 	}
 
 	/* Http requests */
@@ -130,13 +123,6 @@ public class Utils {
 			}
 		} catch (Exception ignored) {}
 		return null;
-	}
-
-	public static void getInternalJsonMappings() {
-		if (internalJsonMappings == null) {
-			internalJsonMappings =
-				getJson("https://raw.githubusercontent.com/kr45732/skyblock-plus-data/main/InternalNameMappings.json").getAsJsonObject();
-		}
 	}
 
 	public static String makeHastePost(String body) {
@@ -173,43 +159,27 @@ public class Utils {
 		return C.GRAY + " ➜ " + C.RESET;
 	}
 
-	public static ChatComponentText wrapText(String text, boolean isError) {
-		String color = "" + C.RESET + (isError ? C.DARK_RED : C.DARK_BLUE);
-		String dashColor = color + C.STRIKETHROUGH;
-		String logoColor = "" + C.RESET + C.GOLD;
-		return new ChatComponentText(
-			dashColor +
-			"---------------" +
-			color +
-			"|" +
-			logoColor +
-			"HPA" +
-			color +
-			"|" +
-			dashColor +
-			"---------------" +
-			C.RESET +
-			"\n" +
-			text +
-			"\n" +
-			dashColor +
-			"----------------------------------"
-		);
-	}
-
 	public static ChatComponentText getUsage(CommandBase command) {
 		return wrapText("Usage: " + command.getCommandUsage(null), true);
+	}
+
+	public static String getUsageChat(CommandBase command) {
+		return "Usage: " + command.getCommandUsage(null);
 	}
 
 	public static ChatComponentText invalidKey() {
 		return wrapText("API key not set. Use /hpa:setkey.", true);
 	}
 
+	public static String invalidKeyChat() {
+		return "API key not set. Please tell the sender to set the key.";
+	}
+
 	public static ChatComponentText getFailCause(Object obj) {
 		if (obj instanceof Player) {
 			return wrapText(((Player) obj).getFailCause(), true);
 		} else if (obj instanceof UsernameUuidStruct) {
-			return wrapText(((UsernameUuidStruct) obj).failCause, true);
+			return wrapText(((UsernameUuidStruct) obj).getFailCause(), true);
 		} else if (obj instanceof HypixelResponse) {
 			return wrapText(((HypixelResponse) obj).failCause, true);
 		} else if (obj instanceof String) {
@@ -221,19 +191,11 @@ public class Utils {
 		return wrapText("Unknown Fail Cause", true);
 	}
 
-	public static String getUsageChat(CommandBase command) {
-		return "Usage: " + command.getCommandUsage(null);
-	}
-
-	public static String invalidKeyChat() {
-		return "API key not set. Please tell the sender to set the key.";
-	}
-
 	public static String getFailCauseChat(Object obj) {
 		if (obj instanceof Player) {
 			return ((Player) obj).getFailCause();
 		} else if (obj instanceof UsernameUuidStruct) {
-			return ((UsernameUuidStruct) obj).failCause;
+			return ((UsernameUuidStruct) obj).getFailCause();
 		} else if (obj instanceof HypixelResponse) {
 			return ((HypixelResponse) obj).failCause;
 		} else if (obj instanceof String) {
@@ -253,15 +215,39 @@ public class Utils {
 		return wrapText(text, false);
 	}
 
+	public static ChatComponentText wrapText(String text, boolean isError) {
+		String color = "" + C.RESET + (isError ? C.DARK_RED : C.DARK_BLUE);
+		String dashColor = color + C.STRIKETHROUGH;
+		String logoColor = "" + C.RESET + C.GOLD;
+		return new ChatComponentText(
+				dashColor +
+						"---------------" +
+						color +
+						"{" +
+						logoColor +
+						"HPA" +
+						color +
+						"}" +
+						dashColor +
+						"---------------" +
+						C.RESET +
+						"\n" +
+						text +
+						"\n" +
+						dashColor +
+						"----------------------------------"
+		);
+	}
+
 	public static IChatComponent wrapText(IChatComponent text) {
 		String color = "" + C.RESET + C.DARK_BLUE;
 		String dashColor = color + C.STRIKETHROUGH;
 		String logoColor = "" + C.RESET + C.GOLD;
 		return new ChatComponentText(
-			dashColor + "---------------" + color + "{" + logoColor + "HPA" + color + "}" + dashColor + "---------------" + C.RESET + "\n"
+				dashColor + "---------------" + color + "{" + logoColor + "HPA" + color + "}" + dashColor + "---------------" + C.RESET + "\n"
 		)
-			.appendSibling(text)
-			.appendText("\n" + dashColor + "----------------------------------");
+				.appendSibling(text)
+				.appendText("\n" + dashColor + "----------------------------------");
 	}
 
 	public static String getFormattedUsername(String playerUuid) {
@@ -354,7 +340,7 @@ public class Utils {
 
 		output.append(C.RESET);
 
-		return output.toString();
+		return output.toString().trim();
 	}
 
 	/* Number utils */
@@ -472,7 +458,7 @@ public class Utils {
 	}
 
 	public static String nameToId(String itemName) {
-		getInternalJsonMappings();
+		setInternalJsonMappings();
 
 		String internalName = itemName
 			.trim()
@@ -518,7 +504,7 @@ public class Utils {
 	}
 
 	public static String idToName(String id) {
-		getInternalJsonMappings();
+		setInternalJsonMappings();
 
 		id = id.toUpperCase();
 
@@ -538,7 +524,11 @@ public class Utils {
 
 		try {
 			for (String key : paths) {
-				element = element.getAsJsonObject().get(key);
+				if (key.length() >= 3 && key.startsWith("[") && key.endsWith("]")) {
+					element = element.getAsJsonArray().get(Integer.parseInt(key.substring(1, key.length() - 1)));
+				} else {
+					element = element.getAsJsonObject().get(key);
+				}
 			}
 			return element;
 		} catch (Exception e) {
@@ -547,42 +537,42 @@ public class Utils {
 	}
 
 	public static JsonObject higherDepth(JsonElement element, String path, JsonObject defaultValue) {
-		String[] paths = path.split("\\.");
-
-		try {
-			for (String key : paths) {
-				element = element.getAsJsonObject().get(key);
-			}
-			return element.getAsJsonObject();
-		} catch (Exception e) {
+		try{
+			return higherDepth(element, path).getAsJsonObject();
+		}catch (Exception e){
 			return defaultValue;
 		}
 	}
 
-	public static String higherDepth(JsonElement element, String path, String defaultVal) {
-		String[] paths = path.split("\\.");
-
-		try {
-			for (String key : paths) {
-				element = element.getAsJsonObject().get(key);
-			}
-			return element.getAsString();
-		} catch (Exception e) {
-			return defaultVal;
+	public static String higherDepth(JsonElement element, String path, String defaultValue) {
+		try{
+			return higherDepth(element, path).getAsString();
+		}catch (Exception e){
+			return defaultValue;
 		}
 	}
 
-	// Hi, is it Skyblock or SkyBlock
-	public static int higherDepth(JsonElement element, String path, int defaultVal) {
-		String[] paths = path.split("\\.");
+	public static int higherDepth(JsonElement element, String path, int defaultValue) {
+		try{
+			return higherDepth(element, path).getAsInt();
+		}catch (Exception e){
+			return defaultValue;
+		}
+	}
 
-		try {
-			for (String key : paths) {
-				element = element.getAsJsonObject().get(key);
-			}
-			return element.getAsInt();
-		} catch (Exception e) {
-			return defaultVal;
+	public static long higherDepth(JsonElement element, String path, long defaultValue) {
+		try{
+			return higherDepth(element, path).getAsLong();
+		}catch (Exception e){
+			return defaultValue;
+		}
+	}
+
+	public static double higherDepth(JsonElement element, String path, double defaultValue) {
+		try{
+			return higherDepth(element, path).getAsDouble();
+		}catch (Exception e){
+			return defaultValue;
 		}
 	}
 
@@ -617,7 +607,6 @@ public class Utils {
 		return closestMatch;
 	}
 
-	// Java docs are boring
 	public static String capitalizeString(String str) {
 		return Stream
 			.of(str.trim().split("\\s"))
@@ -626,7 +615,6 @@ public class Utils {
 			.collect(Collectors.joining(" "));
 	}
 
-	// Not like anyone is going to look at my code
 	public static String instantToDHM(Duration duration) {
 		if (duration.toMinutes() < 1) {
 			return instantToMS(duration);
@@ -642,7 +630,6 @@ public class Utils {
 		return timeUntil.length() > 0 ? timeUntil.trim() : "0m";
 	}
 
-	// But if you are seeing this then hello!
 	public static String instantToMS(Duration duration) {
 		long secondsDuration = duration.toMillis() / 1000;
 		long minutesUntil = secondsDuration / 60 % 60;
@@ -654,10 +641,7 @@ public class Utils {
 		return timeUntil.length() > 0 ? timeUntil.trim() : "0s";
 	}
 
-	/**
-	 * Do I really need javadocs for this
-	 * Answer: yes
-	 */
+
 	public static double divide(double d1, double d2) {
 		return d2 == 0 ? 0 : (d1 / d2);
 	}
@@ -741,6 +725,49 @@ public class Utils {
 
 	public static String getUsername(String[] args, int idx) {
 		return args.length > idx ? args[idx] : Minecraft.getMinecraft().thePlayer.getName();
+	}
+
+	/**
+	 * If index isn't in the array, then it will use the current player's username. Profile, if provided, should always be at index + 1.
+	 * @param args Command args
+	 * @param index Where the username should be located
+	 * @return New player instance
+	 */
+	public static Player newPlayer(String[] args, int index) {
+		String username = getUsername(args, index);
+		return args.length > index + 1 ? new Player(username, args[index + 1]) : new Player(username);
+	}
+
+
+	/**
+	 * Username index of 0 (since most commands have the username at 0)
+	 */
+	public static Player newPlayer(String[] args) {
+		return newPlayer(args, 0);
+	}
+
+	/**
+	 * If index isn't in the array, then it will use the current player's username
+	 * @param args Command args
+	 * @param index Where the username should be located
+	 * @return New HypixelPlayer instance
+	 */
+	public static HypixelPlayer newHypixelPlayer(String[] args, int index){
+		return new HypixelPlayer(getUsername(args, index));
+	}
+
+	/**
+	 * Username index of 0 (since most commands have the username at 0)
+	 */
+	public static HypixelPlayer newHypixelPlayer(String[] args){
+		return newHypixelPlayer(args, 0);
+	}
+
+	/**
+	 * Convert args to new array with a set limit
+	 */
+	public static String[] convertArgs(String[] args, int limit) {
+		return String.join(" ", args).split(" ", limit);
 	}
 }
 /*

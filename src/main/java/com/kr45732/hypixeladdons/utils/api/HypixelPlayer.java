@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -663,16 +663,16 @@ public class HypixelPlayer {
 	private boolean usernameToUuid(String username) {
 		UsernameUuidStruct response = ApiHandler.usernameUuid(username);
 		if (response.isNotValid()) {
-			failCause = response.failCause;
+			failCause = response.getFailCause();
 			return true;
 		}
 
-		this.playerUsername = response.playerUsername;
-		this.playerUuid = response.playerUuid;
+		this.playerUsername = response.getUsername();
+		this.playerUuid = response.getUuid();
 		return false;
 	}
 
-	public IChatComponent defaultPlayerComponent() {
+	public IChatComponent defaultComponent() {
 		return empty().appendSibling(getLink());
 	}
 }

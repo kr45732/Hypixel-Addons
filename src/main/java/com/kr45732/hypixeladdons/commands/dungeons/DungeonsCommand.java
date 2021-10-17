@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,62 +18,60 @@
 
 package com.kr45732.hypixeladdons.commands.dungeons;
 
-import com.kr45732.hypixeladdons.utils.*;
+import com.kr45732.hypixeladdons.utils.Constants;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import com.kr45732.hypixeladdons.utils.structs.SkillsStruct;
-import java.util.Arrays;
-import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 public class DungeonsCommand extends CommandBase {
 
-	public static DungeonsCommand INSTANCE = new DungeonsCommand();
+	public static final DungeonsCommand INSTANCE = new DungeonsCommand();
 
 	public static IChatComponent getDungeonsString(String[] args) {
-		if (args.length != 1 && args.length != 2) {
-			return Utils.getUsage(INSTANCE);
-		}
-
 		if (ConfigUtils.getHypixelKey() == null) {
-			return Utils.invalidKey();
+			return invalidKey();
 		}
 
-		Player player = args.length == 1 ? new Player(args[0]) : new Player(args[1], args[1]);
+		Player player = newPlayer(args);
 		if (!player.isValid()) {
-			return Utils.getFailCause(player);
+			return getFailCause(player);
 		}
 
-		IChatComponent output = Utils.empty().appendSibling(player.getLink());
-		SkillsStruct skillInfo = player.getCatacombsSkill();
-		output
+		SkillsStruct skillInfo = player.getCatacombs();
+		IChatComponent output = player.defaultComponent()
 			.appendText(
 				"\n\n" +
-				Utils.labelWithDesc("True catacombs level", "" + skillInfo.skillLevel) +
+				labelWithDesc("True catacombs level", "" + skillInfo.getCurrentLevel()) +
 				"\n" +
-				Utils.labelWithDesc("Secrets", Utils.formatNumber(player.getDungeonSecrets()) + "\n")
+				labelWithDesc("Secrets", formatNumber(player.getDungeonSecrets()) + "\n")
 			)
 			.appendSibling(
 				new ChatText(
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc(Utils.capitalizeString(skillInfo.skillName), Utils.roundAndFormat(skillInfo.getProgressLevel()))
+					arrow() +
+					labelWithDesc(capitalizeString(skillInfo.getName()), roundAndFormat(skillInfo.getProgressLevel()))
 				)
 					.setHoverEvent(
-						Utils.capitalizeString(skillInfo.skillName),
-						Utils.labelWithDesc(
+						capitalizeString(skillInfo.getName()),
+						labelWithDesc(
 							"XP progress",
-							Utils.simplifyNumber(skillInfo.expCurrent) + " / " + Utils.simplifyNumber(skillInfo.expForNext)
+							simplifyNumber(skillInfo.getExpCurrent()) + " / " + simplifyNumber(skillInfo.getExpForNext())
 						) +
 						"\n" +
-						Utils.labelWithDesc("Total XP", Utils.simplifyNumber(skillInfo.totalSkillExp)) +
+						labelWithDesc("Total XP", simplifyNumber(skillInfo.getTotalExp())) +
 						"\n" +
-						Utils.labelWithDesc(
+						labelWithDesc(
 							"Progress",
-							(skillInfo.skillLevel == skillInfo.maxSkillLevel ? "MAX" : Utils.roundProgress(skillInfo.progressToNext))
+							(skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext()))
 						)
 					)
 					.build()
@@ -84,50 +82,50 @@ public class DungeonsCommand extends CommandBase {
 			output.appendSibling(
 				new ChatText(
 					"\n" +
-					Utils.arrow() +
-					Utils.labelWithDesc(Utils.capitalizeString(className), Utils.roundAndFormat(skillInfo.getProgressLevel()))
+					arrow() +
+					labelWithDesc(capitalizeString(className), roundAndFormat(skillInfo.getProgressLevel()))
 				)
 					.setHoverEvent(
-						Utils.capitalizeString(className),
-						Utils.labelWithDesc(
+						capitalizeString(className),
+						labelWithDesc(
 							"XP progress",
-							Utils.simplifyNumber(skillInfo.expCurrent) + " / " + Utils.simplifyNumber(skillInfo.expForNext)
+							simplifyNumber(skillInfo.getExpCurrent()) + " / " + simplifyNumber(skillInfo.getExpForNext())
 						) +
 						"\n" +
-						Utils.labelWithDesc("Total XP", Utils.simplifyNumber(skillInfo.totalSkillExp)) +
+						labelWithDesc("Total XP", simplifyNumber(skillInfo.getTotalExp())) +
 						"\n" +
-						Utils.labelWithDesc(
+						labelWithDesc(
 							"Progress",
-							(skillInfo.skillLevel == skillInfo.maxSkillLevel ? "MAX" : Utils.roundProgress(skillInfo.progressToNext))
+							(skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext()))
 						)
 					)
 					.build()
 			);
 		}
 
-		return Utils.wrapText(output);
+		return wrapText(output);
 	}
 
 	public static String getDungeonsChat(String[] args) {
 		if (args.length != 1 && args.length != 2) {
-			return Utils.getUsageChat(INSTANCE);
+			return getUsageChat(INSTANCE);
 		}
 
 		if (ConfigUtils.getHypixelKey() == null) {
-			return Utils.invalidKeyChat();
+			return invalidKeyChat();
 		}
 
-		Player player = args.length == 1 ? new Player(args[0]) : new Player(args[1], args[1]);
+		Player player = newPlayer(args);
 		if (!player.isValid()) {
-			return Utils.getFailCauseChat(player);
+			return getFailCauseChat(player);
 		}
 
 		return (
 			player.getUsername() +
 			" is catacombs " +
-			Utils.roundAndFormat(player.getCatacombsSkill().getProgressLevel()) +
+			roundAndFormat(player.getCatacombs().getProgressLevel()) +
 			" with " +
-			Utils.formatNumber(player.getDungeonSecrets()) +
+			formatNumber(player.getDungeonSecrets()) +
 			"secrets and playing as a" +
 			player.getSelectedDungeonClass()
 		);
@@ -145,7 +143,7 @@ public class DungeonsCommand extends CommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "/" + getCommandName() + " <player> [profile]";
+		return "/" + getCommandName() + " [player] [profile]";
 	}
 
 	@Override
@@ -155,6 +153,6 @@ public class DungeonsCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		Utils.executor.submit(() -> sender.addChatMessage(getDungeonsString(args)));
+		executor.submit(() -> sender.addChatMessage(getDungeonsString(args)));
 	}
 }

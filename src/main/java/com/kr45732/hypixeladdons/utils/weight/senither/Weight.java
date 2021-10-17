@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Skyblock Plus - A Skyblock focused Discord bot with many commands and customizable features to improve the experience of Skyblock players and guild staff!
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -16,13 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.kr45732.hypixeladdons.utils.weight;
+package com.kr45732.hypixeladdons.utils.weight.senither;
 
-import static com.kr45732.hypixeladdons.utils.Constants.*;
-
-import com.google.gson.JsonElement;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.structs.WeightStruct;
+
+import static com.kr45732.hypixeladdons.utils.Constants.*;
 
 public class Weight {
 
@@ -31,13 +30,9 @@ public class Weight {
 	private final DungeonsWeight dungeonsWeight;
 
 	public Weight(Player player) {
-		this(player.profileJson(), player);
-	}
-
-	public Weight(JsonElement profile, Player player) {
-		this.slayerWeight = new SlayerWeight(profile, player);
-		this.skillsWeight = new SkillsWeight(profile, player);
-		this.dungeonsWeight = new DungeonsWeight(profile, player);
+		this.slayerWeight = new SlayerWeight(player);
+		this.skillsWeight = new SkillsWeight(player);
+		this.dungeonsWeight = new DungeonsWeight(player);
 	}
 
 	public static double of(double skillAverage, double slayer, double catacombs, double averageDungeonClass) {
@@ -115,7 +110,7 @@ public class Weight {
 
 	public WeightStruct getTotalWeight(boolean needToCalc) {
 		if (needToCalc) {
-			for (String slayerName : SLAYER_NAMES_MAP.keySet()) {
+			for (String slayerName : SLAYER_NAMES) {
 				slayerWeight.getSlayerWeight(slayerName);
 			}
 			for (String skillName : SKILL_NAMES) {

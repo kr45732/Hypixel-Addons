@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,22 +27,25 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
 
+import java.util.Collections;
+import java.util.List;
+
 public class BuildBattleCommand extends CommandBase {
 
-	public static BuildBattleCommand INSTANCE = new BuildBattleCommand();
+	public static final BuildBattleCommand INSTANCE = new BuildBattleCommand();
 
 	public static IChatComponent getMurderMysteryString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
 
-		HypixelPlayer player = new HypixelPlayer(getUsername(args, 0));
+		HypixelPlayer player = newHypixelPlayer(args);
 		if (!player.isValid()) {
 			return getFailCause(player);
 		}
 
 		IChatComponent output = player
-			.defaultPlayerComponent()
+			.defaultComponent()
 			.appendText(
 				"\n\n" +
 				label("Statistics") +
@@ -72,9 +75,15 @@ public class BuildBattleCommand extends CommandBase {
 		return wrapText(output);
 	}
 
+
 	@Override
 	public String getCommandName() {
 		return "hpa:build_battle";
+	}
+
+	@Override
+	public List<String> getCommandAliases() {
+		return Collections.singletonList("hpa:build");
 	}
 
 	@Override

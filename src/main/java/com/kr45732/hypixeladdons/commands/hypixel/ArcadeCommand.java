@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,6 @@
 
 package com.kr45732.hypixeladdons.commands.hypixel;
 
-import static com.kr45732.hypixeladdons.utils.Utils.*;
-import static com.kr45732.hypixeladdons.utils.api.HypixelPlayer.ArcadeMode.*;
-
 import com.kr45732.hypixeladdons.utils.api.HypixelPlayer;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
@@ -28,26 +25,25 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+import static com.kr45732.hypixeladdons.utils.api.HypixelPlayer.ArcadeMode.*;
+
 public class ArcadeCommand extends CommandBase {
 
-	public static ArcadeCommand INSTANCE = new ArcadeCommand();
+	public static final ArcadeCommand INSTANCE = new ArcadeCommand();
 
 	public static IChatComponent getArcadeString(String[] args) {
-		if (args.length != 1) {
-			return getUsage(INSTANCE);
-		}
-
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
 
-		HypixelPlayer player = new HypixelPlayer(args[0]);
+		HypixelPlayer player = newHypixelPlayer(args);
 		if (!player.isValid()) {
 			return getFailCause(player);
 		}
 
 		IChatComponent output = player
-			.defaultPlayerComponent()
+			.defaultComponent()
 			.appendText(
 				"\n\n" +
 				labelWithDesc(
@@ -400,7 +396,7 @@ public class ArcadeCommand extends CommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "/" + getCommandName() + " <player>";
+		return "/" + getCommandName() + " [player]";
 	}
 
 	@Override

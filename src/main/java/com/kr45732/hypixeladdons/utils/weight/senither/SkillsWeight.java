@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Skyblock Plus - A Skyblock focused Discord bot with many commands and customizable features to improve the experience of Skyblock players and guild staff!
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -16,24 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.kr45732.hypixeladdons.utils.weight;
+package com.kr45732.hypixeladdons.utils.weight.senither;
 
-import static com.kr45732.hypixeladdons.utils.Constants.SKILL_WEIGHTS;
-
-import com.google.gson.JsonElement;
-import com.kr45732.hypixeladdons.utils.Constants;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.structs.SkillsStruct;
 import com.kr45732.hypixeladdons.utils.structs.WeightStruct;
 
+import static com.kr45732.hypixeladdons.utils.Constants.*;
+
 public class SkillsWeight {
 
-	private final JsonElement profile;
 	private final Player player;
 	private final WeightStruct weightStruct;
 
-	public SkillsWeight(JsonElement profile, Player player) {
-		this.profile = profile;
+	public SkillsWeight(Player player) {
 		this.player = player;
 		this.weightStruct = new WeightStruct();
 	}
@@ -50,13 +46,13 @@ public class SkillsWeight {
 		Double[] curWeights = SKILL_WEIGHTS.get(skillName);
 		double exponent = curWeights[0];
 		double divider = curWeights[1];
-		double currentSkillXp = player.getSkillXp(profile, skillName);
+		double currentSkillXp = player.getSkillXp(skillName);
 
 		if (currentSkillXp != -1) {
-			int maxLevel = player.getSkillMaxLevel(skillName, true);
-			SkillsStruct skillsStruct = player.getSkill(profile, skillName, true);
+			int maxLevel = player.getSkillMaxLevel(skillName, Player.WeightType.SENITHER);
+			SkillsStruct skillsStruct = player.getSkill(skillName, Player.WeightType.SENITHER);
 			double level = skillsStruct.getProgressLevel();
-			double maxLevelExp = maxLevel == 50 ? Constants.SKILLS_LEVEL_50_XP : Constants.SKILLS_LEVEL_60_XP;
+			double maxLevelExp = maxLevel == 50 ? SKILLS_LEVEL_50_XP : SKILLS_LEVEL_60_XP;
 			double base = Math.pow(level * 10, 0.5 + exponent + (level / 100)) / 1250;
 			if (currentSkillXp <= maxLevelExp) {
 				return weightStruct.add(new WeightStruct(base));
@@ -65,6 +61,6 @@ public class SkillsWeight {
 			return weightStruct.add(new WeightStruct(Math.round(base), Math.pow((currentSkillXp - maxLevelExp) / divider, 0.968)));
 		}
 
-		return weightStruct.add(new WeightStruct());
+		return weightStruct;
 	}
 }

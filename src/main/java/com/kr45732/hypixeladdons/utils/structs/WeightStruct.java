@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,8 +22,8 @@ import com.kr45732.hypixeladdons.utils.Utils;
 
 public class WeightStruct {
 
-	public double base;
-	public double overflow;
+	private double base;
+	private double overflow;
 
 	public WeightStruct() {
 		this(0, 0);

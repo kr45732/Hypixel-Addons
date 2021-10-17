@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,20 +31,20 @@ import net.minecraft.util.IChatComponent;
 
 public class MurderMysteryCommand extends CommandBase {
 
-	public static MurderMysteryCommand INSTANCE = new MurderMysteryCommand();
+	public static final MurderMysteryCommand INSTANCE = new MurderMysteryCommand();
 
 	public static IChatComponent getMurderMysteryString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
 
-		HypixelPlayer player = new HypixelPlayer(getUsername(args, 0));
+		HypixelPlayer player = newHypixelPlayer(args);
 		if (!player.isValid()) {
 			return getFailCause(player);
 		}
 
 		IChatComponent output = player
-			.defaultPlayerComponent()
+			.defaultComponent()
 			.appendText(
 				"\n\n" +
 				label("Statistics") +
@@ -114,7 +114,7 @@ public class MurderMysteryCommand extends CommandBase {
 
 	@Override
 	public List<String> getCommandAliases() {
-		return Collections.singletonList("hpa:mm");
+		return Collections.singletonList("hpa:murder");
 	}
 
 	@Override

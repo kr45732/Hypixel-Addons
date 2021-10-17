@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,47 +20,49 @@ package com.kr45732.hypixeladdons.commands.price;
 
 import com.google.gson.JsonElement;
 import com.kr45732.hypixeladdons.utils.Constants;
-import com.kr45732.hypixeladdons.utils.Utils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 public class BitsCommand extends CommandBase {
 
-	public static BitsCommand INSTANCE = new BitsCommand();
+	public static final BitsCommand INSTANCE = new BitsCommand();
 
 	public static ChatComponentText getBitsString(String[] args) {
-		args = String.join(" ", args).split(" ", 1);
-		if (args.length != 1 || args[0].length() == 0) {
-			return Utils.getUsage(INSTANCE);
+		if (args.length == 0) {
+			return getUsage(INSTANCE);
 		}
 
-		String itemId = Utils.nameToId(args[0]);
-		JsonElement bitsJson = Utils.getBitPricesJson();
-		if (Utils.higherDepth(bitsJson, itemId) == null) {
-			itemId = Utils.getClosestMatch(itemId, Constants.BITS_ITEM_NAMES);
+		args = convertArgs(args, 1);
+
+		String itemId = nameToId(args[0]);
+		JsonElement bitsJson = getBitPricesJson();
+		if (higherDepth(bitsJson, itemId) == null) {
+			itemId = getClosestMatch(itemId, Constants.BITS_ITEM_NAMES);
 		}
 
-		return Utils.wrapText(
-			Utils.labelWithDesc("Item", Utils.idToName(itemId)) +
+		return wrapText(
+			labelWithDesc("Item", idToName(itemId)) +
 			"\n" +
-			Utils.labelWithDesc("Bits cost", Utils.formatNumber(Utils.higherDepth(bitsJson, itemId).getAsInt()))
+			labelWithDesc("Bits cost", formatNumber(higherDepth(bitsJson, itemId).getAsInt()))
 		);
 	}
 
 	public static String getBitsChat(String[] args) {
-		args = String.join(" ", args).split(" ", 1);
-		if (args.length != 1 || args[0].length() == 0) {
-			return Utils.getUsageChat(INSTANCE);
+		if (args.length == 0) {
+			return getUsageChat(INSTANCE);
+		}
+		args = convertArgs(args, 1);
+
+		String itemId = nameToId(args[0]);
+		JsonElement bitsJson = getBitPricesJson();
+		if (higherDepth(bitsJson, itemId) == null) {
+			itemId = getClosestMatch(itemId, Constants.BITS_ITEM_NAMES);
 		}
 
-		String itemId = Utils.nameToId(args[0]);
-		JsonElement bitsJson = Utils.getBitPricesJson();
-		if (Utils.higherDepth(bitsJson, itemId) == null) {
-			itemId = Utils.getClosestMatch(itemId, Constants.BITS_ITEM_NAMES);
-		}
-
-		return Utils.idToName(itemId) + " costs " + Utils.formatNumber(Utils.higherDepth(bitsJson, itemId).getAsInt()) + " bits";
+		return idToName(itemId) + " costs " + formatNumber(higherDepth(bitsJson, itemId).getAsInt()) + " bits";
 	}
 
 	@Override
@@ -80,6 +82,6 @@ public class BitsCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		Utils.executor.submit(() -> sender.addChatMessage(getBitsString(args)));
+		executor.submit(() -> sender.addChatMessage(getBitsString(args)));
 	}
 }

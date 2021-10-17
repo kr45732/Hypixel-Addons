@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,23 +41,19 @@ import net.minecraft.util.StringUtils;
 
 public class AuctionsCommand extends CommandBase {
 
-	public static AuctionsCommand INSTANCE = new AuctionsCommand();
+	public static final AuctionsCommand INSTANCE = new AuctionsCommand();
 
 	public static IChatComponent getAuctionsString(String[] args) {
-		if (args.length != 1) {
-			return getUsage(INSTANCE);
-		}
-
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
 
-		UsernameUuidStruct usernameUuidStruct = usernameUuid(args[0]);
+		UsernameUuidStruct usernameUuidStruct = usernameUuid(getUsername(args, 0));
 		if (usernameUuidStruct.isNotValid()) {
 			return getFailCause(usernameUuidStruct);
 		}
 
-		HypixelResponse response = getAuctionFromPlayer(usernameUuidStruct.playerUuid);
+		HypixelResponse response = getAuctionFromPlayer(usernameUuidStruct.getUuid());
 		if (response.isNotValid()) {
 			return getFailCause(response);
 		}
@@ -122,8 +118,8 @@ public class AuctionsCommand extends CommandBase {
 		return wrapText(
 			empty()
 				.appendSibling(
-					new ChatText(labelWithDesc("Player", C.UNDERLINE + usernameUuidStruct.playerUsername))
-						.setClickEvent(ClickEvent.Action.OPEN_URL, skyblockStatsLink(usernameUuidStruct.playerUsername, null))
+					new ChatText(labelWithDesc("Player", C.UNDERLINE + usernameUuidStruct.getUsername()))
+						.setClickEvent(ClickEvent.Action.OPEN_URL, skyblockStatsLink(usernameUuidStruct.getUsername(), null))
 						.build()
 				)
 				.appendText("\n" + (auctionsStr.length() > 0 ? auctionsStr.toString() : "No active auctions"))
@@ -144,7 +140,7 @@ public class AuctionsCommand extends CommandBase {
 			return getFailCauseChat(usernameUuidStruct);
 		}
 
-		HypixelResponse response = getAuctionFromPlayer(usernameUuidStruct.playerUuid);
+		HypixelResponse response = getAuctionFromPlayer(usernameUuidStruct.getUuid());
 		if (response.isNotValid()) {
 			return getFailCauseChat(response);
 		}
@@ -172,11 +168,11 @@ public class AuctionsCommand extends CommandBase {
 		}
 
 		if (sold + running + didNotSell == 0) {
-			return usernameUuidStruct.playerUsername + " has no active auctions";
+			return usernameUuidStruct.getUsername() + " has no active auctions";
 		}
 
 		String output =
-			usernameUuidStruct.playerUsername +
+			usernameUuidStruct.getUsername() +
 			" has " +
 			(running > 0 ? running + " running auctions, " : "") +
 			(sold > 0 ? sold + " sold auctions, " : "") +
@@ -198,7 +194,7 @@ public class AuctionsCommand extends CommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "/" + getCommandName() + " <player>";
+		return "/" + getCommandName() + " [player]";
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,18 +32,14 @@ import net.minecraft.util.IChatComponent;
 
 public class SkywarsCommand extends CommandBase {
 
-	public static SkywarsCommand INSTANCE = new SkywarsCommand();
+	public static final SkywarsCommand INSTANCE = new SkywarsCommand();
 
 	public static IChatComponent getSkywarsString(String[] args) {
-		if (args.length != 1) {
-			return getUsage(INSTANCE);
-		}
-
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
 
-		HypixelPlayer player = new HypixelPlayer(args[0]);
+		HypixelPlayer player = newHypixelPlayer(args);
 		if (!player.isValid()) {
 			return getFailCause(player);
 		}
@@ -54,7 +50,7 @@ public class SkywarsCommand extends CommandBase {
 		int losses = player.getSkywarsLosses(NONE);
 
 		IChatComponent output = player
-			.defaultPlayerComponent()
+			.defaultComponent()
 			.appendText(
 				"\n\n" +
 				label("Statistics") +
@@ -157,7 +153,7 @@ public class SkywarsCommand extends CommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "/" + getCommandName() + " <player>";
+		return "/" + getCommandName() + " [player]";
 	}
 
 	@Override

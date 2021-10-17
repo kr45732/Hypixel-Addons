@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,18 +32,14 @@ import net.minecraft.util.IChatComponent;
 
 public class BedwarsCommand extends CommandBase {
 
-	public static BedwarsCommand INSTANCE = new BedwarsCommand();
+	public static final BedwarsCommand INSTANCE = new BedwarsCommand();
 
 	public static IChatComponent getBedwarsString(String[] args) {
-		if (args.length != 1) {
-			return getUsage(INSTANCE);
-		}
-
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
 
-		HypixelPlayer player = new HypixelPlayer(args[0]);
+		HypixelPlayer player = newHypixelPlayer(args);
 		if (!player.isValid()) {
 			return getFailCause(player);
 		}
@@ -55,8 +51,7 @@ public class BedwarsCommand extends CommandBase {
 		int finalKills = player.getBedwarsFinalKills(NONE);
 		int finalDeaths = player.getBedwarsFinalDeaths(NONE);
 
-		IChatComponent output = empty()
-			.appendSibling(player.getLink())
+		IChatComponent output = player.defaultComponent()
 			.appendText(
 				"\n\n" +
 				label("Statistics") +
@@ -171,7 +166,7 @@ public class BedwarsCommand extends CommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "/" + getCommandName() + " <player>";
+		return "/" + getCommandName() + " [player]";
 	}
 
 	@Override

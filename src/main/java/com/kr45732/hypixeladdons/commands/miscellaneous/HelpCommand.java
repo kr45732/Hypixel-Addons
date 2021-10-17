@@ -16,20 +16,44 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.kr45732.hypixeladdons.commands.guild;
+package com.kr45732.hypixeladdons.commands.miscellaneous;
 
 import com.kr45732.hypixeladdons.HypixelAddons;
-import com.kr45732.hypixeladdons.gui.MOTDEditorGui;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 
-import static com.kr45732.hypixeladdons.utils.Utils.executor;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-public class MOTDCommand extends CommandBase {
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
+public class HelpCommand extends CommandBase {
+
+	private static final String commandHelpList;
+	static {
+		StringBuilder out = new StringBuilder();
+		for (CommandBase command : HypixelAddons.INSTANCE.getCommands()) {
+			String usage = command.getCommandUsage(null);
+			if(usage.contains("\n")){
+				for (String s : usage.split("\n")) {
+					out.append(arrow()).append(label(s)).append("\n");
+				}
+			}else {
+				out.append(arrow()).append(label(command.getCommandUsage(null))).append("\n");
+			}
+		}
+		commandHelpList = out.toString().trim();
+	}
 
 	@Override
 	public String getCommandName() {
-		return "hpa:motd";
+		return "hpa:help";
+	}
+
+	@Override
+	public List<String> getCommandAliases() {
+		return Collections.singletonList("hpa:commands");
 	}
 
 	@Override
@@ -44,6 +68,6 @@ public class MOTDCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		executor.submit(() -> HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(new MOTDEditorGui()));
+		sender.addChatMessage(wrapText(commandHelpList));
 	}
 }

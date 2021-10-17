@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -58,11 +58,11 @@ public class ChatCommand {
 
 	private int getRemainingCooldown(String senderUsername) {
 		String key = name + "|" + senderUsername;
-		int remaining = HypixelAddons.INSTANCE.chatCommandHandler.getRemainingCooldown(key);
+		int remaining = HypixelAddons.INSTANCE.getChatCommandListener().getRemainingCooldown(key);
 		if (remaining > 0) {
 			return remaining;
 		} else {
-			HypixelAddons.INSTANCE.chatCommandHandler.putCooldown(key, ConfigUtils.guildChatCooldown);
+			HypixelAddons.INSTANCE.getChatCommandListener().putCooldown(key, ConfigUtils.guildChatCooldown);
 		}
 
 		return 0;

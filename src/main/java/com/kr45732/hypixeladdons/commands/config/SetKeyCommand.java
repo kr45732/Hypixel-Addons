@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,14 +18,13 @@
 
 package com.kr45732.hypixeladdons.commands.config;
 
-import static com.kr45732.hypixeladdons.utils.Utils.*;
-
 import com.google.gson.JsonElement;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
+
+import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class SetKeyCommand extends CommandBase {
 

@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,17 +20,11 @@ package com.kr45732.hypixeladdons.commands.guild;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.kr45732.hypixeladdons.utils.*;
-import com.kr45732.hypixeladdons.utils.api.ApiHandler;
 import com.kr45732.hypixeladdons.utils.api.HypixelResponse;
 import com.kr45732.hypixeladdons.utils.chat.C;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import com.kr45732.hypixeladdons.utils.structs.UsernameUuidStruct;
-import java.time.Instant;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent;
@@ -38,17 +32,27 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StringUtils;
 
+import java.time.Instant;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import static com.kr45732.hypixeladdons.utils.Constants.GUILD_EXP_TO_LEVEL;
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+import static com.kr45732.hypixeladdons.utils.api.ApiHandler.getGuildFromPlayer;
+import static com.kr45732.hypixeladdons.utils.api.ApiHandler.usernameUuid;
+
 public class GuildCommand extends CommandBase {
 
-	public static GuildCommand INSTANCE = new GuildCommand();
+	public static final GuildCommand INSTANCE = new GuildCommand();
 
 	private static int guildExpToLevel(int guildExp) {
 		int guildLevel = 0;
 
 		for (int i = 0;; i++) {
-			int expNeeded = i >= Constants.GUILD_EXP_TO_LEVEL.size()
-				? Constants.GUILD_EXP_TO_LEVEL.get(Constants.GUILD_EXP_TO_LEVEL.size() - 1)
-				: Constants.GUILD_EXP_TO_LEVEL.get(i);
+			int expNeeded = i >= GUILD_EXP_TO_LEVEL.size()
+				? GUILD_EXP_TO_LEVEL.get(GUILD_EXP_TO_LEVEL.size() - 1)
+				: GUILD_EXP_TO_LEVEL.get(i);
 			guildExp -= expNeeded;
 			if (guildExp < 0) {
 				return guildLevel;
@@ -59,50 +63,50 @@ public class GuildCommand extends CommandBase {
 	}
 
 	private static String getGuildInfo(JsonElement guildJson) {
-		JsonArray guildMembers = Utils.higherDepth(guildJson, "members").getAsJsonArray();
+		JsonArray guildMembers = higherDepth(guildJson, "members").getAsJsonArray();
 
 		String output = "";
 		output +=
-			Utils.labelWithDesc(
+			labelWithDesc(
 				"Tag",
-				C.getValueByName(Utils.higherDepth(guildJson, "tagColor").getAsString()) +
+				C.getValueByName(higherDepth(guildJson, "tagColor").getAsString()) +
 				"[" +
-				Utils.higherDepth(guildJson, "tag").getAsString() +
+				higherDepth(guildJson, "tag").getAsString() +
 				"]"
 			);
-		output += "\n" + Utils.labelWithDesc("Members", guildMembers.size() + "/125");
+		output += "\n" + labelWithDesc("Members", guildMembers.size() + "/125");
 
 		for (int i = 0; i < guildMembers.size(); i++) {
 			JsonElement currentMember = guildMembers.get(i).getAsJsonObject();
-			if (Utils.higherDepth(currentMember, "rank").getAsString().equals("Guild Master")) {
+			if (higherDepth(currentMember, "rank").getAsString().equals("Guild Master")) {
 				output +=
 					"\n" +
-					Utils.labelWithDesc(
+					labelWithDesc(
 						"Guild master",
-						ApiHandler.usernameUuid(Utils.higherDepth(currentMember, "uuid").getAsString()).playerUsername
+							usernameUuid(higherDepth(currentMember, "uuid").getAsString()).getUsername()
 					);
 				break;
 			}
 		}
 
-		String[] date = Date.from(Instant.ofEpochMilli(Utils.higherDepth(guildJson, "created").getAsLong())).toString().split(" ");
-		output += "\n" + Utils.labelWithDesc("Created", date[1] + " " + date[2] + ", " + date[5]);
-		output += "\n" + Utils.labelWithDesc("Level", "" + guildExpToLevel(Utils.higherDepth(guildJson, "exp").getAsInt()));
+		String[] date = Date.from(Instant.ofEpochMilli(higherDepth(guildJson, "created").getAsLong())).toString().split(" ");
+		output += "\n" + labelWithDesc("Created", date[1] + " " + date[2] + ", " + date[5]);
+		output += "\n" + labelWithDesc("Level", "" + guildExpToLevel(higherDepth(guildJson, "exp").getAsInt()));
 
 		try {
-			JsonArray preferredGames = Utils.higherDepth(guildJson, "guild.preferredGames").getAsJsonArray();
+			JsonArray preferredGames = higherDepth(guildJson, "guild.preferredGames").getAsJsonArray();
 			if (preferredGames.size() > 1) {
 				String prefString = preferredGames.toString();
 				prefString = prefString.substring(1, prefString.length() - 1).toLowerCase().replace("\"", "").replace(",", ", ");
 				String firstHalf = prefString.substring(0, prefString.lastIndexOf(","));
 				String lastHalf = prefString.substring(prefString.lastIndexOf(",") + 1);
 				if (preferredGames.size() > 2) {
-					output += "\n" + Utils.labelWithDesc("Preferred games", firstHalf + ", and" + lastHalf);
+					output += "\n" + labelWithDesc("Preferred games", firstHalf + ", and" + lastHalf);
 				} else {
-					output += "\n" + Utils.labelWithDesc("Preferred games", firstHalf + " and" + lastHalf);
+					output += "\n" + labelWithDesc("Preferred games", firstHalf + " and" + lastHalf);
 				}
 			} else if (preferredGames.size() == 1) {
-				output += "\n" + Utils.labelWithDesc("Preferred game", preferredGames.get(0).getAsString().toLowerCase());
+				output += "\n" + labelWithDesc("Preferred game", preferredGames.get(0).getAsString().toLowerCase());
 			}
 		} catch (Exception ignored) {}
 
@@ -110,71 +114,63 @@ public class GuildCommand extends CommandBase {
 	}
 
 	public static IChatComponent getGuildString(String[] args) {
-		if (args.length != 1 && args.length != 2) {
-			return Utils.getUsage(INSTANCE);
-		}
-
 		if (ConfigUtils.getHypixelKey() == null) {
-			return Utils.invalidKey();
+			return invalidKey();
 		}
 
-		if (args.length == 1) {
-			UsernameUuidStruct uuidUsername = ApiHandler.usernameUuid(args[0]);
-			if (uuidUsername.isNotValid()) {
-				return Utils.getFailCause(uuidUsername);
-			}
+		UsernameUuidStruct uuidUsername = usernameUuid(getUsername(args, 0));
+		if (uuidUsername.isNotValid()) {
+			return getFailCause(uuidUsername);
+		}
 
-			HypixelResponse response = ApiHandler.getGuildFromPlayer(uuidUsername.playerUuid);
-			if (response.isNotValid()) {
-				return Utils.getFailCause(response);
-			}
+		HypixelResponse response = getGuildFromPlayer(uuidUsername.getUuid());
+		if (response.isNotValid()) {
+			return getFailCause(response);
+		}
 
-			return Utils.wrapText(
-				Utils
-					.empty()
-					.appendSibling(
-						new ChatText(
-							Utils.getFormattedUsername(uuidUsername.playerUuid) +
-							Utils.desc(" is in " + C.UNDERLINE + response.get("name").getAsString())
-						)
-							.setClickEvent(ClickEvent.Action.OPEN_URL, "https://plancke.io/hypixel/guild/player/" + uuidUsername.playerUuid)
-							.build()
+		return wrapText(
+			empty()
+				.appendSibling(
+					new ChatText(
+						getFormattedUsername(uuidUsername.getUuid()) +
+						desc(" is in " + C.UNDERLINE + response.get("name").getAsString())
 					)
-					.appendSibling(new ChatComponentText("\n" + getGuildInfo(response.response)))
-			);
-		}
+						.setClickEvent(ClickEvent.Action.OPEN_URL, "https://plancke.io/hypixel/guild/player/" + uuidUsername.getUuid())
+						.build()
+				)
+				.appendSibling(new ChatComponentText("\n" + getGuildInfo(response.response)))
+		);
 
-		return Utils.getUsage(INSTANCE);
 	}
 
 	public static String getGuildChat(String[] args) {
 		if (args.length != 1 && args.length != 2) {
-			return Utils.getUsageChat(INSTANCE);
+			return getUsageChat(INSTANCE);
 		}
 
 		if (ConfigUtils.getHypixelKey() == null) {
-			return Utils.invalidKeyChat();
+			return invalidKeyChat();
 		}
 
 		if (args.length == 1) {
-			UsernameUuidStruct uuidUsername = ApiHandler.usernameUuid(args[0]);
+			UsernameUuidStruct uuidUsername = usernameUuid(args[0]);
 			if (uuidUsername.isNotValid()) {
-				return Utils.getFailCauseChat(uuidUsername);
+				return getFailCauseChat(uuidUsername);
 			}
 
-			HypixelResponse response = ApiHandler.getGuildFromPlayer(uuidUsername.playerUuid);
+			HypixelResponse response = getGuildFromPlayer(uuidUsername.getUuid());
 			if (response.isNotValid()) {
-				return Utils.getFailCauseChat(response);
+				return getFailCauseChat(response);
 			}
 
 			return (
-				StringUtils.stripControlCodes(Utils.getFormattedUsername(uuidUsername.playerUuid)) +
+				StringUtils.stripControlCodes(getFormattedUsername(uuidUsername.getUuid())) +
 				" is in " +
 				response.get("name").getAsString()
 			);
 		}
 
-		return Utils.getUsageChat(INSTANCE);
+		return getUsageChat(INSTANCE);
 	}
 
 	@Override
@@ -189,7 +185,7 @@ public class GuildCommand extends CommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "/" + getCommandName() + " <player>\n/" + getCommandName() + " information <player>";
+		return "/" + getCommandName() + " [player]";
 	}
 
 	@Override
@@ -199,6 +195,6 @@ public class GuildCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		Utils.executor.submit(() -> sender.addChatMessage(getGuildString(args)));
+		executor.submit(() -> sender.addChatMessage(getGuildString(args)));
 	}
 }

@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,32 +19,30 @@
 package com.kr45732.hypixeladdons.commands.miscellaneous;
 
 import com.kr45732.hypixeladdons.utils.Constants;
-import com.kr45732.hypixeladdons.utils.Utils;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
-import com.kr45732.hypixeladdons.utils.weight.Weight;
-import java.util.Collections;
-import java.util.List;
+import com.kr45732.hypixeladdons.utils.weight.senither.Weight;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
 
+import java.util.Collections;
+import java.util.List;
+
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 public class WeightCommand extends CommandBase {
 
-	public static WeightCommand INSTANCE = new WeightCommand();
+	public static final WeightCommand INSTANCE = new WeightCommand();
 
 	public static IChatComponent getWeightString(String[] args) {
-		if (args.length != 1 && args.length != 2) {
-			return Utils.getUsage(INSTANCE);
-		}
-
 		if (ConfigUtils.getHypixelKey() == null) {
-			return Utils.invalidKey();
+			return invalidKey();
 		}
 
-		Player player = args.length == 1 ? new Player(args[0]) : new Player(args[1], args[1]);
+		Player player = newPlayer(args);
 		if (!player.isValid()) {
-			return Utils.getFailCause(player);
+			return getFailCause(player);
 		}
 
 		Weight weight = new Weight(player);
@@ -52,65 +50,64 @@ public class WeightCommand extends CommandBase {
 		for (String slayerName : Constants.SLAYER_NAMES_MAP.keySet()) {
 			slayerStr
 				.append("\n")
-				.append(Utils.arrow())
+				.append(arrow())
 				.append(
-					Utils.labelWithDesc(Utils.capitalizeString(slayerName), weight.getSlayerWeight().getSlayerWeight(slayerName).get())
+					labelWithDesc(capitalizeString(slayerName), weight.getSlayerWeight().getSlayerWeight(slayerName).get())
 				);
 		}
 		StringBuilder skillsStr = new StringBuilder();
 		for (String skillName : Constants.SKILL_NAMES) {
 			skillsStr
 				.append("\n")
-				.append(Utils.arrow())
-				.append(Utils.labelWithDesc(Utils.capitalizeString(skillName), weight.getSkillsWeight().getSkillsWeight(skillName).get()));
+				.append(arrow())
+				.append(labelWithDesc(capitalizeString(skillName), weight.getSkillsWeight().getSkillsWeight(skillName).get()));
 		}
 		StringBuilder dungeonsStr = new StringBuilder();
 		dungeonsStr
 			.append("\n")
-			.append(Utils.arrow())
-			.append(Utils.labelWithDesc("Catacombs", weight.getDungeonsWeight().getDungeonWeight("catacombs").get()));
+			.append(arrow())
+			.append(labelWithDesc("Catacombs", weight.getDungeonsWeight().getDungeonWeight("catacombs").get()));
 		for (String dungeonClassName : Constants.DUNGEON_CLASS_NAMES) {
 			dungeonsStr
 				.append("\n")
-				.append(Utils.arrow())
+				.append(arrow())
 				.append(
-					Utils.labelWithDesc(
-						Utils.capitalizeString(dungeonClassName),
+					labelWithDesc(
+						capitalizeString(dungeonClassName),
 						weight.getDungeonsWeight().getClassWeight(dungeonClassName).get()
 					)
 				);
 		}
 
-		IChatComponent output = Utils.empty().appendSibling(player.getLink());
-		output.appendText(
+		IChatComponent output =player.defaultComponent().appendText(
 			"\n\n" +
-			Utils.label("Slayer | " + weight.getSlayerWeight().getWeightStruct().get()) +
+			label("Slayer | " + weight.getSlayerWeight().getWeightStruct().get()) +
 			slayerStr +
 			"\n\n" +
-			Utils.label("Skills | " + weight.getSkillsWeight().getWeightStruct().get()) +
+			label("Skills | " + weight.getSkillsWeight().getWeightStruct().get()) +
 			skillsStr +
 			"\n\n" +
-			Utils.label("Dungeons | " + weight.getDungeonsWeight().getWeightStruct().get()) +
+			label("Dungeons | " + weight.getDungeonsWeight().getWeightStruct().get()) +
 			dungeonsStr +
 			"\n\n" +
-			Utils.labelWithDesc("Total weight", weight.getTotalWeight(false).get())
+			labelWithDesc("Total weight", weight.getTotalWeight(false).get())
 		);
 
-		return Utils.wrapText(output);
+		return wrapText(output);
 	}
 
 	public static String getWeightChat(String[] args) {
 		if (args.length != 1 && args.length != 2) {
-			return Utils.getUsageChat(INSTANCE);
+			return getUsageChat(INSTANCE);
 		}
 
 		if (ConfigUtils.getHypixelKey() == null) {
-			return Utils.invalidKeyChat();
+			return invalidKeyChat();
 		}
 
-		Player player = args.length == 1 ? new Player(args[0]) : new Player(args[1], args[1]);
+		Player player = newPlayer(args);
 		if (!player.isValid()) {
-			return Utils.getFailCauseChat(player);
+			return getFailCauseChat(player);
 		}
 
 		Weight weight = new Weight(player);
@@ -118,13 +115,13 @@ public class WeightCommand extends CommandBase {
 		return (
 			player.getUsername() +
 			" has " +
-			Utils.roundAndFormat(weight.getTotalWeight(true).getRaw()) +
+			roundAndFormat(weight.getTotalWeight(true).getRaw()) +
 			" total weight (" +
-			Utils.roundAndFormat(weight.getSlayerWeight().getWeightStruct().getRaw()) +
+			roundAndFormat(weight.getSlayerWeight().getWeightStruct().getRaw()) +
 			" slayer & " +
-			Utils.roundAndFormat(weight.getSkillsWeight().getWeightStruct().getRaw()) +
+			roundAndFormat(weight.getSkillsWeight().getWeightStruct().getRaw()) +
 			" skill & " +
-			Utils.roundAndFormat(weight.getDungeonsWeight().getWeightStruct().getRaw()) +
+			roundAndFormat(weight.getDungeonsWeight().getWeightStruct().getRaw()) +
 			" dungeon)"
 		);
 	}
@@ -141,7 +138,7 @@ public class WeightCommand extends CommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "/" + getCommandName() + " <player> [profile]";
+		return "/" + getCommandName() + " [player] [profile]";
 	}
 
 	@Override
@@ -151,6 +148,6 @@ public class WeightCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		Utils.executor.submit(() -> sender.addChatMessage(getWeightString(args)));
+		executor.submit(() -> sender.addChatMessage(getWeightString(args)));
 	}
 }

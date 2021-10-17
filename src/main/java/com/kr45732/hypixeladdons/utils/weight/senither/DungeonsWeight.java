@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Skyblock Plus - A Skyblock focused Discord bot with many commands and customizable features to improve the experience of Skyblock players and guild staff!
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -16,24 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.kr45732.hypixeladdons.utils.weight;
+package com.kr45732.hypixeladdons.utils.weight.senither;
 
-import static com.kr45732.hypixeladdons.utils.Constants.DUNGEON_CLASS_WEIGHTS;
-import static com.kr45732.hypixeladdons.utils.Constants.DUNGEON_WEIGHTS;
 
-import com.google.gson.JsonElement;
-import com.kr45732.hypixeladdons.utils.Constants;
 import com.kr45732.hypixeladdons.utils.api.Player;
+import com.kr45732.hypixeladdons.utils.structs.SkillsStruct;
 import com.kr45732.hypixeladdons.utils.structs.WeightStruct;
+
+import static com.kr45732.hypixeladdons.utils.Constants.*;
 
 public class DungeonsWeight {
 
-	private final JsonElement profile;
 	private final Player player;
 	private final WeightStruct weightStruct;
 
-	public DungeonsWeight(JsonElement profile, Player player) {
-		this.profile = profile;
+	public DungeonsWeight(Player player) {
 		this.player = player;
 		this.weightStruct = new WeightStruct();
 	}
@@ -47,30 +44,31 @@ public class DungeonsWeight {
 	}
 
 	public WeightStruct getClassWeight(String className) {
-		double currentClassLevel = player.getDungeonClassLevel(profile, className);
-		double currentClassXp = player.getDungeonClassXp(profile, className);
+		SkillsStruct dungeonSkill = player.getDungeonClass(className);
+		double currentClassLevel = dungeonSkill.getProgressLevel();
+		double currentClassXp = dungeonSkill.getTotalExp();
 		double base = Math.pow(currentClassLevel, 4.5) * DUNGEON_CLASS_WEIGHTS.get(className);
 
-		if (currentClassXp <= Constants.CATACOMBS_LEVEL_50_XP) {
+		if (currentClassXp <= CATACOMBS_LEVEL_50_XP) {
 			return weightStruct.add(new WeightStruct(base));
 		}
 
-		double remaining = currentClassXp - Constants.CATACOMBS_LEVEL_50_XP;
-		double splitter = (4 * Constants.CATACOMBS_LEVEL_50_XP) / base;
+		double remaining = currentClassXp - CATACOMBS_LEVEL_50_XP;
+		double splitter = (4 * CATACOMBS_LEVEL_50_XP) / base;
 		return weightStruct.add(new WeightStruct(Math.floor(base), Math.pow(remaining / splitter, 0.968)));
 	}
 
 	public WeightStruct getDungeonWeight(String dungeonName) {
-		double catacombsSkillXp = player.getSkillXp(profile, dungeonName);
-		double level = player.getCatacombsLevel(profile);
+		double catacombsSkillXp = player.getSkillXp(dungeonName);
+		double level = player.getCatacombs().getProgressLevel();
 		double base = Math.pow(level, 4.5) * DUNGEON_WEIGHTS.get(dungeonName);
 
-		if (catacombsSkillXp <= Constants.CATACOMBS_LEVEL_50_XP) {
+		if (catacombsSkillXp <= CATACOMBS_LEVEL_50_XP) {
 			return weightStruct.add(new WeightStruct(base));
 		}
 
-		double remaining = catacombsSkillXp - Constants.CATACOMBS_LEVEL_50_XP;
-		double splitter = (4 * Constants.CATACOMBS_LEVEL_50_XP) / base;
+		double remaining = catacombsSkillXp - CATACOMBS_LEVEL_50_XP;
+		double splitter = (4 * CATACOMBS_LEVEL_50_XP) / base;
 		return weightStruct.add(new WeightStruct(Math.floor(base), Math.pow(remaining / splitter, 0.968)));
 	}
 }

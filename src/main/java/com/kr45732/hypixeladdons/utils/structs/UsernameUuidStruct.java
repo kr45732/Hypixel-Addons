@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,13 +20,13 @@ package com.kr45732.hypixeladdons.utils.structs;
 
 public class UsernameUuidStruct {
 
-	public String playerUsername;
-	public String playerUuid;
-	public String failCause;
+	private String username;
+	private String uuid;
+	private String failCause;
 
-	public UsernameUuidStruct(String playerUsername, String playerUuid) {
-		this.playerUsername = playerUsername;
-		this.playerUuid = playerUuid;
+	public UsernameUuidStruct(String username, String uuid) {
+		this.username = username;
+		this.uuid = uuid;
 	}
 
 	public UsernameUuidStruct(String failCause) {
@@ -34,15 +34,27 @@ public class UsernameUuidStruct {
 	}
 
 	public UsernameUuidStruct() {
-		this.failCause = "Unknown Fail Cause";
+		this.failCause = "Unknown fail cause";
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public String getFailCause() {
+		return failCause;
 	}
 
 	public boolean isNotValid() {
-		return playerUsername == null || playerUuid == null;
+		return username == null || uuid == null;
 	}
 
 	@Override
 	public String toString() {
-		return "UsernameUuidStruct{" + "username='" + playerUsername + '\'' + ", uuid='" + playerUuid + '\'' + '}';
+		return "UsernameUuidStruct{" + "username='" + username + '\'' + ", uuid='" + uuid + '\'' + '}';
 	}
 }

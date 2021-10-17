@@ -1,6 +1,6 @@
 /*
- * Hypixel Addons - A quality of life mod for Hypixel
- * Copyright (c) 2021-2021 kr45732
+ * Hypixel Addons - A customizable quality of life mod for Hypixel
+ * Copyright (c) 2021 kr45732
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,95 +19,97 @@
 package com.kr45732.hypixeladdons.commands.price;
 
 import com.google.gson.JsonElement;
-import com.kr45732.hypixeladdons.utils.Utils;
-import java.util.*;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 
+import java.util.*;
+
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 public class BazaarCommand extends CommandBase {
 
-	public static BazaarCommand INSTANCE = new BazaarCommand();
+	public static final BazaarCommand INSTANCE = new BazaarCommand();
 
 	public static ChatComponentText getBazaarString(String[] args) {
-		args = String.join(" ", args).split(" ", 1);
-		if (args.length != 1 || args[0].length() == 0) {
-			return Utils.getUsage(INSTANCE);
+		if (args.length== 0) {
+			return getUsage(INSTANCE);
 		}
+		args = convertArgs(args, 1);
 
-		String itemId = Utils.nameToId(args[0]);
-		JsonElement bazaarItems = Utils.getBazaarJson();
-		if (Utils.higherDepth(bazaarItems, itemId) == null) {
+		String itemId = nameToId(args[0]);
+		JsonElement bazaarItems = getBazaarJson();
+		if (higherDepth(bazaarItems, itemId) == null) {
 			Map<String, String> itemNameToId = new HashMap<>();
-			for (String itemIID : Utils.getJsonKeys(bazaarItems)) {
+			for (String itemIID : getJsonKeys(bazaarItems)) {
 				String itemName;
 				try {
-					itemName = Utils.higherDepth(bazaarItems, itemIID + ".name").getAsString();
+					itemName = higherDepth(bazaarItems, itemIID + ".name").getAsString();
 				} catch (Exception e) {
-					itemName = Utils.capitalizeString(itemIID.replace("_", " "));
+					itemName = capitalizeString(itemIID.replace("_", " "));
 				}
 				itemNameToId.put(itemName, itemIID);
 			}
 
-			itemId = itemNameToId.get(Utils.getClosestMatch(itemId, new ArrayList<>(itemNameToId.keySet())));
+			itemId = itemNameToId.get(getClosestMatch(itemId, new ArrayList<>(itemNameToId.keySet())));
 		}
 
-		JsonElement itemInfo = Utils.higherDepth(bazaarItems, itemId);
-		String output = Utils.labelWithDesc("Item", Utils.idToName(itemId));
+		JsonElement itemInfo = higherDepth(bazaarItems, itemId);
+		String output = labelWithDesc("Item", idToName(itemId));
 		output +=
 			"\n" +
-			Utils.labelWithDesc(
+			labelWithDesc(
 				"Buy Price (Per)",
-				Utils.simplifyNumber(
-					Utils.higherDepth(Utils.higherDepth(itemInfo, "buy_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble()
+				simplifyNumber(
+					higherDepth(higherDepth(itemInfo, "buy_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble()
 				)
 			);
 		output +=
 			"\n" +
-			Utils.labelWithDesc(
+			labelWithDesc(
 				"Sell Price (Per)",
-				Utils.simplifyNumber(
-					Utils.higherDepth(Utils.higherDepth(itemInfo, "sell_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble()
+				simplifyNumber(
+					higherDepth(higherDepth(itemInfo, "sell_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble()
 				)
 			);
 
-		return Utils.wrapText(output);
+		return wrapText(output);
 	}
 
 	public static String getBazaarChat(String[] args) {
-		args = String.join(" ", args).split(" ", 1);
-		if (args.length != 1 || args[0].length() == 0) {
-			return Utils.getUsageChat(INSTANCE);
+		if (args.length == 0) {
+			return getUsageChat(INSTANCE);
 		}
+		args = convertArgs(args, 1);
 
-		String itemId = Utils.nameToId(args[0]);
-		JsonElement bazaarItems = Utils.getBazaarJson();
-		if (Utils.higherDepth(bazaarItems, itemId) == null) {
+		String itemId = nameToId(args[0]);
+		JsonElement bazaarItems = getBazaarJson();
+		if (higherDepth(bazaarItems, itemId) == null) {
 			Map<String, String> itemNameToId = new HashMap<>();
-			for (String itemIID : Utils.getJsonKeys(bazaarItems)) {
+			for (String itemIID : getJsonKeys(bazaarItems)) {
 				String itemName;
 				try {
-					itemName = Utils.higherDepth(bazaarItems, itemIID + ".name").getAsString();
+					itemName = higherDepth(bazaarItems, itemIID + ".name").getAsString();
 				} catch (Exception e) {
-					itemName = Utils.capitalizeString(itemIID.replace("_", " "));
+					itemName = capitalizeString(itemIID.replace("_", " "));
 				}
 				itemNameToId.put(itemName, itemIID);
 			}
 
-			itemId = itemNameToId.get(Utils.getClosestMatch(itemId, new ArrayList<>(itemNameToId.keySet())));
+			itemId = itemNameToId.get(getClosestMatch(itemId, new ArrayList<>(itemNameToId.keySet())));
 		}
 
-		JsonElement itemInfo = Utils.higherDepth(bazaarItems, itemId);
+		JsonElement itemInfo = higherDepth(bazaarItems, itemId);
 
 		return (
-			Utils.idToName(itemId) +
+			idToName(itemId) +
 			" costs " +
-			Utils.simplifyNumber(
-				Utils.higherDepth(Utils.higherDepth(itemInfo, "buy_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble()
+			simplifyNumber(
+				higherDepth(higherDepth(itemInfo, "buy_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble()
 			) +
 			" and sells for " +
-			Utils.simplifyNumber(
-				Utils.higherDepth(Utils.higherDepth(itemInfo, "sell_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble()
+			simplifyNumber(
+				higherDepth(higherDepth(itemInfo, "sell_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble()
 			)
 		);
 	}
@@ -134,6 +136,6 @@ public class BazaarCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		Utils.executor.submit(() -> sender.addChatMessage(getBazaarString(args)));
+		executor.submit(() -> sender.addChatMessage(getBazaarString(args)));
 	}
 }
