@@ -18,13 +18,14 @@
 
 package com.kr45732.hypixeladdons.utils.weight.lily;
 
-import com.kr45732.hypixeladdons.utils.api.Player;
-import com.kr45732.hypixeladdons.utils.structs.WeightStruct;
-
 import static com.kr45732.hypixeladdons.utils.Constants.SKILL_NAMES;
 import static com.kr45732.hypixeladdons.utils.Constants.SLAYER_NAMES;
 
+import com.kr45732.hypixeladdons.utils.api.Player;
+import com.kr45732.hypixeladdons.utils.structs.WeightStruct;
+
 public class Weight {
+
 	private final SlayerWeight slayerWeight;
 	private final SkillsWeight skillsWeight;
 	private final DungeonsWeight dungeonsWeight;

@@ -18,19 +18,18 @@
 
 package com.kr45732.hypixeladdons.commands.dungeons;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.kr45732.hypixeladdons.utils.Constants;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import com.kr45732.hypixeladdons.utils.structs.SkillsStruct;
+import java.util.Arrays;
+import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class DungeonsCommand extends CommandBase {
 
@@ -47,7 +46,8 @@ public class DungeonsCommand extends CommandBase {
 		}
 
 		SkillsStruct skillInfo = player.getCatacombs();
-		IChatComponent output = player.defaultComponent()
+		IChatComponent output = player
+			.defaultComponent()
 			.appendText(
 				"\n\n" +
 				labelWithDesc("True catacombs level", "" + skillInfo.getCurrentLevel()) +
@@ -56,9 +56,7 @@ public class DungeonsCommand extends CommandBase {
 			)
 			.appendSibling(
 				new ChatText(
-					"\n" +
-					arrow() +
-					labelWithDesc(capitalizeString(skillInfo.getName()), roundAndFormat(skillInfo.getProgressLevel()))
+					"\n" + arrow() + labelWithDesc(capitalizeString(skillInfo.getName()), roundAndFormat(skillInfo.getProgressLevel()))
 				)
 					.setHoverEvent(
 						capitalizeString(skillInfo.getName()),
@@ -69,10 +67,7 @@ public class DungeonsCommand extends CommandBase {
 						"\n" +
 						labelWithDesc("Total XP", simplifyNumber(skillInfo.getTotalExp())) +
 						"\n" +
-						labelWithDesc(
-							"Progress",
-							(skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext()))
-						)
+						labelWithDesc("Progress", (skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext())))
 					)
 					.build()
 			);
@@ -80,11 +75,7 @@ public class DungeonsCommand extends CommandBase {
 		for (String className : Constants.DUNGEON_CLASS_NAMES) {
 			skillInfo = player.getDungeonClass(className);
 			output.appendSibling(
-				new ChatText(
-					"\n" +
-					arrow() +
-					labelWithDesc(capitalizeString(className), roundAndFormat(skillInfo.getProgressLevel()))
-				)
+				new ChatText("\n" + arrow() + labelWithDesc(capitalizeString(className), roundAndFormat(skillInfo.getProgressLevel())))
 					.setHoverEvent(
 						capitalizeString(className),
 						labelWithDesc(
@@ -94,10 +85,7 @@ public class DungeonsCommand extends CommandBase {
 						"\n" +
 						labelWithDesc("Total XP", simplifyNumber(skillInfo.getTotalExp())) +
 						"\n" +
-						labelWithDesc(
-							"Progress",
-							(skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext()))
-						)
+						labelWithDesc("Progress", (skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext())))
 					)
 					.build()
 			);

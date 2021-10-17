@@ -18,11 +18,11 @@
 
 package com.kr45732.hypixeladdons.utils.weight.lily;
 
-import com.kr45732.hypixeladdons.utils.api.Player;
-import com.kr45732.hypixeladdons.utils.structs.WeightStruct;
-
 import static com.kr45732.hypixeladdons.utils.Constants.SLAYER_DEPRECATION_SCALING;
 import static com.kr45732.hypixeladdons.utils.Utils.higherDepth;
+
+import com.kr45732.hypixeladdons.utils.api.Player;
+import com.kr45732.hypixeladdons.utils.structs.WeightStruct;
 
 public class SlayerWeight {
 

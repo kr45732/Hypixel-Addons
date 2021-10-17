@@ -18,13 +18,13 @@
 
 package com.kr45732.hypixeladdons.utils.weight.lily;
 
+import static com.kr45732.hypixeladdons.utils.Constants.*;
+import static com.kr45732.hypixeladdons.utils.Utils.higherDepth;
+
 import com.google.gson.JsonArray;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.structs.SkillsStruct;
 import com.kr45732.hypixeladdons.utils.structs.WeightStruct;
-
-import static com.kr45732.hypixeladdons.utils.Constants.*;
-import static com.kr45732.hypixeladdons.utils.Utils.higherDepth;
 
 public class SkillsWeight {
 
@@ -53,7 +53,7 @@ public class SkillsWeight {
 		skillAverage /= SKILL_NAMES.size();
 
 		SkillsStruct skillsStruct = player.getSkill(skillName, Player.WeightType.LILY);
-		JsonArray srwTable = higherDepth(SKILL_RATIO_WEIGHT,  skillName).getAsJsonArray();
+		JsonArray srwTable = higherDepth(SKILL_RATIO_WEIGHT, skillName).getAsJsonArray();
 		double base =
 			(
 				(12 * Math.pow((skillAverage / 60), 2)) *
@@ -63,11 +63,9 @@ public class SkillsWeight {
 			(srwTable.get(srwTable.size() - 1).getAsDouble() * Math.pow(skillsStruct.getCurrentLevel() / 60.0, Math.pow(2, 0.5)));
 		double overflow = 0;
 		if (skillsStruct.getTotalExp() > SKILLS_LEVEL_60_XP) {
-			double factor = higherDepth(SKILL_FACTORS,  skillName).getAsDouble();
+			double factor = higherDepth(SKILL_FACTORS, skillName).getAsDouble();
 			double effectiveOver = effectiveXP(skillsStruct.getTotalExp() - SKILLS_LEVEL_60_XP, factor);
-			double t =
-				(effectiveOver / SKILLS_LEVEL_60_XP) *
-				(higherDepth(SKILL_OVERFLOW_MULTIPLIERS,  skillName).getAsDouble());
+			double t = (effectiveOver / SKILLS_LEVEL_60_XP) * (higherDepth(SKILL_OVERFLOW_MULTIPLIERS, skillName).getAsDouble());
 			if (t > 0) {
 				overflow += t;
 			}

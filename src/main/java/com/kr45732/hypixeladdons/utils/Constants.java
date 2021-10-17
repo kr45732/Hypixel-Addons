@@ -18,16 +18,15 @@
 
 package com.kr45732.hypixeladdons.utils;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.kr45732.hypixeladdons.HypixelAddons;
-
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class Constants {
 
@@ -66,14 +65,15 @@ public class Constants {
 
 	public static void initialize() {
 		try {
-			JsonObject constantsJson = getJson("https://raw.githubusercontent.com/kr45732/skyblock-plus-data/main/Constants.json").getAsJsonObject();
+			JsonObject constantsJson = getJson("https://raw.githubusercontent.com/kr45732/skyblock-plus-data/main/Constants.json")
+				.getAsJsonObject();
 
-			Type mapStringString = new TypeToken<Map<String, String>>(){}.getType();
-			Type listInteger = new TypeToken<List<Integer>>(){}.getType();
-			Type listString = new TypeToken<List<String>>(){}.getType();
-			Type mapStringDoubleArray = new TypeToken<Map<String, Double[]>>(){}.getType();
-			Type mapStringDouble = new TypeToken<Map<String, Double>>(){}.getType();
-			Type mapIntegerString = new TypeToken<Map<Integer, String>>(){}.getType();
+			Type mapStringString = new TypeToken<Map<String, String>>() {}.getType();
+			Type listInteger = new TypeToken<List<Integer>>() {}.getType();
+			Type listString = new TypeToken<List<String>>() {}.getType();
+			Type mapStringDoubleArray = new TypeToken<Map<String, Double[]>>() {}.getType();
+			Type mapStringDouble = new TypeToken<Map<String, Double>>() {}.getType();
+			Type mapIntegerString = new TypeToken<Map<Integer, String>>() {}.getType();
 
 			/* CATACOMBS_LEVEL_50_XP */
 			CATACOMBS_LEVEL_50_XP = higherDepth(constantsJson, "CATACOMBS_LEVEL_50_XP").getAsDouble();
@@ -85,16 +85,16 @@ public class Constants {
 			SKILLS_LEVEL_60_XP = higherDepth(constantsJson, "SKILLS_LEVEL_60_XP").getAsDouble();
 
 			/* DUNGEON_CLASS_NAMES */
-			DUNGEON_CLASS_NAMES =  gson.fromJson(higherDepth(constantsJson, "DUNGEON_CLASS_NAMES"), listString);
+			DUNGEON_CLASS_NAMES = gson.fromJson(higherDepth(constantsJson, "DUNGEON_CLASS_NAMES"), listString);
 
 			/* SLAYER_NAMES */
-			SLAYER_NAMES =  gson.fromJson(higherDepth(constantsJson, "SLAYER_NAMES"), listString);
+			SLAYER_NAMES = gson.fromJson(higherDepth(constantsJson, "SLAYER_NAMES"), listString);
 
 			/* GUILD_EXP_TO_LEVEL */
 			GUILD_EXP_TO_LEVEL = gson.fromJson(higherDepth(constantsJson, "GUILD_EXP_TO_LEVEL"), listInteger);
 
 			/* COSMETIC_SKILL_NAMES */
-			COSMETIC_SKILL_NAMES =  gson.fromJson(higherDepth(constantsJson, "COSMETIC_SKILL_NAMES"), listString);
+			COSMETIC_SKILL_NAMES = gson.fromJson(higherDepth(constantsJson, "COSMETIC_SKILL_NAMES"), listString);
 
 			/* SLAYER_WEIGHTS */
 			SLAYER_WEIGHTS = gson.fromJson(higherDepth(constantsJson, "SLAYER_WEIGHTS"), mapStringDoubleArray);
@@ -115,16 +115,16 @@ public class Constants {
 			SLAYER_DEPRECATION_SCALING = higherDepth(constantsJson, "SLAYER_DEPRECATION_SCALING");
 
 			/* SKILL_RATIO_WEIGHT */
-			SKILL_RATIO_WEIGHT= higherDepth(constantsJson, "SKILL_RATIO_WEIGHT");
+			SKILL_RATIO_WEIGHT = higherDepth(constantsJson, "SKILL_RATIO_WEIGHT");
 
 			/* SKILL_FACTORS */
-			SKILL_FACTORS= higherDepth(constantsJson, "SKILL_FACTORS");
+			SKILL_FACTORS = higherDepth(constantsJson, "SKILL_FACTORS");
 
 			/* SKILL_OVERFLOW_MULTIPLIERS */
-			SKILL_OVERFLOW_MULTIPLIERS= higherDepth(constantsJson, "SKILL_OVERFLOW_MULTIPLIERS");
+			SKILL_OVERFLOW_MULTIPLIERS = higherDepth(constantsJson, "SKILL_OVERFLOW_MULTIPLIERS");
 
 			/* DUNGEON_COMPLETION_WORTH */
-			DUNGEON_COMPLETION_WORTH= higherDepth(constantsJson, "DUNGEON_COMPLETION_WORTH").getAsJsonObject();
+			DUNGEON_COMPLETION_WORTH = higherDepth(constantsJson, "DUNGEON_COMPLETION_WORTH").getAsJsonObject();
 
 			/* DUNGEON_COMPLETION_BUFFS */
 			DUNGEON_COMPLETION_BUFFS = higherDepth(constantsJson, "DUNGEON_COMPLETION_BUFFS").getAsJsonObject();
@@ -139,7 +139,7 @@ public class Constants {
 			SKYWARS_PRESTIGE_LIST = gson.fromJson(higherDepth(constantsJson, "SKYWARS_PRESTIGE_LIST"), listString);
 
 			/* DUNGEON_META_ITEMS */
-			DUNGEON_META_ITEMS =  gson.fromJson(higherDepth(constantsJson, "DUNGEON_META_ITEMS"), listString);
+			DUNGEON_META_ITEMS = gson.fromJson(higherDepth(constantsJson, "DUNGEON_META_ITEMS"), listString);
 
 			/* BEDWARS_EXP_PER_PRESTIGE */
 			BEDWARS_EXP_PER_PRESTIGE = higherDepth(constantsJson, "BEDWARS_EXP_PER_PRESTIGE").getAsDouble();
@@ -151,7 +151,12 @@ public class Constants {
 			TOTAL_WINS_TO_DIVISION_MAP = gson.fromJson(higherDepth(constantsJson, "TOTAL_WINS_TO_DIVISION_MAP"), mapIntegerString);
 
 			/* ALL_SKILL_NAMES */
-			ALL_SKILL_NAMES = higherDepth(getLevelingJson(), "leveling_caps").getAsJsonObject().entrySet().stream().map(Map.Entry::getKey)
+			ALL_SKILL_NAMES =
+				higherDepth(getLevelingJson(), "leveling_caps")
+					.getAsJsonObject()
+					.entrySet()
+					.stream()
+					.map(Map.Entry::getKey)
 					.collect(Collectors.toCollection(ArrayList::new));
 			ALL_SKILL_NAMES.remove("catacombs");
 
@@ -160,12 +165,11 @@ public class Constants {
 			SKILL_NAMES.removeIf(COSMETIC_SKILL_NAMES::contains);
 
 			/* ESSENCE_ITEM_NAMES */
-			ESSENCE_ITEM_NAMES = getEssenceCostsJson().getAsJsonObject().entrySet().stream().map(Map.Entry::getKey)
-					.collect(Collectors.toList());
+			ESSENCE_ITEM_NAMES =
+				getEssenceCostsJson().getAsJsonObject().entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
 
 			/* BITS_ITEM_NAMES */
-			BITS_ITEM_NAMES = getBitPricesJson().getAsJsonObject().entrySet().stream().map(Map.Entry::getKey)
-					.collect(Collectors.toList());
+			BITS_ITEM_NAMES = getBitPricesJson().getAsJsonObject().entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
 		} catch (Exception e) {
 			HypixelAddons.INSTANCE.getLogger().error("An error occurred when initializing constants", e);
 		}

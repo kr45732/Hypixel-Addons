@@ -18,13 +18,13 @@
 
 package com.kr45732.hypixeladdons.commands.config;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.google.gson.JsonElement;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-
-import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class SetKeyCommand extends CommandBase {
 
@@ -45,24 +45,22 @@ public class SetKeyCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		executor.submit(
-			() -> {
-				final EntityPlayer player = (EntityPlayer) sender;
+		executor.submit(() -> {
+			final EntityPlayer player = (EntityPlayer) sender;
 
-				if (args.length != 1) {
-					player.addChatMessage(getUsage(this));
-					return;
-				}
-
-				JsonElement keyJson = getJson("https://api.hypixel.net/key?key=" + args[0]);
-				if (higherDepth(keyJson, "cause") != null) {
-					player.addChatMessage(getFailCause(higherDepth(keyJson, "cause").getAsString()));
-					return;
-				}
-
-				ConfigUtils.setHypixelKey(args[0]);
-				player.addChatMessage(wrapText(labelWithDesc("Set API key to", args[0])));
+			if (args.length != 1) {
+				player.addChatMessage(getUsage(this));
+				return;
 			}
-		);
+
+			JsonElement keyJson = getJson("https://api.hypixel.net/key?key=" + args[0]);
+			if (higherDepth(keyJson, "cause") != null) {
+				player.addChatMessage(getFailCause(higherDepth(keyJson, "cause").getAsString()));
+				return;
+			}
+
+			ConfigUtils.setHypixelKey(args[0]);
+			player.addChatMessage(wrapText(labelWithDesc("Set API key to", args[0])));
+		});
 	}
 }

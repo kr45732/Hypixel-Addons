@@ -18,10 +18,10 @@
 
 package com.kr45732.hypixeladdons.utils.weight.senither;
 
+import static com.kr45732.hypixeladdons.utils.Constants.SLAYER_WEIGHTS;
+
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.structs.WeightStruct;
-
-import static com.kr45732.hypixeladdons.utils.Constants.SLAYER_WEIGHTS;
 
 public class SlayerWeight {
 

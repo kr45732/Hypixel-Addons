@@ -18,6 +18,11 @@
 
 package com.kr45732.hypixeladdons.commands.guild;
 
+import static com.kr45732.hypixeladdons.utils.Constants.GUILD_EXP_TO_LEVEL;
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+import static com.kr45732.hypixeladdons.utils.api.ApiHandler.getGuildFromPlayer;
+import static com.kr45732.hypixeladdons.utils.api.ApiHandler.usernameUuid;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.kr45732.hypixeladdons.utils.api.HypixelResponse;
@@ -25,22 +30,16 @@ import com.kr45732.hypixeladdons.utils.chat.C;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import com.kr45732.hypixeladdons.utils.structs.UsernameUuidStruct;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StringUtils;
-
-import java.time.Instant;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import static com.kr45732.hypixeladdons.utils.Constants.GUILD_EXP_TO_LEVEL;
-import static com.kr45732.hypixeladdons.utils.Utils.*;
-import static com.kr45732.hypixeladdons.utils.api.ApiHandler.getGuildFromPlayer;
-import static com.kr45732.hypixeladdons.utils.api.ApiHandler.usernameUuid;
 
 public class GuildCommand extends CommandBase {
 
@@ -69,10 +68,7 @@ public class GuildCommand extends CommandBase {
 		output +=
 			labelWithDesc(
 				"Tag",
-				C.getValueByName(higherDepth(guildJson, "tagColor").getAsString()) +
-				"[" +
-				higherDepth(guildJson, "tag").getAsString() +
-				"]"
+				C.getValueByName(higherDepth(guildJson, "tagColor").getAsString()) + "[" + higherDepth(guildJson, "tag").getAsString() + "]"
 			);
 		output += "\n" + labelWithDesc("Members", guildMembers.size() + "/125");
 
@@ -80,11 +76,7 @@ public class GuildCommand extends CommandBase {
 			JsonElement currentMember = guildMembers.get(i).getAsJsonObject();
 			if (higherDepth(currentMember, "rank").getAsString().equals("Guild Master")) {
 				output +=
-					"\n" +
-					labelWithDesc(
-						"Guild master",
-							usernameUuid(higherDepth(currentMember, "uuid").getAsString()).getUsername()
-					);
+					"\n" + labelWithDesc("Guild master", usernameUuid(higherDepth(currentMember, "uuid").getAsString()).getUsername());
 				break;
 			}
 		}
@@ -132,15 +124,13 @@ public class GuildCommand extends CommandBase {
 			empty()
 				.appendSibling(
 					new ChatText(
-						getFormattedUsername(uuidUsername.getUuid()) +
-						desc(" is in " + C.UNDERLINE + response.get("name").getAsString())
+						getFormattedUsername(uuidUsername.getUuid()) + desc(" is in " + C.UNDERLINE + response.get("name").getAsString())
 					)
 						.setClickEvent(ClickEvent.Action.OPEN_URL, "https://plancke.io/hypixel/guild/player/" + uuidUsername.getUuid())
 						.build()
 				)
 				.appendSibling(new ChatComponentText("\n" + getGuildInfo(response.response)))
 		);
-
 	}
 
 	public static String getGuildChat(String[] args) {
@@ -164,9 +154,7 @@ public class GuildCommand extends CommandBase {
 			}
 
 			return (
-				StringUtils.stripControlCodes(getFormattedUsername(uuidUsername.getUuid())) +
-				" is in " +
-				response.get("name").getAsString()
+				StringUtils.stripControlCodes(getFormattedUsername(uuidUsername.getUuid())) + " is in " + response.get("name").getAsString()
 			);
 		}
 

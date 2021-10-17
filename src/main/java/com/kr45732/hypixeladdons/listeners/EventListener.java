@@ -217,14 +217,14 @@ public class EventListener {
 				)
 					.setHoverEvent(
 						capitalizeString(skillInfo.getName()),
-						labelWithDesc("XP progress", simplifyNumber(skillInfo.getExpCurrent()) + " / " + simplifyNumber(skillInfo.getExpForNext())) +
+						labelWithDesc(
+							"XP progress",
+							simplifyNumber(skillInfo.getExpCurrent()) + " / " + simplifyNumber(skillInfo.getExpForNext())
+						) +
 						"\n" +
 						labelWithDesc("Total XP", simplifyNumber(skillInfo.getTotalExp())) +
 						"\n" +
-						labelWithDesc(
-							"Progress",
-							(skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext()))
-						)
+						labelWithDesc("Progress", (skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext())))
 					)
 					.build()
 			);

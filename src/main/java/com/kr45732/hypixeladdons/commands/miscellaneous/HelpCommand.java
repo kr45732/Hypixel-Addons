@@ -18,28 +18,28 @@
 
 package com.kr45732.hypixeladdons.commands.miscellaneous;
 
-import com.kr45732.hypixeladdons.HypixelAddons;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
+import static com.kr45732.hypixeladdons.utils.Utils.*;
 
+import com.kr45732.hypixeladdons.HypixelAddons;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static com.kr45732.hypixeladdons.utils.Utils.*;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
 
 public class HelpCommand extends CommandBase {
 
 	private static final String commandHelpList;
+
 	static {
 		StringBuilder out = new StringBuilder();
 		for (CommandBase command : HypixelAddons.INSTANCE.getCommands()) {
 			String usage = command.getCommandUsage(null);
-			if(usage.contains("\n")){
+			if (usage.contains("\n")) {
 				for (String s : usage.split("\n")) {
 					out.append(arrow()).append(label(s)).append("\n");
 				}
-			}else {
+			} else {
 				out.append(arrow()).append(label(command.getCommandUsage(null))).append("\n");
 			}
 		}

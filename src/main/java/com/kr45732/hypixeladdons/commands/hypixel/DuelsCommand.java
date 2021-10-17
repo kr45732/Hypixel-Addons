@@ -24,12 +24,11 @@ import static com.kr45732.hypixeladdons.utils.api.HypixelPlayer.DuelsMode.NONE;
 import com.kr45732.hypixeladdons.utils.api.HypixelPlayer;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
+import java.util.Collections;
+import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
-
-import java.util.Collections;
-import java.util.List;
 
 public class DuelsCommand extends CommandBase {
 

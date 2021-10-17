@@ -51,7 +51,8 @@ public class BedwarsCommand extends CommandBase {
 		int finalKills = player.getBedwarsFinalKills(NONE);
 		int finalDeaths = player.getBedwarsFinalDeaths(NONE);
 
-		IChatComponent output = player.defaultComponent()
+		IChatComponent output = player
+			.defaultComponent()
 			.appendText(
 				"\n\n" +
 				label("Statistics") +

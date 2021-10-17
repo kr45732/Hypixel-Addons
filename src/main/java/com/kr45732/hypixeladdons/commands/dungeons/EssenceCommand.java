@@ -18,18 +18,17 @@
 
 package com.kr45732.hypixeladdons.commands.dungeons;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.kr45732.hypixeladdons.utils.Constants;
 import com.kr45732.hypixeladdons.utils.api.Player;
+import java.util.Map;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
-
-import java.util.Map;
-
-import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class EssenceCommand extends CommandBase {
 
@@ -41,7 +40,7 @@ public class EssenceCommand extends CommandBase {
 		}
 
 		if (args[0].equals("information") || args[0].equals("info")) {
-			if(args.length < 2){
+			if (args.length < 2) {
 				return getUsage(INSTANCE);
 			}
 			args = convertArgs(args, 2);
@@ -55,8 +54,7 @@ public class EssenceCommand extends CommandBase {
 			}
 
 			JsonObject itemJson = higherDepth(essenceCostsJson, itemId).getAsJsonObject();
-			IChatComponent output = empty()
-				.appendSibling(new ChatComponentText(labelWithDesc("Item", idToName(itemId)) + "\n"));
+			IChatComponent output = empty().appendSibling(new ChatComponentText(labelWithDesc("Item", idToName(itemId)) + "\n"));
 			String essenceType = higherDepth(itemJson, "type").getAsString().toLowerCase();
 			for (Map.Entry<String, JsonElement> entry : itemJson.entrySet()) {
 				switch (entry.getKey()) {
@@ -67,10 +65,7 @@ public class EssenceCommand extends CommandBase {
 						output.appendText(
 							"\n" +
 							arrow() +
-							labelWithDesc(
-								"Dungeonize item",
-									entry.getValue().getAsString() + " " + essenceType + " essence"
-							)
+							labelWithDesc("Dungeonize item", entry.getValue().getAsString() + " " + essenceType + " essence")
 						);
 						break;
 					default:
@@ -87,9 +82,9 @@ public class EssenceCommand extends CommandBase {
 			}
 
 			return wrapText(output);
-		}else if(args[0].equals("player")){
+		} else if (args[0].equals("player")) {
 			Player player = newPlayer(args, 1);
-			if(!player.isValid()){
+			if (!player.isValid()) {
 				return getFailCause(player);
 			}
 
@@ -97,17 +92,21 @@ public class EssenceCommand extends CommandBase {
 			output.appendText("\n\n" + label("Essence Amounts") + "\n");
 			for (Map.Entry<String, JsonElement> entry : player.profileJson().getAsJsonObject().entrySet()) {
 				if (entry.getKey().startsWith("essence_")) {
-					output.appendText(arrow() +
-							labelWithDesc(capitalizeString(entry.getKey().split("essence_")[1]) +
-									" essence",
-									formatNumber(entry.getValue().getAsInt()) + "\n")
+					output.appendText(
+						arrow() +
+						labelWithDesc(
+							capitalizeString(entry.getKey().split("essence_")[1]) + " essence",
+							formatNumber(entry.getValue().getAsInt()) + "\n"
+						)
 					);
 				}
 			}
 
 			output.appendText("\n" + label("Dungeon Upgrades"));
 			for (Map.Entry<String, JsonElement> perk : higherDepth(player.profileJson(), "perks").getAsJsonObject().entrySet()) {
-				output.appendText("\n" + arrow() + labelWithDesc(capitalizeString(perk.getKey().replace("_", " ")) ,  "" + perk.getValue().getAsInt()));
+				output.appendText(
+					"\n" + arrow() + labelWithDesc(capitalizeString(perk.getKey().replace("_", " ")), "" + perk.getValue().getAsInt())
+				);
 			}
 
 			return output;

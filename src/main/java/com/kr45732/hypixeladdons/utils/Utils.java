@@ -62,8 +62,8 @@ public class Utils {
 
 	public static final CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 	public static final ExecutorService executor = new ExceptionExecutor();
-    public static final Gson gson = new Gson();
-    private static final Pattern SERVER_BRAND_PATTERN = Pattern.compile("(.+) <- .+");
+	public static final Gson gson = new Gson();
+	private static final Pattern SERVER_BRAND_PATTERN = Pattern.compile("(.+) <- .+");
 	public static boolean onSkyblock;
 	private static JsonElement levelingJson;
 	private static JsonObject internalJsonMappings;
@@ -108,7 +108,7 @@ public class Utils {
 	public static void setInternalJsonMappings() {
 		if (internalJsonMappings == null) {
 			internalJsonMappings =
-					getJson("https://raw.githubusercontent.com/kr45732/skyblock-plus-data/main/InternalNameMappings.json").getAsJsonObject();
+				getJson("https://raw.githubusercontent.com/kr45732/skyblock-plus-data/main/InternalNameMappings.json").getAsJsonObject();
 		}
 	}
 
@@ -220,22 +220,22 @@ public class Utils {
 		String dashColor = color + C.STRIKETHROUGH;
 		String logoColor = "" + C.RESET + C.GOLD;
 		return new ChatComponentText(
-				dashColor +
-						"---------------" +
-						color +
-						"{" +
-						logoColor +
-						"HPA" +
-						color +
-						"}" +
-						dashColor +
-						"---------------" +
-						C.RESET +
-						"\n" +
-						text +
-						"\n" +
-						dashColor +
-						"----------------------------------"
+			dashColor +
+			"---------------" +
+			color +
+			"{" +
+			logoColor +
+			"HPA" +
+			color +
+			"}" +
+			dashColor +
+			"---------------" +
+			C.RESET +
+			"\n" +
+			text +
+			"\n" +
+			dashColor +
+			"----------------------------------"
 		);
 	}
 
@@ -244,10 +244,10 @@ public class Utils {
 		String dashColor = color + C.STRIKETHROUGH;
 		String logoColor = "" + C.RESET + C.GOLD;
 		return new ChatComponentText(
-				dashColor + "---------------" + color + "{" + logoColor + "HPA" + color + "}" + dashColor + "---------------" + C.RESET + "\n"
+			dashColor + "---------------" + color + "{" + logoColor + "HPA" + color + "}" + dashColor + "---------------" + C.RESET + "\n"
 		)
-				.appendSibling(text)
-				.appendText("\n" + dashColor + "----------------------------------");
+			.appendSibling(text)
+			.appendText("\n" + dashColor + "----------------------------------");
 	}
 
 	public static String getFormattedUsername(String playerUuid) {
@@ -537,41 +537,41 @@ public class Utils {
 	}
 
 	public static JsonObject higherDepth(JsonElement element, String path, JsonObject defaultValue) {
-		try{
+		try {
 			return higherDepth(element, path).getAsJsonObject();
-		}catch (Exception e){
+		} catch (Exception e) {
 			return defaultValue;
 		}
 	}
 
 	public static String higherDepth(JsonElement element, String path, String defaultValue) {
-		try{
+		try {
 			return higherDepth(element, path).getAsString();
-		}catch (Exception e){
+		} catch (Exception e) {
 			return defaultValue;
 		}
 	}
 
 	public static int higherDepth(JsonElement element, String path, int defaultValue) {
-		try{
+		try {
 			return higherDepth(element, path).getAsInt();
-		}catch (Exception e){
+		} catch (Exception e) {
 			return defaultValue;
 		}
 	}
 
 	public static long higherDepth(JsonElement element, String path, long defaultValue) {
-		try{
+		try {
 			return higherDepth(element, path).getAsLong();
-		}catch (Exception e){
+		} catch (Exception e) {
 			return defaultValue;
 		}
 	}
 
 	public static double higherDepth(JsonElement element, String path, double defaultValue) {
-		try{
+		try {
 			return higherDepth(element, path).getAsDouble();
-		}catch (Exception e){
+		} catch (Exception e) {
 			return defaultValue;
 		}
 	}
@@ -640,7 +640,6 @@ public class Utils {
 
 		return timeUntil.length() > 0 ? timeUntil.trim() : "0s";
 	}
-
 
 	public static double divide(double d1, double d2) {
 		return d2 == 0 ? 0 : (d1 / d2);
@@ -738,7 +737,6 @@ public class Utils {
 		return args.length > index + 1 ? new Player(username, args[index + 1]) : new Player(username);
 	}
 
-
 	/**
 	 * Username index of 0 (since most commands have the username at 0)
 	 */
@@ -752,14 +750,14 @@ public class Utils {
 	 * @param index Where the username should be located
 	 * @return New HypixelPlayer instance
 	 */
-	public static HypixelPlayer newHypixelPlayer(String[] args, int index){
+	public static HypixelPlayer newHypixelPlayer(String[] args, int index) {
 		return new HypixelPlayer(getUsername(args, index));
 	}
 
 	/**
 	 * Username index of 0 (since most commands have the username at 0)
 	 */
-	public static HypixelPlayer newHypixelPlayer(String[] args){
+	public static HypixelPlayer newHypixelPlayer(String[] args) {
 		return newHypixelPlayer(args, 0);
 	}
 

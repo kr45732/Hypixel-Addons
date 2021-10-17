@@ -44,7 +44,8 @@ public class HypixelCommand extends CommandBase {
 			return getFailCause(player);
 		}
 
-		IChatComponent output = player.defaultComponent()
+		IChatComponent output = player
+			.defaultComponent()
 			.appendText(
 				"\n\n" +
 				labelWithDesc("Hypixel level", roundAndFormat(player.getHypixelLevel())) +

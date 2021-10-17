@@ -18,11 +18,11 @@
 
 package com.kr45732.hypixeladdons.utils.weight.senither;
 
+import static com.kr45732.hypixeladdons.utils.Constants.*;
+
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.structs.SkillsStruct;
 import com.kr45732.hypixeladdons.utils.structs.WeightStruct;
-
-import static com.kr45732.hypixeladdons.utils.Constants.*;
 
 public class SkillsWeight {
 

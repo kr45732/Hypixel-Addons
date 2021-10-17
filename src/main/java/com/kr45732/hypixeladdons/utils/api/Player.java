@@ -33,11 +33,10 @@ import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.structs.InvItem;
 import com.kr45732.hypixeladdons.utils.structs.SkillsStruct;
 import com.kr45732.hypixeladdons.utils.structs.UsernameUuidStruct;
+import com.kr45732.hypixeladdons.utils.weight.senither.Weight;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import com.kr45732.hypixeladdons.utils.weight.senither.Weight;
 import me.nullicorn.nedit.NBTReader;
 import me.nullicorn.nedit.type.NBTCompound;
 import net.minecraft.event.ClickEvent;
@@ -177,9 +176,7 @@ public class Player {
 				Instant lastSaveLoop;
 				try {
 					lastSaveLoop =
-							Instant.ofEpochMilli(
-									higherDepth(profilesArray.get(i), "members." + this.uuid + ".last_save").getAsLong()
-							);
+						Instant.ofEpochMilli(higherDepth(profilesArray.get(i), "members." + this.uuid + ".last_save").getAsLong());
 				} catch (Exception e) {
 					continue;
 				}
@@ -489,7 +486,9 @@ public class Player {
 			Map<Integer, InvItem> storageMap = new HashMap<>();
 			int counter = 1;
 			for (Map.Entry<String, JsonElement> bp : higherDepth(profileJson(), "backpack_contents").getAsJsonObject().entrySet()) {
-				Collection<InvItem> curBpMap = getGenericInventoryMap(NBTReader.readBase64(higherDepth(bp.getValue(), "data").getAsString()))
+				Collection<InvItem> curBpMap = getGenericInventoryMap(
+					NBTReader.readBase64(higherDepth(bp.getValue(), "data").getAsString())
+				)
 					.values();
 				for (InvItem itemSlot : curBpMap) {
 					storageMap.put(counter, itemSlot);
@@ -520,7 +519,6 @@ public class Player {
 		return null;
 	}
 
-
 	/* Miscellaneous */
 	public double getWeight() {
 		return new Weight(this).getTotalWeight(true).getRaw();
@@ -546,8 +544,8 @@ public class Player {
 
 	public IChatComponent getLink() {
 		return new ChatText(labelWithDesc("Player", C.UNDERLINE + username))
-				.setClickEvent(ClickEvent.Action.OPEN_URL, skyblockStatsLink())
-				.build();
+			.setClickEvent(ClickEvent.Action.OPEN_URL, skyblockStatsLink())
+			.build();
 	}
 
 	public int getFairySouls() {
@@ -557,19 +555,19 @@ public class Player {
 	@Override
 	public String toString() {
 		return (
-				"Player{" +
-						"validPlayer=" +
-						validPlayer +
-						", playerUuid='" +
-						uuid +
-						'\'' +
-						", playerUsername='" +
-						username +
-						'\'' +
-						", profileName='" +
-						profileName +
-						'\'' +
-						'}'
+			"Player{" +
+			"validPlayer=" +
+			validPlayer +
+			", playerUuid='" +
+			uuid +
+			'\'' +
+			", playerUsername='" +
+			username +
+			'\'' +
+			", profileName='" +
+			profileName +
+			'\'' +
+			'}'
 		);
 	}
 }

@@ -72,44 +72,42 @@ public class MysteryBoxOverlay {
 					.entrySet()
 					.stream()
 					.sorted(
-						Comparator.comparingInt(
-							box -> {
-								NBTTagList lore = box.getKey().getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
-								for (int i = 0; i < lore.tagCount(); i++) {
-									if (ConfigUtils.mysteryBoxSortType.equals("expiry")) {
-										if (lore.getStringTagAt(i).startsWith("§7§cExpires in ")) {
-											String[] endingStringArr = lore.getStringTagAt(i).split("§7§cExpires in ")[1].split(", ");
-											int hoursLeft = 0;
-											for (String endingString : endingStringArr) {
-												int number = 0;
-												int factor = 1;
+						Comparator.comparingInt(box -> {
+							NBTTagList lore = box.getKey().getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
+							for (int i = 0; i < lore.tagCount(); i++) {
+								if (ConfigUtils.mysteryBoxSortType.equals("expiry")) {
+									if (lore.getStringTagAt(i).startsWith("§7§cExpires in ")) {
+										String[] endingStringArr = lore.getStringTagAt(i).split("§7§cExpires in ")[1].split(", ");
+										int hoursLeft = 0;
+										for (String endingString : endingStringArr) {
+											int number = 0;
+											int factor = 1;
 
-												try {
-													number = Integer.parseInt(endingString.replaceAll("\\D", ""));
-												} catch (Exception ignored) {}
+											try {
+												number = Integer.parseInt(endingString.replaceAll("\\D", ""));
+											} catch (Exception ignored) {}
 
-												if (endingString.contains("week")) {
-													factor = 7 * 24;
-												} else if (endingString.contains("days")) {
-													factor = 24;
-												}
-
-												hoursLeft += number * factor;
+											if (endingString.contains("week")) {
+												factor = 7 * 24;
+											} else if (endingString.contains("days")) {
+												factor = 24;
 											}
 
-											return hoursLeft;
+											hoursLeft += number * factor;
 										}
-									} else {
-										if (lore.getStringTagAt(i).startsWith("§7§7Quality: §e")) {
-											String starsStr = lore.getStringTagAt(i).split("§7§7Quality: §e")[1];
-											return starsStr.contains("§7") ? starsStr.indexOf("§7") : 5;
-										}
+
+										return hoursLeft;
+									}
+								} else {
+									if (lore.getStringTagAt(i).startsWith("§7§7Quality: §e")) {
+										String starsStr = lore.getStringTagAt(i).split("§7§7Quality: §e")[1];
+										return starsStr.contains("§7") ? starsStr.indexOf("§7") : 5;
 									}
 								}
-
-								return ConfigUtils.mysteryBoxSortType.equals("expiry") ? 0 : 6;
 							}
-						)
+
+							return ConfigUtils.mysteryBoxSortType.equals("expiry") ? 0 : 6;
+						})
 					)
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 

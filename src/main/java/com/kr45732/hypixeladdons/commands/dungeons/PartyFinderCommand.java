@@ -18,18 +18,17 @@
 
 package com.kr45732.hypixeladdons.commands.dungeons;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.kr45732.hypixeladdons.utils.Constants;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.util.IChatComponent;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
-import static com.kr45732.hypixeladdons.utils.Utils.*;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.util.IChatComponent;
 
 public class PartyFinderCommand extends CommandBase {
 

@@ -58,28 +58,28 @@ public class HypixelAddons {
 	private final ChatCommandListener chatCommandListener;
 	private final EventListener eventListener;
 
-	public HypixelAddons(){
+	public HypixelAddons() {
 		HypixelAddons.INSTANCE = this;
 		this.logger = LogManager.getLogger("HypixelAddons");
 		this.chatCommandListener =
-				new ChatCommandListener()
-						.addChatCommands(
-								new ChatCommand(SlayerCommand.INSTANCE, event -> SlayerCommand.getSlayerChat(event.getArgs())),
-								new ChatCommand(SkillsCommand.INSTANCE, event -> SkillsCommand.getSkillsChat(event.getArgs())),
-								new ChatCommand(AuctionsCommand.INSTANCE, event -> AuctionsCommand.getAuctionsChat(event.getArgs())),
-								new ChatCommand(BazaarCommand.INSTANCE, event -> BazaarCommand.getBazaarChat(event.getArgs())),
-								//	new ChatCommand(BidsCommand.INSTANCE, event -> BidsCommand.getBidsChat(event.getArgs())),
-								//	new ChatCommand(BinCommand.INSTANCE, event -> BinCommand.getBinChat(event.getArgs())),
-								new ChatCommand(BitsCommand.INSTANCE, event -> BitsCommand.getBitsChat(event.getArgs())),
-								new ChatCommand(BankCommand.INSTANCE, event -> BankCommand.getBankChat(event.getArgs())),
-								new ChatCommand(WeightCommand.INSTANCE, event -> WeightCommand.getWeightChat(event.getArgs())),
-								new ChatCommand(DungeonsCommand.INSTANCE, event -> DungeonsCommand.getDungeonsChat(event.getArgs())),
-								new ChatCommand(PartyFinderCommand.INSTANCE, event -> PartyFinderCommand.getPartyFinderChat(event.getArgs())),
-								new ChatCommand(GuildCommand.INSTANCE, event -> GuildCommand.getGuildChat(event.getArgs())),
-								new ChatCommand(SkywarsCommand.INSTANCE, event -> SkywarsCommand.getSkywarsChat(event.getArgs())),
-								new ChatCommand(BedwarsCommand.INSTANCE, event -> BedwarsCommand.getBedwarsChat(event.getArgs())),
-								new ChatCommand(HypixelCommand.INSTANCE, event -> HypixelCommand.getHypixelChat(event.getArgs()))
-						);
+			new ChatCommandListener()
+				.addChatCommands(
+					new ChatCommand(SlayerCommand.INSTANCE, event -> SlayerCommand.getSlayerChat(event.getArgs())),
+					new ChatCommand(SkillsCommand.INSTANCE, event -> SkillsCommand.getSkillsChat(event.getArgs())),
+					new ChatCommand(AuctionsCommand.INSTANCE, event -> AuctionsCommand.getAuctionsChat(event.getArgs())),
+					new ChatCommand(BazaarCommand.INSTANCE, event -> BazaarCommand.getBazaarChat(event.getArgs())),
+					//	new ChatCommand(BidsCommand.INSTANCE, event -> BidsCommand.getBidsChat(event.getArgs())),
+					//	new ChatCommand(BinCommand.INSTANCE, event -> BinCommand.getBinChat(event.getArgs())),
+					new ChatCommand(BitsCommand.INSTANCE, event -> BitsCommand.getBitsChat(event.getArgs())),
+					new ChatCommand(BankCommand.INSTANCE, event -> BankCommand.getBankChat(event.getArgs())),
+					new ChatCommand(WeightCommand.INSTANCE, event -> WeightCommand.getWeightChat(event.getArgs())),
+					new ChatCommand(DungeonsCommand.INSTANCE, event -> DungeonsCommand.getDungeonsChat(event.getArgs())),
+					new ChatCommand(PartyFinderCommand.INSTANCE, event -> PartyFinderCommand.getPartyFinderChat(event.getArgs())),
+					new ChatCommand(GuildCommand.INSTANCE, event -> GuildCommand.getGuildChat(event.getArgs())),
+					new ChatCommand(SkywarsCommand.INSTANCE, event -> SkywarsCommand.getSkywarsChat(event.getArgs())),
+					new ChatCommand(BedwarsCommand.INSTANCE, event -> BedwarsCommand.getBedwarsChat(event.getArgs())),
+					new ChatCommand(HypixelCommand.INSTANCE, event -> HypixelCommand.getHypixelChat(event.getArgs()))
+				);
 		this.eventListener = new EventListener();
 	}
 
@@ -99,45 +99,45 @@ public class HypixelAddons {
 		ConfigUtils.initialize();
 	}
 
-	public CommandBase[] getCommands(){
+	public CommandBase[] getCommands() {
 		return new CommandBase[] {
-				// Mod settings
-				new SetKeyCommand(),
-				new SettingsCommand(),
-				// Slayer
-				SlayerCommand.INSTANCE,
-				// Skills
-				SkillsCommand.INSTANCE,
-				// Dungeons
-				DungeonsCommand.INSTANCE,
-				EssenceCommand.INSTANCE,
-				PartyFinderCommand.INSTANCE,
-				// Guild
-				GuildCommand.INSTANCE,
-				new MOTDCommand(),
-				// Price
-				AuctionsCommand.INSTANCE,
-				BazaarCommand.INSTANCE,
-				//	BinCommand.INSTANCE, TODO: fix?
-				//	BidsCommand.INSTANCE,
-				BitsCommand.INSTANCE,
-				// Hypixel
-				HypixelCommand.INSTANCE,
-				BedwarsCommand.INSTANCE,
-				SkywarsCommand.INSTANCE,
-				ArcadeCommand.INSTANCE,
-				ArenaCommand.INSTANCE,
-				DuelsCommand.INSTANCE,
-				MurderMysteryCommand.INSTANCE,
-				BuildBattleCommand.INSTANCE,
-				// Miscellaneous
-				BankCommand.INSTANCE,
-				WeightCommand.INSTANCE,
-				SkyblockCommand.INSTANCE,
-				new TodoListCommand(),
-				new HelpCommand(),
-				// Don't run this command, ok?
-				new DevCommand()
+			// Mod settings
+			new SetKeyCommand(),
+			new SettingsCommand(),
+			// Slayer
+			SlayerCommand.INSTANCE,
+			// Skills
+			SkillsCommand.INSTANCE,
+			// Dungeons
+			DungeonsCommand.INSTANCE,
+			EssenceCommand.INSTANCE,
+			PartyFinderCommand.INSTANCE,
+			// Guild
+			GuildCommand.INSTANCE,
+			new MOTDCommand(),
+			// Price
+			AuctionsCommand.INSTANCE,
+			BazaarCommand.INSTANCE,
+			//	BinCommand.INSTANCE, TODO: fix?
+			//	BidsCommand.INSTANCE,
+			BitsCommand.INSTANCE,
+			// Hypixel
+			HypixelCommand.INSTANCE,
+			BedwarsCommand.INSTANCE,
+			SkywarsCommand.INSTANCE,
+			ArcadeCommand.INSTANCE,
+			ArenaCommand.INSTANCE,
+			DuelsCommand.INSTANCE,
+			MurderMysteryCommand.INSTANCE,
+			BuildBattleCommand.INSTANCE,
+			// Miscellaneous
+			BankCommand.INSTANCE,
+			WeightCommand.INSTANCE,
+			SkyblockCommand.INSTANCE,
+			new TodoListCommand(),
+			new HelpCommand(),
+			// Don't run this command, ok?
+			new DevCommand(),
 		};
 	}
 

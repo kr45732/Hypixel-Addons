@@ -18,24 +18,23 @@
 
 package com.kr45732.hypixeladdons.commands.miscellaneous;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.kr45732.hypixeladdons.utils.Constants;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.chat.C;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import com.kr45732.hypixeladdons.utils.structs.SkillsStruct;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import me.nullicorn.nedit.type.NBTCompound;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class SkyblockCommand extends CommandBase {
 
@@ -60,9 +59,7 @@ public class SkyblockCommand extends CommandBase {
 			if (skillInfo != null) {
 				skillComponents.add(
 					new ChatText(
-						"\n" +
-						arrow() +
-						labelWithDesc(capitalizeString(skillInfo.getName()), roundAndFormat(skillInfo.getProgressLevel()))
+						"\n" + arrow() + labelWithDesc(capitalizeString(skillInfo.getName()), roundAndFormat(skillInfo.getProgressLevel()))
 					)
 						.setHoverEvent(
 							capitalizeString(skillInfo.getName()),
@@ -73,10 +70,7 @@ public class SkyblockCommand extends CommandBase {
 							"\n" +
 							labelWithDesc("Total XP", simplifyNumber(skillInfo.getTotalExp())) +
 							"\n" +
-							labelWithDesc(
-								"Progress",
-								(skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext()))
-							)
+							labelWithDesc("Progress", (skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext())))
 						)
 						.build()
 				);
@@ -173,9 +167,7 @@ public class SkyblockCommand extends CommandBase {
 			)
 			.appendSibling(
 				new ChatText(
-					"\n" +
-					arrow() +
-					labelWithDesc(capitalizeString(skillInfo.getName()), roundAndFormat(skillInfo.getProgressLevel()))
+					"\n" + arrow() + labelWithDesc(capitalizeString(skillInfo.getName()), roundAndFormat(skillInfo.getProgressLevel()))
 				)
 					.setHoverEvent(
 						capitalizeString(skillInfo.getName()),
@@ -186,10 +178,7 @@ public class SkyblockCommand extends CommandBase {
 						"\n" +
 						labelWithDesc("Total XP", simplifyNumber(skillInfo.getTotalExp())) +
 						"\n" +
-						labelWithDesc(
-							"Progress",
-							(skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext()))
-						)
+						labelWithDesc("Progress", (skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext())))
 					)
 					.build()
 			);
@@ -212,10 +201,7 @@ public class SkyblockCommand extends CommandBase {
 						"\n" +
 						labelWithDesc("Total XP", simplifyNumber(skillInfo.getTotalExp())) +
 						"\n" +
-						labelWithDesc(
-							"Progress",
-							(skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext()))
-						)
+						labelWithDesc("Progress", (skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext())))
 					)
 					.build()
 			);

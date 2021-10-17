@@ -18,15 +18,15 @@
 
 package com.kr45732.hypixeladdons.commands.hypixel;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+import static com.kr45732.hypixeladdons.utils.api.HypixelPlayer.ArcadeMode.*;
+
 import com.kr45732.hypixeladdons.utils.api.HypixelPlayer;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
-
-import static com.kr45732.hypixeladdons.utils.Utils.*;
-import static com.kr45732.hypixeladdons.utils.api.HypixelPlayer.ArcadeMode.*;
 
 public class ArcadeCommand extends CommandBase {
 

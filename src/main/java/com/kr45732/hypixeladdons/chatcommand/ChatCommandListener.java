@@ -66,11 +66,10 @@ public class ChatCommandListener {
 							.stream()
 							.filter(command -> command.isForCommand(args[0]))
 							.findFirst()
-							.ifPresent(
-								matchedCommand ->
-									matchedCommand.execute(
-										new ChatCommandEvent(event, args.length == 2 ? args[1].split(" ") : new String[] { sender }, sender)
-									)
+							.ifPresent(matchedCommand ->
+								matchedCommand.execute(
+									new ChatCommandEvent(event, args.length == 2 ? args[1].split(" ") : new String[] { sender }, sender)
+								)
 							);
 					}
 				}

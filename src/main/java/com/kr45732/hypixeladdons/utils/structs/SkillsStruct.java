@@ -28,7 +28,15 @@ public class SkillsStruct {
 	private final long expForNext;
 	private final double progressToNext;
 
-	public SkillsStruct(String name, int currentLevel, int maxLevel, long totalExp, long expCurrent, long expForNext, double progressToNext) {
+	public SkillsStruct(
+		String name,
+		int currentLevel,
+		int maxLevel,
+		long totalExp,
+		long expCurrent,
+		long expForNext,
+		double progressToNext
+	) {
 		this.name = name;
 		this.currentLevel = currentLevel;
 		this.maxLevel = maxLevel;

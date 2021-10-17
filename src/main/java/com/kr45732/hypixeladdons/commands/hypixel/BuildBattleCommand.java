@@ -23,12 +23,11 @@ import static com.kr45732.hypixeladdons.utils.api.HypixelPlayer.BuildBattleMode.
 
 import com.kr45732.hypixeladdons.utils.api.HypixelPlayer;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
+import java.util.Collections;
+import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
-
-import java.util.Collections;
-import java.util.List;
 
 public class BuildBattleCommand extends CommandBase {
 
@@ -74,7 +73,6 @@ public class BuildBattleCommand extends CommandBase {
 
 		return wrapText(output);
 	}
-
 
 	@Override
 	public String getCommandName() {

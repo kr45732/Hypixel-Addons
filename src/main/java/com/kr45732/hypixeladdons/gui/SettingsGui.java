@@ -210,14 +210,12 @@ public class SettingsGui extends GuiScreen {
 
 		// Background, title, and the 2 lines
 		drawRect(guiX, guiY, guiX + guiWidth, guiY + guiHeight, 0xF2181c25);
-		GuiUtils.applyGl(
-			() -> {
-				GlStateManager.scale(2, 2, 1);
-				fontRendererObj.drawStringWithShadow("Hypixel Addons", guiX / 2F + 5, guiY / 2F + 5, 0xFF28709e);
-				GuiUtils.drawHorizontalLine(guiX / 2 + 5, (guiX + guiWidth) / 2 - 5, guiY / 2 + 16, 0xFF28709e);
-				GuiUtils.drawVerticalLine(guiX / 2 + 45, guiY / 2 + 16, (guiY + guiHeight) / 2 - 5, 0xFF28709e);
-			}
-		);
+		GuiUtils.applyGl(() -> {
+			GlStateManager.scale(2, 2, 1);
+			fontRendererObj.drawStringWithShadow("Hypixel Addons", guiX / 2F + 5, guiY / 2F + 5, 0xFF28709e);
+			GuiUtils.drawHorizontalLine(guiX / 2 + 5, (guiX + guiWidth) / 2 - 5, guiY / 2 + 16, 0xFF28709e);
+			GuiUtils.drawVerticalLine(guiX / 2 + 45, guiY / 2 + 16, (guiY + guiHeight) / 2 - 5, 0xFF28709e);
+		});
 
 		// Apply GL scissors for the scrolling effect
 		GuiUtils.enableGlScissors();

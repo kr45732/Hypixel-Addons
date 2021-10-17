@@ -18,17 +18,15 @@
 
 package com.kr45732.hypixeladdons.utils.weight.lily;
 
+import static com.kr45732.hypixeladdons.utils.Constants.*;
+import static com.kr45732.hypixeladdons.utils.Utils.higherDepth;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.structs.SkillsStruct;
 import com.kr45732.hypixeladdons.utils.structs.WeightStruct;
-
 import java.util.Map;
-
-import static com.kr45732.hypixeladdons.utils.Constants.*;
-import static com.kr45732.hypixeladdons.utils.Utils.higherDepth;
-
 
 public class DungeonsWeight {
 
@@ -111,7 +109,7 @@ public class DungeonsWeight {
 				return weightStruct;
 			}
 
-			JsonObject dcb =DUNGEON_COMPLETION_BUFFS;
+			JsonObject dcb = DUNGEON_COMPLETION_BUFFS;
 			for (Map.Entry<String, JsonElement> masterFloor : higherDepth(
 				player.profileJson(),
 				"dungeons.dungeon_types.master_catacombs.tier_completions"

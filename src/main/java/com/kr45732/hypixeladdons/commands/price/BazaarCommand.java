@@ -18,21 +18,20 @@
 
 package com.kr45732.hypixeladdons.commands.price;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.google.gson.JsonElement;
+import java.util.*;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
-
-import java.util.*;
-
-import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class BazaarCommand extends CommandBase {
 
 	public static final BazaarCommand INSTANCE = new BazaarCommand();
 
 	public static ChatComponentText getBazaarString(String[] args) {
-		if (args.length== 0) {
+		if (args.length == 0) {
 			return getUsage(INSTANCE);
 		}
 		args = convertArgs(args, 1);
@@ -60,17 +59,13 @@ public class BazaarCommand extends CommandBase {
 			"\n" +
 			labelWithDesc(
 				"Buy Price (Per)",
-				simplifyNumber(
-					higherDepth(higherDepth(itemInfo, "buy_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble()
-				)
+				simplifyNumber(higherDepth(higherDepth(itemInfo, "buy_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble())
 			);
 		output +=
 			"\n" +
 			labelWithDesc(
 				"Sell Price (Per)",
-				simplifyNumber(
-					higherDepth(higherDepth(itemInfo, "sell_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble()
-				)
+				simplifyNumber(higherDepth(higherDepth(itemInfo, "sell_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble())
 			);
 
 		return wrapText(output);
@@ -104,13 +99,9 @@ public class BazaarCommand extends CommandBase {
 		return (
 			idToName(itemId) +
 			" costs " +
-			simplifyNumber(
-				higherDepth(higherDepth(itemInfo, "buy_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble()
-			) +
+			simplifyNumber(higherDepth(higherDepth(itemInfo, "buy_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble()) +
 			" and sells for " +
-			simplifyNumber(
-				higherDepth(higherDepth(itemInfo, "sell_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble()
-			)
+			simplifyNumber(higherDepth(higherDepth(itemInfo, "sell_summary").getAsJsonArray().get(0), "pricePerUnit").getAsDouble())
 		);
 	}
 

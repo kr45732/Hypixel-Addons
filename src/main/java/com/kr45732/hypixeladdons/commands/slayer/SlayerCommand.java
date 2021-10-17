@@ -86,12 +86,14 @@ public class SlayerCommand extends CommandBase {
 			50000L *
 			endermanFourKills;
 
-		IChatComponent output = player.defaultComponent().appendText(
-			"\n\n" +
-			labelWithDesc("Total slayer", formatNumber(player.getTotalSlayer()) + " XP") +
-			"\n" +
-			labelWithDesc("Total coins spent", simplifyNumber(coinsSpentOnSlayers) + "\n")
-		);
+		IChatComponent output = player
+			.defaultComponent()
+			.appendText(
+				"\n\n" +
+				labelWithDesc("Total slayer", formatNumber(player.getTotalSlayer()) + " XP") +
+				"\n" +
+				labelWithDesc("Total coins spent", simplifyNumber(coinsSpentOnSlayers) + "\n")
+			);
 
 		for (Map.Entry<String, String> slayerName : Constants.SLAYER_NAMES_MAP.entrySet()) {
 			StringBuilder curSlayerKills = new StringBuilder();

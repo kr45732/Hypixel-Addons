@@ -18,15 +18,14 @@
 
 package com.kr45732.hypixeladdons.commands.config;
 
+import static com.kr45732.hypixeladdons.utils.Utils.executor;
+
 import com.kr45732.hypixeladdons.HypixelAddons;
 import com.kr45732.hypixeladdons.gui.SettingsGui;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-
 import java.util.Arrays;
 import java.util.List;
-
-import static com.kr45732.hypixeladdons.utils.Utils.executor;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
 
 public class SettingsCommand extends CommandBase {
 

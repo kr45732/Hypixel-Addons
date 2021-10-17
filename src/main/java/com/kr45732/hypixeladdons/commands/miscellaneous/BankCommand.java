@@ -18,16 +18,15 @@
 
 package com.kr45732.hypixeladdons.commands.miscellaneous;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
+import java.util.Arrays;
+import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class BankCommand extends CommandBase {
 
@@ -47,7 +46,8 @@ public class BankCommand extends CommandBase {
 		double purseCoins = player.getPurseCoins();
 
 		return wrapText(
-			player.defaultComponent()
+			player
+				.defaultComponent()
 				.appendText(
 					"\n\n" +
 					labelWithDesc("Total coins", "" + simplifyNumber(Math.max(bankBal, 0) + purseCoins)) +

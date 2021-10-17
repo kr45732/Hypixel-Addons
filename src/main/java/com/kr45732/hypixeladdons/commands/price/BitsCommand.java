@@ -18,13 +18,13 @@
 
 package com.kr45732.hypixeladdons.commands.price;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.google.gson.JsonElement;
 import com.kr45732.hypixeladdons.utils.Constants;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
-
-import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class BitsCommand extends CommandBase {
 

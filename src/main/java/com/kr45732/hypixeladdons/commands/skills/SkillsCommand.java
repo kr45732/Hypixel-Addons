@@ -18,6 +18,8 @@
 
 package com.kr45732.hypixeladdons.commands.skills;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.kr45732.hypixeladdons.utils.*;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
@@ -30,8 +32,6 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
-
-import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class SkillsCommand extends CommandBase {
 
@@ -55,9 +55,7 @@ public class SkillsCommand extends CommandBase {
 			if (skillInfo != null) {
 				skillComponents.add(
 					new ChatText(
-						"\n" +
-						arrow() +
-						labelWithDesc(capitalizeString(skillInfo.getName()), roundAndFormat(skillInfo.getProgressLevel()))
+						"\n" + arrow() + labelWithDesc(capitalizeString(skillInfo.getName()), roundAndFormat(skillInfo.getProgressLevel()))
 					)
 						.setHoverEvent(
 							capitalizeString(skillInfo.getName()),
@@ -68,10 +66,7 @@ public class SkillsCommand extends CommandBase {
 							"\n" +
 							labelWithDesc("Total XP", simplifyNumber(skillInfo.getTotalExp())) +
 							"\n" +
-							labelWithDesc(
-								"Progress",
-								(skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext()))
-							)
+							labelWithDesc("Progress", (skillInfo.isMaxed() ? "MAX" : roundProgress(skillInfo.getProgressToNext())))
 						)
 						.build()
 				);
@@ -87,12 +82,14 @@ public class SkillsCommand extends CommandBase {
 		trueSA /= Constants.SKILL_NAMES.size();
 		progressSA /= Constants.SKILL_NAMES.size();
 
-		IChatComponent output = player.defaultComponent().appendText(
-			"\n\n" +
-			labelWithDesc("True skill average", roundAndFormat(trueSA)) +
-			"\n" +
-			labelWithDesc("Progress skill average", roundAndFormat(progressSA) + "\n")
-		);
+		IChatComponent output = player
+			.defaultComponent()
+			.appendText(
+				"\n\n" +
+				labelWithDesc("True skill average", roundAndFormat(trueSA)) +
+				"\n" +
+				labelWithDesc("Progress skill average", roundAndFormat(progressSA) + "\n")
+			);
 		for (IChatComponent skillComponent : skillComponents) {
 			output.appendSibling(skillComponent);
 		}

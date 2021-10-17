@@ -38,18 +38,16 @@ public class ChatCommand {
 	}
 
 	public void execute(ChatCommandEvent event) {
-		Utils.executor.submit(
-			() -> {
-				int remainingCooldown = getRemainingCooldown(event.getSender());
-				if (remainingCooldown > 0) {
-					if (ConfigUtils.toggleGuildChatCooldownMessage) {
-						event.reply("This command is on cooldown for " + remainingCooldown + " more seconds");
-					}
-				} else {
-					event.reply(execute.apply(event));
+		Utils.executor.submit(() -> {
+			int remainingCooldown = getRemainingCooldown(event.getSender());
+			if (remainingCooldown > 0) {
+				if (ConfigUtils.toggleGuildChatCooldownMessage) {
+					event.reply("This command is on cooldown for " + remainingCooldown + " more seconds");
 				}
+			} else {
+				event.reply(execute.apply(event));
 			}
-		);
+		});
 	}
 
 	public boolean isForCommand(String command) {

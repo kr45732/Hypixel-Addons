@@ -18,18 +18,17 @@
 
 package com.kr45732.hypixeladdons.commands.miscellaneous;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.kr45732.hypixeladdons.utils.Constants;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import com.kr45732.hypixeladdons.utils.weight.senither.Weight;
+import java.util.Collections;
+import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
-
-import java.util.Collections;
-import java.util.List;
-
-import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class WeightCommand extends CommandBase {
 
@@ -51,9 +50,7 @@ public class WeightCommand extends CommandBase {
 			slayerStr
 				.append("\n")
 				.append(arrow())
-				.append(
-					labelWithDesc(capitalizeString(slayerName), weight.getSlayerWeight().getSlayerWeight(slayerName).get())
-				);
+				.append(labelWithDesc(capitalizeString(slayerName), weight.getSlayerWeight().getSlayerWeight(slayerName).get()));
 		}
 		StringBuilder skillsStr = new StringBuilder();
 		for (String skillName : Constants.SKILL_NAMES) {
@@ -72,26 +69,25 @@ public class WeightCommand extends CommandBase {
 				.append("\n")
 				.append(arrow())
 				.append(
-					labelWithDesc(
-						capitalizeString(dungeonClassName),
-						weight.getDungeonsWeight().getClassWeight(dungeonClassName).get()
-					)
+					labelWithDesc(capitalizeString(dungeonClassName), weight.getDungeonsWeight().getClassWeight(dungeonClassName).get())
 				);
 		}
 
-		IChatComponent output =player.defaultComponent().appendText(
-			"\n\n" +
-			label("Slayer | " + weight.getSlayerWeight().getWeightStruct().get()) +
-			slayerStr +
-			"\n\n" +
-			label("Skills | " + weight.getSkillsWeight().getWeightStruct().get()) +
-			skillsStr +
-			"\n\n" +
-			label("Dungeons | " + weight.getDungeonsWeight().getWeightStruct().get()) +
-			dungeonsStr +
-			"\n\n" +
-			labelWithDesc("Total weight", weight.getTotalWeight(false).get())
-		);
+		IChatComponent output = player
+			.defaultComponent()
+			.appendText(
+				"\n\n" +
+				label("Slayer | " + weight.getSlayerWeight().getWeightStruct().get()) +
+				slayerStr +
+				"\n\n" +
+				label("Skills | " + weight.getSkillsWeight().getWeightStruct().get()) +
+				skillsStr +
+				"\n\n" +
+				label("Dungeons | " + weight.getDungeonsWeight().getWeightStruct().get()) +
+				dungeonsStr +
+				"\n\n" +
+				labelWithDesc("Total weight", weight.getTotalWeight(false).get())
+			);
 
 		return wrapText(output);
 	}
