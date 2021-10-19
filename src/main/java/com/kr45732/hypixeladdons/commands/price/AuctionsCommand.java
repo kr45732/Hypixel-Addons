@@ -43,7 +43,7 @@ public class AuctionsCommand extends CommandBase {
 
 	public static final AuctionsCommand INSTANCE = new AuctionsCommand();
 
-	public static IChatComponent getAuctionsString(String[] args) {
+	public IChatComponent getAuctionsString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
@@ -126,7 +126,7 @@ public class AuctionsCommand extends CommandBase {
 		);
 	}
 
-	public static String getAuctionsChat(String[] args) {
+	public String getAuctionsChat(String[] args) {
 		if (args.length != 1) {
 			return getUsageChat(INSTANCE);
 		}

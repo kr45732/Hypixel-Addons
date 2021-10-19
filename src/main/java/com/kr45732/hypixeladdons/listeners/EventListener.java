@@ -18,28 +18,19 @@
 
 package com.kr45732.hypixeladdons.listeners;
 
-import static com.kr45732.hypixeladdons.utils.Constants.*;
-import static com.kr45732.hypixeladdons.utils.Utils.*;
-
 import com.google.common.collect.Sets;
 import com.kr45732.hypixeladdons.commands.hypixel.BedwarsCommand;
 import com.kr45732.hypixeladdons.commands.hypixel.SkywarsCommand;
 import com.kr45732.hypixeladdons.features.MysteryBoxOverlay;
 import com.kr45732.hypixeladdons.features.TodoListOverlay;
-import com.kr45732.hypixeladdons.gui.ExtendedGuiIngame;
 import com.kr45732.hypixeladdons.utils.api.HypixelPlayer;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.chat.C;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import com.kr45732.hypixeladdons.utils.structs.SkillsStruct;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.event.ClickEvent;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.IChatComponent;
@@ -49,17 +40,20 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.kr45732.hypixeladdons.utils.Constants.*;
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 public class EventListener {
 
 	private final Pattern guildJoinRequestPattern = Pattern.compile("(\\w+) has requested to join the Guild!");
 	private final Set<String> skyblockInAllLanguages = Sets.newHashSet("SKYBLOCK", "\u7A7A\u5C9B\u751F\u5B58", "\u7A7A\u5CF6\u751F\u5B58");
 	private GuiScreen guiToOpen;
 	private long lastLongUpdate = 0;
-	private final ExtendedGuiIngame extendedGuiIngame;
-
-	public EventListener() {
-		this.extendedGuiIngame = new ExtendedGuiIngame();
-	}
 
 	@SubscribeEvent
 	public void onTick(TickEvent.RenderTickEvent event) {
@@ -92,10 +86,6 @@ public class EventListener {
 			Minecraft mc = Minecraft.getMinecraft();
 			if (event.phase != TickEvent.Phase.START || mc == null || mc.theWorld == null || mc.thePlayer == null) {
 				return;
-			}
-
-			if (!(mc.ingameGUI instanceof ExtendedGuiIngame)) {
-				mc.ingameGUI = this.extendedGuiIngame;
 			}
 
 			long currentTime = System.currentTimeMillis();
@@ -256,7 +246,7 @@ public class EventListener {
 			return getFailCause("Guild join request helper\n ⚠ " + player.getFailCause());
 		}
 
-		return BedwarsCommand.getBedwarsString(new String[] { username });
+		return BedwarsCommand.INSTANCE.getBedwarsString(new String[] { username });
 	}
 
 	private IChatComponent getSkywarsStats(String username) {
@@ -265,7 +255,7 @@ public class EventListener {
 			return getFailCause("Guild join request helper\n ⚠ " + player.getFailCause());
 		}
 
-		return SkywarsCommand.getSkywarsString(new String[] { username });
+		return SkywarsCommand.INSTANCE.getSkywarsString(new String[] { username });
 	}
 
 	public void setGuiToOpen(GuiScreen guiToOpen) {

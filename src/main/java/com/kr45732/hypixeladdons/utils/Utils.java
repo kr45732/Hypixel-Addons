@@ -576,6 +576,14 @@ public class Utils {
 		}
 	}
 
+	public static boolean higherDepth(JsonElement element, String path, boolean defaultValue) {
+		try {
+			return higherDepth(element, path).getAsBoolean();
+		} catch (Exception e) {
+			return defaultValue;
+		}
+	}
+
 	public static ArrayList<String> getJsonKeys(JsonElement jsonElement) {
 		try {
 			return jsonElement

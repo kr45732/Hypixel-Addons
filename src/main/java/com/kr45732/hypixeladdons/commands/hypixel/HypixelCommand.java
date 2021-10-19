@@ -34,7 +34,7 @@ public class HypixelCommand extends CommandBase {
 
 	public static final HypixelCommand INSTANCE = new HypixelCommand();
 
-	public static IChatComponent getHypixelString(String[] args) {
+	public IChatComponent getHypixelString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
@@ -91,7 +91,7 @@ public class HypixelCommand extends CommandBase {
 		return wrapText(output);
 	}
 
-	public static String getHypixelChat(String[] args) {
+	public String getHypixelChat(String[] args) {
 		if (args.length != 1) {
 			return getUsageChat(INSTANCE);
 		}

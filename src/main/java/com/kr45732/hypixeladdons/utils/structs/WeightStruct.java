@@ -18,7 +18,8 @@
 
 package com.kr45732.hypixeladdons.utils.structs;
 
-import com.kr45732.hypixeladdons.utils.Utils;
+
+import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class WeightStruct {
 
@@ -44,10 +45,10 @@ public class WeightStruct {
 		return o;
 	}
 
-	public String get() {
+	public String getFormatted() {
 		return (
-			Utils.roundAndFormat(base + overflow) +
-			(overflow > 0 ? " (" + Utils.roundAndFormat(base) + " + " + Utils.roundAndFormat(overflow) + ")" : "")
+			roundAndFormat(base + overflow) +
+			(overflow > 0 ? " (" + roundAndFormat(base) + " + " + roundAndFormat(overflow) + ")" : "")
 		);
 	}
 

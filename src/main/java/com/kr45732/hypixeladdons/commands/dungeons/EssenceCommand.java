@@ -34,7 +34,7 @@ public class EssenceCommand extends CommandBase {
 
 	public static final EssenceCommand INSTANCE = new EssenceCommand();
 
-	public static IChatComponent getEssenceString(String[] args) {
+	public IChatComponent getEssenceString(String[] args) {
 		if (args.length < 1) {
 			return getUsage(INSTANCE);
 		}

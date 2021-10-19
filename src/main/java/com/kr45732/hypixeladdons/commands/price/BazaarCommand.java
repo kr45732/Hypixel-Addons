@@ -30,7 +30,7 @@ public class BazaarCommand extends CommandBase {
 
 	public static final BazaarCommand INSTANCE = new BazaarCommand();
 
-	public static ChatComponentText getBazaarString(String[] args) {
+	public ChatComponentText getBazaarString(String[] args) {
 		if (args.length == 0) {
 			return getUsage(INSTANCE);
 		}
@@ -71,7 +71,7 @@ public class BazaarCommand extends CommandBase {
 		return wrapText(output);
 	}
 
-	public static String getBazaarChat(String[] args) {
+	public String getBazaarChat(String[] args) {
 		if (args.length == 0) {
 			return getUsageChat(INSTANCE);
 		}

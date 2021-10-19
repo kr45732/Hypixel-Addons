@@ -18,10 +18,13 @@
 
 package com.kr45732.hypixeladdons.commands.miscellaneous;
 
+import static com.kr45732.hypixeladdons.utils.Constants.SKILL_NAMES;
+import static com.kr45732.hypixeladdons.utils.Constants.SLAYER_NAMES;
 import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 import com.kr45732.hypixeladdons.utils.Constants;
 import com.kr45732.hypixeladdons.utils.api.Player;
+import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import com.kr45732.hypixeladdons.utils.weight.senither.Weight;
 import java.util.Collections;
@@ -34,7 +37,7 @@ public class WeightCommand extends CommandBase {
 
 	public static final WeightCommand INSTANCE = new WeightCommand();
 
-	public static IChatComponent getWeightString(String[] args) {
+	public IChatComponent getWeightString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
@@ -50,49 +53,80 @@ public class WeightCommand extends CommandBase {
 			slayerStr
 				.append("\n")
 				.append(arrow())
-				.append(labelWithDesc(capitalizeString(slayerName), weight.getSlayerWeight().getSlayerWeight(slayerName).get()));
+				.append(labelWithDesc(capitalizeString(slayerName), weight.getSlayerWeight().getSlayerWeight(slayerName).getFormatted()));
 		}
 		StringBuilder skillsStr = new StringBuilder();
-		for (String skillName : Constants.SKILL_NAMES) {
+		for (String skillName : SKILL_NAMES) {
 			skillsStr
 				.append("\n")
 				.append(arrow())
-				.append(labelWithDesc(capitalizeString(skillName), weight.getSkillsWeight().getSkillsWeight(skillName).get()));
+				.append(labelWithDesc(capitalizeString(skillName), weight.getSkillsWeight().getSkillsWeight(skillName).getFormatted()));
 		}
 		StringBuilder dungeonsStr = new StringBuilder();
 		dungeonsStr
 			.append("\n")
 			.append(arrow())
-			.append(labelWithDesc("Catacombs", weight.getDungeonsWeight().getDungeonWeight("catacombs").get()));
+			.append(labelWithDesc("Catacombs", weight.getDungeonsWeight().getDungeonWeight("catacombs").getFormatted()));
 		for (String dungeonClassName : Constants.DUNGEON_CLASS_NAMES) {
 			dungeonsStr
 				.append("\n")
 				.append(arrow())
 				.append(
-					labelWithDesc(capitalizeString(dungeonClassName), weight.getDungeonsWeight().getClassWeight(dungeonClassName).get())
+					labelWithDesc(capitalizeString(dungeonClassName), weight.getDungeonsWeight().getClassWeight(dungeonClassName).getFormatted())
 				);
 		}
 
+		com.kr45732.hypixeladdons.utils.weight.lily.Weight lilyWeight = new com.kr45732.hypixeladdons.utils.weight.lily.Weight(player);
+		StringBuilder lilySlayerStr = new StringBuilder();
+		for (String slayerName : SLAYER_NAMES) {
+			lilySlayerStr
+					.append(capitalizeString(slayerName))
+					.append(": ")
+					.append(lilyWeight.getSlayerWeight().getSlayerWeight(slayerName).getFormatted())
+					.append("\n");
+		}
+		StringBuilder lilySkillsStr = new StringBuilder();
+		for (String skillName : SKILL_NAMES) {
+			lilySkillsStr
+					.append(capitalizeString(skillName))
+					.append(": ")
+					.append(lilyWeight.getSkillsWeight().getSkillsWeight(skillName).getFormatted())
+					.append("\n");
+		}
+		String lilyDungeonsStr =
+				"Catacombs: " +
+						lilyWeight.getDungeonsWeight().getDungeonWeight().getFormatted() +
+						"\n" +
+						"Normal floor completions: " +
+						lilyWeight.getDungeonsWeight().getDungeonCompletionWeight("normal").getFormatted() +
+						"\n" +
+						"Master floor completions: " +
+						lilyWeight.getDungeonsWeight().getDungeonCompletionWeight("master").getFormatted() +
+						"\n";
+
 		IChatComponent output = player
-			.defaultComponent()
-			.appendText(
-				"\n\n" +
-				label("Slayer | " + weight.getSlayerWeight().getWeightStruct().get()) +
-				slayerStr +
-				"\n\n" +
-				label("Skills | " + weight.getSkillsWeight().getWeightStruct().get()) +
-				skillsStr +
-				"\n\n" +
-				label("Dungeons | " + weight.getDungeonsWeight().getWeightStruct().get()) +
-				dungeonsStr +
-				"\n\n" +
-				labelWithDesc("Total weight", weight.getTotalWeight(false).get())
-			);
+				.defaultComponent()
+				.appendText("\n\n" + label( labelWithDesc("Senither Weight", weight.getTotalWeight().getFormatted())))
+				.appendSibling(new ChatText("\n" + arrow() + label("Slayer | " + weight.getSlayerWeight().getWeightStruct().getFormatted()))
+						.setHoverEvent(label("Slayer Weight"), slayerStr.toString()).build())
+				.appendSibling(new ChatText("\n" + arrow() +  label("Skills | " + weight.getSkillsWeight().getWeightStruct().getFormatted()))
+						.setHoverEvent(label("Skills Weight"), skillsStr.toString()).build())
+				.appendSibling(new ChatText("\n" + arrow() +  label("Dungeons | " + weight.getDungeonsWeight().getWeightStruct().getFormatted()))
+						.setHoverEvent(label("Dungeons Weight"), dungeonsStr.toString()).build()
+				)
+				.appendText("\n\n" + label( labelWithDesc("Lily Weight", lilyWeight.getTotalWeight().getFormatted())))
+				.appendSibling(new ChatText("\n" + arrow() + label("Slayer | " + lilyWeight.getSlayerWeight().getWeightStruct().getFormatted()))
+						.setHoverEvent(label("Slayer Weight"), lilySlayerStr.toString()).build())
+				.appendSibling(new ChatText("\n" + arrow() +  label("Skills | " + lilyWeight.getSkillsWeight().getWeightStruct().getFormatted()))
+						.setHoverEvent(label("Skills Weight"), lilySkillsStr.toString()).build())
+				.appendSibling(new ChatText("\n" + arrow() +  label("Dungeons | " + lilyWeight.getDungeonsWeight().getWeightStruct().getFormatted()))
+						.setHoverEvent(label("Dungeons Weight"), lilyDungeonsStr).build()
+				);
 
 		return wrapText(output);
 	}
 
-	public static String getWeightChat(String[] args) {
+	public String getWeightChat(String[] args) {
 		if (args.length != 1 && args.length != 2) {
 			return getUsageChat(INSTANCE);
 		}
@@ -106,12 +140,12 @@ public class WeightCommand extends CommandBase {
 			return getFailCauseChat(player);
 		}
 
-		Weight weight = new Weight(player);
+		Weight weight = new Weight(player, true);
 
 		return (
 			player.getUsername() +
 			" has " +
-			roundAndFormat(weight.getTotalWeight(true).getRaw()) +
+			roundAndFormat(weight.getTotalWeight().getRaw()) +
 			" total weight (" +
 			roundAndFormat(weight.getSlayerWeight().getWeightStruct().getRaw()) +
 			" slayer & " +

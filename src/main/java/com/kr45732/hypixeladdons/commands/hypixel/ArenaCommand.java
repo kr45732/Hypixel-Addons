@@ -33,7 +33,7 @@ public class ArenaCommand extends CommandBase {
 
 	public static final ArenaCommand INSTANCE = new ArenaCommand();
 
-	public static IChatComponent getArenaString(String[] args) {
+	public IChatComponent getArenaString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}

@@ -30,9 +30,17 @@ public class Weight {
 	private final DungeonsWeight dungeonsWeight;
 
 	public Weight(Player player) {
+		this(player, false);
+	}
+
+	public Weight(Player player, boolean calculateWeight) {
 		this.slayerWeight = new SlayerWeight(player);
 		this.skillsWeight = new SkillsWeight(player);
 		this.dungeonsWeight = new DungeonsWeight(player);
+
+		if (calculateWeight) {
+			calculateWeight();
+		}
 	}
 
 	public static double of(double skillAverage, double slayer, double catacombs, double averageDungeonClass) {
@@ -45,54 +53,54 @@ public class Weight {
 
 	public static double calculateSlayerWeight(double slayer) {
 		return SlayerWeight.of(
-			slayer,
-			(
-				SLAYER_WEIGHTS.get("rev")[0] +
-				SLAYER_WEIGHTS.get("sven")[0] +
-				SLAYER_WEIGHTS.get("tara")[0] +
-				SLAYER_WEIGHTS.get("enderman")[0]
-			) /
-			4,
-			(
-				SLAYER_WEIGHTS.get("rev")[1] +
-				SLAYER_WEIGHTS.get("sven")[1] +
-				SLAYER_WEIGHTS.get("tara")[1] +
-				SLAYER_WEIGHTS.get("enderman")[1]
-			) /
-			4
+				slayer,
+				(
+						SLAYER_WEIGHTS.get("rev")[0] +
+								SLAYER_WEIGHTS.get("sven")[0] +
+								SLAYER_WEIGHTS.get("tara")[0] +
+								SLAYER_WEIGHTS.get("enderman")[0]
+				) /
+						4,
+				(
+						SLAYER_WEIGHTS.get("rev")[1] +
+								SLAYER_WEIGHTS.get("sven")[1] +
+								SLAYER_WEIGHTS.get("tara")[1] +
+								SLAYER_WEIGHTS.get("enderman")[1]
+				) /
+						4
 		);
 	}
 
 	public static double calculateSkillsWeight(double skillAverage) {
 		return SkillsWeight.of(
-			skillAverage,
-			(
-				SKILL_WEIGHTS.get("mining")[0] +
-				SKILL_WEIGHTS.get("foraging")[0] +
-				SKILL_WEIGHTS.get("enchanting")[0] +
-				SKILL_WEIGHTS.get("farming")[0] +
-				SKILL_WEIGHTS.get("combat")[0] +
-				SKILL_WEIGHTS.get("fishing")[0] +
-				SKILL_WEIGHTS.get("alchemy")[0] +
-				SKILL_WEIGHTS.get("taming")[0]
-			) /
-			8
+				skillAverage,
+				(
+						SKILL_WEIGHTS.get("mining")[0] +
+								SKILL_WEIGHTS.get("foraging")[0] +
+								SKILL_WEIGHTS.get("enchanting")[0] +
+								SKILL_WEIGHTS.get("farming")[0] +
+								SKILL_WEIGHTS.get("combat")[0] +
+								SKILL_WEIGHTS.get("fishing")[0] +
+								SKILL_WEIGHTS.get("alchemy")[0] +
+								SKILL_WEIGHTS.get("taming")[0]
+				) /
+						8
 		);
 	}
 
 	public static double calculateDungeonsWeight(double averageDungeonClass, double catacombs) {
 		return DungeonsWeight.of(
-			averageDungeonClass,
-			(
-				DUNGEON_CLASS_WEIGHTS.get("healer") +
-				DUNGEON_CLASS_WEIGHTS.get("mage") +
-				DUNGEON_CLASS_WEIGHTS.get("berserk") +
-				DUNGEON_CLASS_WEIGHTS.get("archer") +
-				DUNGEON_CLASS_WEIGHTS.get("tank")
-			) /
-			5,
-			catacombs,
-			DUNGEON_WEIGHTS.get("catacombs")
+				averageDungeonClass,
+				(
+						DUNGEON_CLASS_WEIGHTS.get("healer") +
+								DUNGEON_CLASS_WEIGHTS.get("mage") +
+								DUNGEON_CLASS_WEIGHTS.get("berserk") +
+								DUNGEON_CLASS_WEIGHTS.get("archer") +
+								DUNGEON_CLASS_WEIGHTS.get("tank")
+				) /
+						5,
+				catacombs,
+				DUNGEON_WEIGHTS.get("catacombs")
 		);
 	}
 
@@ -108,25 +116,25 @@ public class Weight {
 		return dungeonsWeight;
 	}
 
-	public WeightStruct getTotalWeight(boolean needToCalc) {
-		if (needToCalc) {
-			for (String slayerName : SLAYER_NAMES) {
-				slayerWeight.getSlayerWeight(slayerName);
-			}
-			for (String skillName : SKILL_NAMES) {
-				skillsWeight.getSkillsWeight(skillName);
-			}
-			dungeonsWeight.getDungeonWeight("catacombs");
-			for (String dungeonClassName : DUNGEON_CLASS_NAMES) {
-				dungeonsWeight.getClassWeight(dungeonClassName);
-			}
-		}
-
+	public WeightStruct getTotalWeight() {
 		WeightStruct w = new WeightStruct();
 		w.add(slayerWeight.getWeightStruct());
 		w.add(skillsWeight.getWeightStruct());
 		w.add(dungeonsWeight.getWeightStruct());
 
 		return w;
+	}
+
+	private void calculateWeight() {
+		for (String slayerName : SLAYER_NAMES) {
+			slayerWeight.getSlayerWeight(slayerName);
+		}
+		for (String skillName : SKILL_NAMES) {
+			skillsWeight.getSkillsWeight(skillName);
+		}
+		dungeonsWeight.getDungeonWeight("catacombs");
+		for (String dungeonClassName : DUNGEON_CLASS_NAMES) {
+			dungeonsWeight.getClassWeight(dungeonClassName);
+		}
 	}
 }

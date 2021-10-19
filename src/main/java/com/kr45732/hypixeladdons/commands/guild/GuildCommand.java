@@ -45,7 +45,7 @@ public class GuildCommand extends CommandBase {
 
 	public static final GuildCommand INSTANCE = new GuildCommand();
 
-	private static int guildExpToLevel(int guildExp) {
+	private int guildExpToLevel(int guildExp) {
 		int guildLevel = 0;
 
 		for (int i = 0;; i++) {
@@ -61,7 +61,7 @@ public class GuildCommand extends CommandBase {
 		}
 	}
 
-	private static String getGuildInfo(JsonElement guildJson) {
+	private String getGuildInfo(JsonElement guildJson) {
 		JsonArray guildMembers = higherDepth(guildJson, "members").getAsJsonArray();
 
 		String output = "";
@@ -105,7 +105,7 @@ public class GuildCommand extends CommandBase {
 		return output;
 	}
 
-	public static IChatComponent getGuildString(String[] args) {
+	public IChatComponent getGuildString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
@@ -133,7 +133,7 @@ public class GuildCommand extends CommandBase {
 		);
 	}
 
-	public static String getGuildChat(String[] args) {
+	public String getGuildChat(String[] args) {
 		if (args.length != 1 && args.length != 2) {
 			return getUsageChat(INSTANCE);
 		}

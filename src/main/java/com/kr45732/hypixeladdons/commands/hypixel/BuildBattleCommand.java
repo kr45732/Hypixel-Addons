@@ -33,7 +33,7 @@ public class BuildBattleCommand extends CommandBase {
 
 	public static final BuildBattleCommand INSTANCE = new BuildBattleCommand();
 
-	public static IChatComponent getMurderMysteryString(String[] args) {
+	public IChatComponent getMurderMysteryString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}

@@ -38,7 +38,7 @@ public class Configuration {
 			configuration = new JsonParser().parse(new FileReader(configFilePath)).getAsJsonObject();
 			HypixelAddons.INSTANCE.getLogger().info("Successfully loaded existing configuration");
 		} catch (FileNotFoundException e) {
-			HypixelAddons.INSTANCE.getLogger().error("Unable to get existing configuration. Creating a new configuration", e);
+			HypixelAddons.INSTANCE.getLogger().error("Unable to getFormatted existing configuration. Creating a new configuration", e);
 
 			try {
 				File file = new File(configFilePath);

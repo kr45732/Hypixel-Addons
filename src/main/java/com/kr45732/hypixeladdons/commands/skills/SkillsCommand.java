@@ -37,7 +37,7 @@ public class SkillsCommand extends CommandBase {
 
 	public static final SkillsCommand INSTANCE = new SkillsCommand();
 
-	public static IChatComponent getSkillsString(String[] args) {
+	public IChatComponent getSkillsString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
@@ -97,7 +97,7 @@ public class SkillsCommand extends CommandBase {
 		return wrapText(output);
 	}
 
-	public static String getSkillsChat(String[] args) {
+	public String getSkillsChat(String[] args) {
 		if (args.length != 1 && args.length != 2) {
 			return getUsageChat(INSTANCE);
 		}

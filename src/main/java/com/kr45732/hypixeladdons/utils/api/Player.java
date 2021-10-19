@@ -283,7 +283,7 @@ public class Player {
 				skillsTable = higherDepth(getLevelingJson(), "runecrafting_xp").getAsJsonArray();
 				break;
 			case "hotm":
-				skillsTable = gson.toJsonTree(HOTM_EXP_TO_LEVEL).getAsJsonArray();
+				skillsTable = HOTM_EXP_TO_LEVEL;
 				break;
 			default:
 				skillsTable = higherDepth(getLevelingJson(), "leveling_xp").getAsJsonArray();
@@ -317,6 +317,10 @@ public class Player {
 		double progress = xpForNext > 0 ? Math.max(0, Math.min(((double) xpCurrent) / xpForNext, 1)) : 0;
 
 		return new SkillsStruct(skill, level, maxLevel, skillExp, xpCurrent, xpForNext, progress);
+	}
+
+	public SkillsStruct getHOTM() {
+		return skillInfoFromExp(higherDepth(profileJson(), "mining_core.experience").getAsLong(), "hotm");
 	}
 
 	/* Slayer */
@@ -521,7 +525,7 @@ public class Player {
 
 	/* Miscellaneous */
 	public double getWeight() {
-		return new Weight(this).getTotalWeight(true).getRaw();
+		return new Weight(this, true).getTotalWeight().getRaw();
 	}
 
 	public String getFormattedUsername() {

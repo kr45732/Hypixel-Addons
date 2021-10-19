@@ -34,7 +34,7 @@ public class SkywarsCommand extends CommandBase {
 
 	public static final SkywarsCommand INSTANCE = new SkywarsCommand();
 
-	public static IChatComponent getSkywarsString(String[] args) {
+	public IChatComponent getSkywarsString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
@@ -111,7 +111,7 @@ public class SkywarsCommand extends CommandBase {
 		return wrapText(output);
 	}
 
-	public static String getSkywarsChat(String[] args) {
+	public String getSkywarsChat(String[] args) {
 		if (args.length != 1) {
 			return getUsageChat(INSTANCE);
 		}

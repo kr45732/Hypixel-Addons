@@ -34,7 +34,7 @@ public class BedwarsCommand extends CommandBase {
 
 	public static final BedwarsCommand INSTANCE = new BedwarsCommand();
 
-	public static IChatComponent getBedwarsString(String[] args) {
+	public IChatComponent getBedwarsString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
@@ -121,7 +121,7 @@ public class BedwarsCommand extends CommandBase {
 		return wrapText(output);
 	}
 
-	public static String getBedwarsChat(String[] args) {
+	public String getBedwarsChat(String[] args) {
 		if (args.length != 1) {
 			return getUsageChat(INSTANCE);
 		}

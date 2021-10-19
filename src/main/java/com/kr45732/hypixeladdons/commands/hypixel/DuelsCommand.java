@@ -34,7 +34,7 @@ public class DuelsCommand extends CommandBase {
 
 	public static final DuelsCommand INSTANCE = new DuelsCommand();
 
-	public static IChatComponent getDuelsString(String[] args) {
+	public IChatComponent getDuelsString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}

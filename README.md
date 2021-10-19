@@ -17,7 +17,7 @@ A quality of life mod for Hypixel with features ranging from statistic checking,
 
 ## Installation
 1. Download the [latest release](https://github.com/kr45732/Hypixel-Addons/releases/latest/) of the mod.
-2. Put the JAR into your mods folder.
+2. Put the JAR into your mod folder.
 3. Set the Hypixel API key with `/hpa:setkey <key>` in-game. You can get your Hypixel API key by running `/api new`.
 
 ## Features
@@ -29,7 +29,7 @@ A quality of life mod for Hypixel with features ranging from statistic checking,
 - A todo list GUI to keep track of any tasks you want to complete
 - Customize the sidebar to remove the red numbers, change location, change the background, and much more
 - A guild MOTD editor which vastly simplifies the process of editing your guild's MOTD 
-- All the commands below and much more coming soon!
+- All the commands below and much more to be added soon!
 
 ## Commands
 - `/hpa:setkey <key>` - Set your Hypixel API key for the mod
@@ -37,6 +37,7 @@ A quality of life mod for Hypixel with features ranging from statistic checking,
 - `/hpa:help` - Get a list of all the commands for the mod
 - `/hpa:slayer [player] [profile]` - Get a player's slayer statistics
 - `/hpa:skills [player] [profile]` - Get a player's skills statistics
+- `/hpa:hotm [player] [profile]` - Get a player's heart of the mountain statistics
 - `/hpa:dungeons [player] [profile]` - Get a player's dungeons statistics
 - `/hpa:essence information <item>` - Get the amount of essence to upgrade an item for each level
 - `/hpa:essence player [player] [profile]` - Get a player's essence amounts and essence shop upgrades
@@ -48,6 +49,8 @@ A quality of life mod for Hypixel with features ranging from statistic checking,
 - `/hpa:bits <item>` - Get the bits cost of an item from the bits shop
 - `/hpa:bank [player] [profile]` - Get a player's bank and purse coins
 - `/hpa:weight [player] [profile]` - Get a player's slayer, skills, dungeons, and total weight
+- `/hpa:harp [player] [profile]` - Get a player's harp statistics
+- `/hpa:cakes [player] [profile]` - Get a player's active and inactive cake buffs
 - `/hpa:skyblock [player] [profile]` - Get a summary of a player's SkyBlock statistics
 - `/hpa:hypixel [player]` - Get Hypixel information about a player
 - `/hpa:bedwars [player]` - Get a player's Bedwars statistics

@@ -35,7 +35,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
 
-version = "0.0.3"
+version = "0.0.4"
 group = "com.kr45732"
 archivesBaseName = "HypixelAddons"
 String modid = "hypixeladdons"
@@ -62,7 +62,7 @@ repositories {
 }
 
 dependencies {
-    include 'com.github.TheNullicorn:Nedit:2.0.0'
+    include 'com.github.TheNullicorn:Nedit:2.1.0'
 
     include("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
         exclude module: "guava"

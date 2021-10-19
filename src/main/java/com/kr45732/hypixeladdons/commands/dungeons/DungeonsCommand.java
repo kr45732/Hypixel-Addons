@@ -35,7 +35,7 @@ public class DungeonsCommand extends CommandBase {
 
 	public static final DungeonsCommand INSTANCE = new DungeonsCommand();
 
-	public static IChatComponent getDungeonsString(String[] args) {
+	public IChatComponent getDungeonsString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
@@ -94,7 +94,7 @@ public class DungeonsCommand extends CommandBase {
 		return wrapText(output);
 	}
 
-	public static String getDungeonsChat(String[] args) {
+	public String getDungeonsChat(String[] args) {
 		if (args.length != 1 && args.length != 2) {
 			return getUsageChat(INSTANCE);
 		}

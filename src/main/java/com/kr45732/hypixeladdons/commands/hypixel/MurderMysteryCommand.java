@@ -33,7 +33,7 @@ public class MurderMysteryCommand extends CommandBase {
 
 	public static final MurderMysteryCommand INSTANCE = new MurderMysteryCommand();
 
-	public static IChatComponent getMurderMysteryString(String[] args) {
+	public IChatComponent getMurderMysteryString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}

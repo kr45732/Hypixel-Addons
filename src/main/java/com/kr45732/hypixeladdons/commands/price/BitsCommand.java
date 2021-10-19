@@ -30,7 +30,7 @@ public class BitsCommand extends CommandBase {
 
 	public static final BitsCommand INSTANCE = new BitsCommand();
 
-	public static ChatComponentText getBitsString(String[] args) {
+	public ChatComponentText getBitsString(String[] args) {
 		if (args.length == 0) {
 			return getUsage(INSTANCE);
 		}
@@ -50,7 +50,7 @@ public class BitsCommand extends CommandBase {
 		);
 	}
 
-	public static String getBitsChat(String[] args) {
+	public String getBitsChat(String[] args) {
 		if (args.length == 0) {
 			return getUsageChat(INSTANCE);
 		}

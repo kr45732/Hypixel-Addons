@@ -20,6 +20,7 @@ package com.kr45732.hypixeladdons.utils;
 
 import static com.kr45732.hypixeladdons.utils.Utils.*;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -42,7 +43,7 @@ public class Constants {
 	public static Map<String, Double[]> SKILL_WEIGHTS;
 	public static Map<String, Double> DUNGEON_CLASS_WEIGHTS;
 	public static Map<String, Double> DUNGEON_WEIGHTS;
-	public static List<Integer> HOTM_EXP_TO_LEVEL;
+	public static JsonArray HOTM_EXP_TO_LEVEL;
 	public static JsonElement SLAYER_DEPRECATION_SCALING;
 	public static JsonElement SKILL_RATIO_WEIGHT;
 	public static JsonElement SKILL_FACTORS;
@@ -56,6 +57,9 @@ public class Constants {
 	public static double BEDWARS_EXP_PER_PRESTIGE;
 	public static double BEDWARS_LEVELS_PER_PRESTIGE;
 	public static Map<Integer, String> TOTAL_WINS_TO_DIVISION_MAP;
+	public static Map<String, String> HOTM_PERK_ID_TO_NAME;
+	public static Map<String, Integer> HOTM_PERK_MAX_LEVEL;
+	public static Map<String, String> HARP_SONG_ID_TO_NAME;
 
 	/* Fetched from other sources */
 	public static List<String> ALL_SKILL_NAMES;
@@ -74,6 +78,7 @@ public class Constants {
 			Type mapStringDoubleArray = new TypeToken<Map<String, Double[]>>() {}.getType();
 			Type mapStringDouble = new TypeToken<Map<String, Double>>() {}.getType();
 			Type mapIntegerString = new TypeToken<Map<Integer, String>>() {}.getType();
+			Type mapStringInteger = new TypeToken<Map<String, Integer>>() {}.getType();
 
 			/* CATACOMBS_LEVEL_50_XP */
 			CATACOMBS_LEVEL_50_XP = higherDepth(constantsJson, "CATACOMBS_LEVEL_50_XP").getAsDouble();
@@ -109,7 +114,7 @@ public class Constants {
 			DUNGEON_WEIGHTS = gson.fromJson(higherDepth(constantsJson, "DUNGEON_WEIGHTS"), mapStringDouble);
 
 			/* HOTM_EXP_TO_LEVEL */
-			HOTM_EXP_TO_LEVEL = gson.fromJson(higherDepth(constantsJson, "HOTM_EXP_TO_LEVEL"), listInteger);
+			HOTM_EXP_TO_LEVEL = higherDepth(constantsJson, "HOTM_EXP_TO_LEVEL").getAsJsonArray();
 
 			/* SLAYER_DEPRECATION_SCALING */
 			SLAYER_DEPRECATION_SCALING = higherDepth(constantsJson, "SLAYER_DEPRECATION_SCALING");
@@ -149,6 +154,15 @@ public class Constants {
 
 			/* TOTAL_WINS_TO_DIVISION_MAP */
 			TOTAL_WINS_TO_DIVISION_MAP = gson.fromJson(higherDepth(constantsJson, "TOTAL_WINS_TO_DIVISION_MAP"), mapIntegerString);
+
+			/* HOTM_PERK_ID_TO_NAME */
+			HOTM_PERK_ID_TO_NAME = gson.fromJson(higherDepth(constantsJson, "HOTM_PERK_ID_TO_NAME"), mapStringString);
+
+			/* HOTM_PERK_MAX_LEVEL */
+			HOTM_PERK_MAX_LEVEL = gson.fromJson(higherDepth(constantsJson, "HOTM_PERK_MAX_LEVEL"), mapStringInteger);
+
+			/* HARP_SONG_ID_TO_NAME */
+			HARP_SONG_ID_TO_NAME = gson.fromJson(higherDepth(constantsJson, "HARP_SONG_ID_TO_NAME"), mapStringString);
 
 			/* ALL_SKILL_NAMES */
 			ALL_SKILL_NAMES =

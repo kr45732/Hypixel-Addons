@@ -35,7 +35,7 @@ public class SlayerCommand extends CommandBase {
 
 	public static final SlayerCommand INSTANCE = new SlayerCommand();
 
-	public static IChatComponent getSlayerString(String[] args) {
+	public IChatComponent getSlayerString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
@@ -120,7 +120,7 @@ public class SlayerCommand extends CommandBase {
 		return wrapText(output);
 	}
 
-	public static String getSlayerChat(String[] args) {
+	public String getSlayerChat(String[] args) {
 		if (args.length != 1 && args.length != 2) {
 			return getUsageChat(INSTANCE);
 		}

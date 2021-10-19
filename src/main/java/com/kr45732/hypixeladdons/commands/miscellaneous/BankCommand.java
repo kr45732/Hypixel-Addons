@@ -32,7 +32,7 @@ public class BankCommand extends CommandBase {
 
 	public static final BankCommand INSTANCE = new BankCommand();
 
-	public static IChatComponent getBankString(String[] args) {
+	public IChatComponent getBankString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
@@ -59,7 +59,7 @@ public class BankCommand extends CommandBase {
 		);
 	}
 
-	public static String getBankChat(String[] args) {
+	public String getBankChat(String[] args) {
 		if (args.length != 1 && args.length != 2) {
 			return getUsageChat(INSTANCE);
 		}

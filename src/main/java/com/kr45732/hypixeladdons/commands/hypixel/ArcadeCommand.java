@@ -32,7 +32,7 @@ public class ArcadeCommand extends CommandBase {
 
 	public static final ArcadeCommand INSTANCE = new ArcadeCommand();
 
-	public static IChatComponent getArcadeString(String[] args) {
+	public IChatComponent getArcadeString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
@@ -385,7 +385,7 @@ public class ArcadeCommand extends CommandBase {
 		return wrapText(output);
 	}
 
-	public static IChatComponent getGame(String name, String desc) {
+	public IChatComponent getGame(String name, String desc) {
 		return new ChatText("\n" + arrow() + label(name)).setHoverEvent(name, desc).build();
 	}
 

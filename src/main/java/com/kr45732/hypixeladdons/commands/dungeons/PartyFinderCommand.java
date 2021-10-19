@@ -34,7 +34,7 @@ public class PartyFinderCommand extends CommandBase {
 
 	public static final PartyFinderCommand INSTANCE = new PartyFinderCommand();
 
-	public static IChatComponent getPartyFinderString(String[] args) {
+	public IChatComponent getPartyFinderString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}
@@ -70,7 +70,7 @@ public class PartyFinderCommand extends CommandBase {
 		return wrapText(output);
 	}
 
-	public static String getPartyFinderChat(String[] args) {
+	public String getPartyFinderChat(String[] args) {
 		if (args.length != 1 && args.length != 2) {
 			return getUsageChat(INSTANCE);
 		}

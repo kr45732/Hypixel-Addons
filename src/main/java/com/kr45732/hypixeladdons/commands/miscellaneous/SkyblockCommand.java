@@ -40,7 +40,7 @@ public class SkyblockCommand extends CommandBase {
 
 	public static final SkyblockCommand INSTANCE = new SkyblockCommand();
 
-	public static IChatComponent getSkyblockString(String[] args) {
+	public IChatComponent getSkyblockString(String[] args) {
 		if (ConfigUtils.getHypixelKey() == null) {
 			return invalidKey();
 		}

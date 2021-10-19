@@ -155,8 +155,6 @@ public class MultiLineTextField extends Gui {
 								endY = startY + lineHeight;
 							}
 
-							//							System.out.println(startX + " - " + startY + " - " + endX + " - " + endY);
-
 							drawHighlight(startX, startY, endX, endY);
 						}
 					}
@@ -240,10 +238,6 @@ public class MultiLineTextField extends Gui {
 						break;
 					}
 				}
-
-				System.out.println(
-					mouseX + " - " + mouseY + " - " + (mouseX - x) + " - " + (mouseY - y) + cursorLineNumber + " - " + cursorCharNumber
-				);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -260,8 +254,6 @@ public class MultiLineTextField extends Gui {
 			if (!this.isFocused) {
 				return;
 			}
-
-			System.out.println(keyCode + " - " + cursorLineNumber + " - " + cursorCharNumber + " - " + lines);
 
 			if (GuiScreen.isKeyComboCtrlA(keyCode)) {
 				setCursorLine(lines.size() - 1);
