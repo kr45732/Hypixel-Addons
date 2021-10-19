@@ -18,22 +18,21 @@
 
 package com.kr45732.hypixeladdons.commands.miscellaneous;
 
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+import static com.kr45732.hypixeladdons.utils.Utils.instantToDHM;
+
 import com.google.gson.JsonElement;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.util.IChatComponent;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static com.kr45732.hypixeladdons.utils.Utils.*;
-import static com.kr45732.hypixeladdons.utils.Utils.instantToDHM;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.util.IChatComponent;
 
 public class CakesCommand extends CommandBase {
 
@@ -52,17 +51,17 @@ public class CakesCommand extends CommandBase {
 		IChatComponent output = player.defaultComponent();
 
 		List<String> missingCakes = new ArrayList<>(
-				Arrays.asList(
-						"cake_strength",
-						"cake_pet_luck",
-						"cake_health",
-						"cake_walk_speed",
-						"cake_magic_find",
-						"cake_ferocity",
-						"cake_defense",
-						"cake_sea_creature_chance",
-						"cake_intelligence"
-				)
+			Arrays.asList(
+				"cake_strength",
+				"cake_pet_luck",
+				"cake_health",
+				"cake_walk_speed",
+				"cake_magic_find",
+				"cake_ferocity",
+				"cake_defense",
+				"cake_sea_creature_chance",
+				"cake_intelligence"
+			)
 		);
 
 		StringBuilder activeCakes = new StringBuilder();
@@ -72,23 +71,28 @@ public class CakesCommand extends CommandBase {
 				if (expires.isAfter(Instant.now())) {
 					String cakeName = higherDepth(cake, "key").getAsString();
 					activeCakes
-							.append("\n")
-							.append(arrow())
-							.append(labelWithDesc(capitalizeString(cakeName.split("cake_")[1].replace("_", " ")) + " Cake", "expires in " + instantToDHM(Duration.between(Instant.now(), expires))));
+						.append("\n")
+						.append(arrow())
+						.append(
+							labelWithDesc(
+								capitalizeString(cakeName.split("cake_")[1].replace("_", " ")) + " Cake",
+								"expires in " + instantToDHM(Duration.between(Instant.now(), expires))
+							)
+						);
 					missingCakes.remove(cakeName);
 				}
 			}
 		}
-		output.appendText("\n\n" + label("Active cakes") + ( activeCakes.length() > 0 ? activeCakes.toString() : "None"));
+		output.appendText("\n\n" + label("Active cakes") + (activeCakes.length() > 0 ? activeCakes.toString() : "None"));
 
 		StringBuilder missingCakesStr = new StringBuilder();
 		for (String missingCake : missingCakes) {
 			missingCakesStr
-					.append("\n")
-					.append(arrow())
-					.append(label(capitalizeString(missingCake.split("cake_")[1].replace("_", " ")) + " Cake"));
+				.append("\n")
+				.append(arrow())
+				.append(label(capitalizeString(missingCake.split("cake_")[1].replace("_", " ")) + " Cake"));
 		}
-		output.appendText("\n\n" + label("Inactive cakes") + ( missingCakesStr.length() > 0 ? missingCakesStr.toString() : "None"));
+		output.appendText("\n\n" + label("Inactive cakes") + (missingCakesStr.length() > 0 ? missingCakesStr.toString() : "None"));
 
 		return wrapText(output);
 	}

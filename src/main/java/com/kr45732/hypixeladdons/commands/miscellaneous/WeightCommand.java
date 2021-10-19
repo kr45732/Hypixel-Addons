@@ -72,7 +72,10 @@ public class WeightCommand extends CommandBase {
 				.append("\n")
 				.append(arrow())
 				.append(
-					labelWithDesc(capitalizeString(dungeonClassName), weight.getDungeonsWeight().getClassWeight(dungeonClassName).getFormatted())
+					labelWithDesc(
+						capitalizeString(dungeonClassName),
+						weight.getDungeonsWeight().getClassWeight(dungeonClassName).getFormatted()
+					)
 				);
 		}
 
@@ -80,48 +83,64 @@ public class WeightCommand extends CommandBase {
 		StringBuilder lilySlayerStr = new StringBuilder();
 		for (String slayerName : SLAYER_NAMES) {
 			lilySlayerStr
-					.append(capitalizeString(slayerName))
-					.append(": ")
-					.append(lilyWeight.getSlayerWeight().getSlayerWeight(slayerName).getFormatted())
-					.append("\n");
+				.append(capitalizeString(slayerName))
+				.append(": ")
+				.append(lilyWeight.getSlayerWeight().getSlayerWeight(slayerName).getFormatted())
+				.append("\n");
 		}
 		StringBuilder lilySkillsStr = new StringBuilder();
 		for (String skillName : SKILL_NAMES) {
 			lilySkillsStr
-					.append(capitalizeString(skillName))
-					.append(": ")
-					.append(lilyWeight.getSkillsWeight().getSkillsWeight(skillName).getFormatted())
-					.append("\n");
+				.append(capitalizeString(skillName))
+				.append(": ")
+				.append(lilyWeight.getSkillsWeight().getSkillsWeight(skillName).getFormatted())
+				.append("\n");
 		}
 		String lilyDungeonsStr =
-				"Catacombs: " +
-						lilyWeight.getDungeonsWeight().getDungeonWeight().getFormatted() +
-						"\n" +
-						"Normal floor completions: " +
-						lilyWeight.getDungeonsWeight().getDungeonCompletionWeight("normal").getFormatted() +
-						"\n" +
-						"Master floor completions: " +
-						lilyWeight.getDungeonsWeight().getDungeonCompletionWeight("master").getFormatted() +
-						"\n";
+			"Catacombs: " +
+			lilyWeight.getDungeonsWeight().getDungeonWeight().getFormatted() +
+			"\n" +
+			"Normal floor completions: " +
+			lilyWeight.getDungeonsWeight().getDungeonCompletionWeight("normal").getFormatted() +
+			"\n" +
+			"Master floor completions: " +
+			lilyWeight.getDungeonsWeight().getDungeonCompletionWeight("master").getFormatted() +
+			"\n";
 
 		IChatComponent output = player
-				.defaultComponent()
-				.appendText("\n\n" + label( labelWithDesc("Senither Weight", weight.getTotalWeight().getFormatted())))
-				.appendSibling(new ChatText("\n" + arrow() + label("Slayer | " + weight.getSlayerWeight().getWeightStruct().getFormatted()))
-						.setHoverEvent(label("Slayer Weight"), slayerStr.toString()).build())
-				.appendSibling(new ChatText("\n" + arrow() +  label("Skills | " + weight.getSkillsWeight().getWeightStruct().getFormatted()))
-						.setHoverEvent(label("Skills Weight"), skillsStr.toString()).build())
-				.appendSibling(new ChatText("\n" + arrow() +  label("Dungeons | " + weight.getDungeonsWeight().getWeightStruct().getFormatted()))
-						.setHoverEvent(label("Dungeons Weight"), dungeonsStr.toString()).build()
-				)
-				.appendText("\n\n" + label( labelWithDesc("Lily Weight", lilyWeight.getTotalWeight().getFormatted())))
-				.appendSibling(new ChatText("\n" + arrow() + label("Slayer | " + lilyWeight.getSlayerWeight().getWeightStruct().getFormatted()))
-						.setHoverEvent(label("Slayer Weight"), lilySlayerStr.toString()).build())
-				.appendSibling(new ChatText("\n" + arrow() +  label("Skills | " + lilyWeight.getSkillsWeight().getWeightStruct().getFormatted()))
-						.setHoverEvent(label("Skills Weight"), lilySkillsStr.toString()).build())
-				.appendSibling(new ChatText("\n" + arrow() +  label("Dungeons | " + lilyWeight.getDungeonsWeight().getWeightStruct().getFormatted()))
-						.setHoverEvent(label("Dungeons Weight"), lilyDungeonsStr).build()
-				);
+			.defaultComponent()
+			.appendText("\n\n" + label(labelWithDesc("Senither Weight", weight.getTotalWeight().getFormatted())))
+			.appendSibling(
+				new ChatText("\n" + arrow() + label("Slayer | " + weight.getSlayerWeight().getWeightStruct().getFormatted()))
+					.setHoverEvent(label("Slayer Weight"), slayerStr.toString())
+					.build()
+			)
+			.appendSibling(
+				new ChatText("\n" + arrow() + label("Skills | " + weight.getSkillsWeight().getWeightStruct().getFormatted()))
+					.setHoverEvent(label("Skills Weight"), skillsStr.toString())
+					.build()
+			)
+			.appendSibling(
+				new ChatText("\n" + arrow() + label("Dungeons | " + weight.getDungeonsWeight().getWeightStruct().getFormatted()))
+					.setHoverEvent(label("Dungeons Weight"), dungeonsStr.toString())
+					.build()
+			)
+			.appendText("\n\n" + label(labelWithDesc("Lily Weight", lilyWeight.getTotalWeight().getFormatted())))
+			.appendSibling(
+				new ChatText("\n" + arrow() + label("Slayer | " + lilyWeight.getSlayerWeight().getWeightStruct().getFormatted()))
+					.setHoverEvent(label("Slayer Weight"), lilySlayerStr.toString())
+					.build()
+			)
+			.appendSibling(
+				new ChatText("\n" + arrow() + label("Skills | " + lilyWeight.getSkillsWeight().getWeightStruct().getFormatted()))
+					.setHoverEvent(label("Skills Weight"), lilySkillsStr.toString())
+					.build()
+			)
+			.appendSibling(
+				new ChatText("\n" + arrow() + label("Dungeons | " + lilyWeight.getDungeonsWeight().getWeightStruct().getFormatted()))
+					.setHoverEvent(label("Dungeons Weight"), lilyDungeonsStr)
+					.build()
+			);
 
 		return wrapText(output);
 	}

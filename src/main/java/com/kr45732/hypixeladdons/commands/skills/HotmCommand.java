@@ -18,19 +18,18 @@
 
 package com.kr45732.hypixeladdons.commands.skills;
 
+import static com.kr45732.hypixeladdons.utils.Constants.HOTM_PERK_ID_TO_NAME;
+import static com.kr45732.hypixeladdons.utils.Constants.HOTM_PERK_MAX_LEVEL;
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.google.gson.JsonElement;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import com.kr45732.hypixeladdons.utils.structs.SkillsStruct;
+import java.util.Map;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
-
-import java.util.Map;
-
-import static com.kr45732.hypixeladdons.utils.Constants.HOTM_PERK_ID_TO_NAME;
-import static com.kr45732.hypixeladdons.utils.Constants.HOTM_PERK_MAX_LEVEL;
-import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class HotmCommand extends CommandBase {
 
@@ -50,24 +49,48 @@ public class HotmCommand extends CommandBase {
 		SkillsStruct skillInfo = player.getHOTM();
 		JsonElement miningJson = higherDepth(player.profileJson(), "mining_core");
 
-		output.appendText("\n\n" +
-				label("Statistics") +
-				arrow() + labelWithDesc("HOTM level","" + skillInfo.getCurrentLevel()) +
-						" (" + labelWithDesc("Progress", roundProgress(skillInfo.getProgressToNext())) +
-						")\n" + arrow() + labelWithDesc("Tokens", "" + higherDepth(miningJson, "tokens", 0)) +
-						" (" + labelWithDesc("Spent","" + higherDepth(miningJson, "tokens_spent", 0)) +
-						")\n" + arrow() + labelWithDesc("Mithril Powder",formatNumber(higherDepth(miningJson, "powder_mithril", 0))) +
-						" (" + labelWithDesc("Spent", formatNumber(higherDepth(miningJson, "powder_spent_mithril", 0))) +
-						")\n" + arrow() + labelWithDesc("Gemstone Powder", formatNumber(higherDepth(miningJson, "powder_gemstone", 0))) +
-						" (" +labelWithDesc("Spent", formatNumber(higherDepth(miningJson, "powder_spent_gemstone", 0))) +
-						")\n" + arrow() + labelWithDesc("Selected ability", capitalizeString(higherDepth(miningJson, "selected_pickaxe_ability", "none").replace("_", " ")))
-				+ "\n\n" + label("Perks")
+		output.appendText(
+			"\n\n" +
+			label("Statistics") +
+			arrow() +
+			labelWithDesc("HOTM level", "" + skillInfo.getCurrentLevel()) +
+			" (" +
+			labelWithDesc("Progress", roundProgress(skillInfo.getProgressToNext())) +
+			")\n" +
+			arrow() +
+			labelWithDesc("Tokens", "" + higherDepth(miningJson, "tokens", 0)) +
+			" (" +
+			labelWithDesc("Spent", "" + higherDepth(miningJson, "tokens_spent", 0)) +
+			")\n" +
+			arrow() +
+			labelWithDesc("Mithril Powder", formatNumber(higherDepth(miningJson, "powder_mithril", 0))) +
+			" (" +
+			labelWithDesc("Spent", formatNumber(higherDepth(miningJson, "powder_spent_mithril", 0))) +
+			")\n" +
+			arrow() +
+			labelWithDesc("Gemstone Powder", formatNumber(higherDepth(miningJson, "powder_gemstone", 0))) +
+			" (" +
+			labelWithDesc("Spent", formatNumber(higherDepth(miningJson, "powder_spent_gemstone", 0))) +
+			")\n" +
+			arrow() +
+			labelWithDesc(
+				"Selected ability",
+				capitalizeString(higherDepth(miningJson, "selected_pickaxe_ability", "none").replace("_", " "))
+			) +
+			"\n\n" +
+			label("Perks")
 		);
 
 		for (Map.Entry<String, JsonElement> perk : higherDepth(miningJson, "nodes").getAsJsonObject().entrySet()) {
 			if (perk.getValue().getAsJsonPrimitive().isNumber()) {
-				output.appendText("\n" + arrow() +
-						labelWithDesc(capitalizeString(HOTM_PERK_ID_TO_NAME.getOrDefault(perk.getKey(), perk.getKey().replace("_", " "))), perk.getValue().getAsInt() + "/" + HOTM_PERK_MAX_LEVEL.getOrDefault(perk.getKey(), 50)));
+				output.appendText(
+					"\n" +
+					arrow() +
+					labelWithDesc(
+						capitalizeString(HOTM_PERK_ID_TO_NAME.getOrDefault(perk.getKey(), perk.getKey().replace("_", " "))),
+						perk.getValue().getAsInt() + "/" + HOTM_PERK_MAX_LEVEL.getOrDefault(perk.getKey(), 50)
+					)
+				);
 			}
 		}
 

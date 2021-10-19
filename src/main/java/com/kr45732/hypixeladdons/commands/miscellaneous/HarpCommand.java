@@ -18,18 +18,17 @@
 
 package com.kr45732.hypixeladdons.commands.miscellaneous;
 
+import static com.kr45732.hypixeladdons.utils.Constants.HARP_SONG_ID_TO_NAME;
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.google.gson.JsonElement;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
+import java.util.Map;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
-
-import java.util.Map;
-
-import static com.kr45732.hypixeladdons.utils.Constants.HARP_SONG_ID_TO_NAME;
-import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class HarpCommand extends CommandBase {
 
@@ -51,19 +50,37 @@ public class HarpCommand extends CommandBase {
 		}
 
 		IChatComponent output = player.defaultComponent();
-		output.appendText(labelWithDesc("Last played song", HARP_SONG_ID_TO_NAME.get(higherDepth(harpJson, "selected_song", "None"))) +
-								"\n" + labelWithDesc("Claimed melody's hair","" + higherDepth(harpJson, "claimed_talisman", false))
-				);
+		output.appendText(
+			labelWithDesc("Last played song", HARP_SONG_ID_TO_NAME.get(higherDepth(harpJson, "selected_song", "None"))) +
+			"\n" +
+			labelWithDesc("Claimed melody's hair", "" + higherDepth(harpJson, "claimed_talisman", false))
+		);
 
 		for (Map.Entry<String, JsonElement> song : harpJson.getAsJsonObject().entrySet()) {
 			if (song.getKey().startsWith("song_") && song.getKey().endsWith("_completions")) {
 				String songId = song.getKey().split("song_")[1].split("_completions")[0];
 				if (HARP_SONG_ID_TO_NAME.containsKey(songId)) {
-					output.appendSibling(new ChatText("\n" + arrow() + HARP_SONG_ID_TO_NAME.get(songId)).setHoverEvent(HARP_SONG_ID_TO_NAME.get(songId),
-							arrow() + labelWithDesc("Completions", "" + song.getValue().getAsInt()) +
-									"\n" + arrow() + labelWithDesc("Best completion score", roundAndFormat(higherDepth(harpJson, "song_" + songId + "_best_completion", 0.0) * 100) + "%")
-							+ "\n" + arrow() + labelWithDesc("Perfect completions", "" + higherDepth(harpJson, "song_" + songId + "_perfect_completions", 0))
-					).build());
+					output.appendSibling(
+						new ChatText("\n" + arrow() + HARP_SONG_ID_TO_NAME.get(songId))
+							.setHoverEvent(
+								HARP_SONG_ID_TO_NAME.get(songId),
+								arrow() +
+								labelWithDesc("Completions", "" + song.getValue().getAsInt()) +
+								"\n" +
+								arrow() +
+								labelWithDesc(
+									"Best completion score",
+									roundAndFormat(higherDepth(harpJson, "song_" + songId + "_best_completion", 0.0) * 100) + "%"
+								) +
+								"\n" +
+								arrow() +
+								labelWithDesc(
+									"Perfect completions",
+									"" + higherDepth(harpJson, "song_" + songId + "_perfect_completions", 0)
+								)
+							)
+							.build()
+					);
 				}
 			}
 		}

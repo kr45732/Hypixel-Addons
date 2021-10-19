@@ -18,6 +18,9 @@
 
 package com.kr45732.hypixeladdons.listeners;
 
+import static com.kr45732.hypixeladdons.utils.Constants.*;
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.google.common.collect.Sets;
 import com.kr45732.hypixeladdons.commands.hypixel.BedwarsCommand;
 import com.kr45732.hypixeladdons.commands.hypixel.SkywarsCommand;
@@ -29,6 +32,10 @@ import com.kr45732.hypixeladdons.utils.chat.C;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import com.kr45732.hypixeladdons.utils.structs.SkillsStruct;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.scoreboard.ScoreObjective;
@@ -39,14 +46,6 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.kr45732.hypixeladdons.utils.Constants.*;
-import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class EventListener {
 
