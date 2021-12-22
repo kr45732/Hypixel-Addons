@@ -66,36 +66,16 @@ public class ChatCommandListener {
 							.stream()
 							.filter(command -> command.isForCommand(args[0]))
 							.findFirst()
-							.ifPresent(matchedCommand ->
-								matchedCommand.execute(
-									new ChatCommandEvent(event, args.length == 2 ? args[1].split(" ") : new String[] { sender }, sender)
-								)
+							.ifPresent(
+								matchedCommand ->
+									matchedCommand.execute(
+										new ChatCommandEvent(event, args.length == 2 ? args[1].split(" ") : new String[] { sender }, sender)
+									)
 							);
 					}
 				}
 			}
 		}
-		/*
-		 String message = event.message.getUnformattedText();
-		 String sender = "CrypticPlasma";
-		 System.out.println(message);
-		 if (SettingsStorage.toggleGuildChatResponder && message.startsWith("<CrypticPlasma> _")) {
-		 	String[] args = message.split("<CrypticPlasma> _")[1].split(" ", 2);
-		 	System.out.println(Arrays.toString(args));
-		 	if (args.length > 0) {
-		 		chatCommands
-		 				.stream()
-		 				.filter(command -> command.isForCommand(args[0]))
-		 				.findFirst()
-		 				.ifPresent(
-		 						matchedCommand ->
-		 								matchedCommand.execute(
-		 										new ChatCommandEvent(event, args.length == 2 ? args[1].split(" ") : new String[]{sender}, sender)
-		 								)
-		 				);
-		 	}
-		 }
-		*/
 	}
 
 	public int getRemainingCooldown(String name) {
@@ -110,7 +90,7 @@ public class ChatCommandListener {
 		return 0;
 	}
 
-	public void putCooldown(String name, int seconds) {
+	public void setCooldown(String name, int seconds) {
 		cooldowns.put(name, OffsetDateTime.now().plusSeconds(seconds));
 	}
 }

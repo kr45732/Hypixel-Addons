@@ -28,17 +28,23 @@ import java.util.List;
 
 public class Configuration {
 
-	private static final String configFilePath = "config/" + HypixelAddons.MOD_ID + ".json";
+	public static final String baseConfigPath = "config/" + HypixelAddons.MOD_ID + "/";
+	private static final String configFilePath = baseConfigPath + "config.json";
 	private final Gson gson;
 	private JsonObject configuration;
 
 	public Configuration() {
+		File baseDir = new File(baseConfigPath);
+		if(!baseDir.exists()){
+			new File(baseConfigPath).mkdirs();
+		}
+
 		gson = new GsonBuilder().setPrettyPrinting().create();
 		try {
 			configuration = new JsonParser().parse(new FileReader(configFilePath)).getAsJsonObject();
 			HypixelAddons.INSTANCE.getLogger().info("Successfully loaded existing configuration");
 		} catch (FileNotFoundException e) {
-			HypixelAddons.INSTANCE.getLogger().error("Unable to getFormatted existing configuration. Creating a new configuration", e);
+			HypixelAddons.INSTANCE.getLogger().error("Unable to get existing configuration. Creating a new configuration", e);
 
 			try {
 				File file = new File(configFilePath);
@@ -99,15 +105,6 @@ public class Configuration {
 	}
 
 	public double initialize(String category, String key, double defaultValue) {
-		if (hasKey(category, key)) {
-			return get(category, key, defaultValue);
-		} else {
-			write(category, key, defaultValue);
-			return defaultValue;
-		}
-	}
-
-	public List<String> initialize(String category, String key, List<String> defaultValue) {
 		if (hasKey(category, key)) {
 			return get(category, key, defaultValue);
 		} else {
@@ -227,21 +224,6 @@ public class Configuration {
 				return;
 			}
 			categoryJson.addProperty(key, value);
-			configuration.add(category, categoryJson);
-			save();
-		} catch (Exception e) {
-			HypixelAddons.INSTANCE.getLogger().error("Exception when writing a double", e);
-		}
-	}
-
-	public void write(String category, String key, List<String> value) {
-		try {
-			JsonObject categoryJson = higherDepth(configuration, category, new JsonObject());
-			JsonArray valueJson = gson.toJsonTree(value).getAsJsonArray();
-			if (categoryJson.has(key) && categoryJson.get(key).getAsJsonArray().equals(valueJson)) {
-				return;
-			}
-			categoryJson.add(key, valueJson);
 			configuration.add(category, categoryJson);
 			save();
 		} catch (Exception e) {

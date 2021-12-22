@@ -20,10 +20,11 @@ package com.kr45732.hypixeladdons.gui;
 
 import static com.kr45732.hypixeladdons.utils.Utils.*;
 
+import com.kr45732.hypixeladdons.gui.component.MOTDTextField;
+import com.kr45732.hypixeladdons.utils.GuiUtils;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import java.io.IOException;
-import java.util.List;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -31,6 +32,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.util.IChatComponent;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 public class MOTDEditorGui extends GuiScreen {
 
@@ -38,7 +40,7 @@ public class MOTDEditorGui extends GuiScreen {
 	private int guiHeight;
 	private int guiX;
 	private int guiY;
-	private MultiLineTextField textField;
+	private MOTDTextField textField;
 
 	@Override
 	public void initGui() {
@@ -49,8 +51,10 @@ public class MOTDEditorGui extends GuiScreen {
 		}
 
 		int chatWidth = (int) (mc.gameSettings.chatWidth * 280 + 40);
-		textField = new MultiLineTextField(0, guiX + 10, guiY + 38, chatWidth, 9);
-		textField.setText(ConfigUtils.motdText.split("\n"));
+		textField = new MOTDTextField( guiX + 10, guiY + 38, chatWidth, (int) (fontRendererObj.FONT_HEIGHT * 9.5), 5);
+		textField.setMaxLines(9);
+		textField.setMaxLineLength(100);
+		textField.setText(ConfigUtils.motdText);
 		buttonList.add(new GuiButton(0, guiX + 10, guiY + guiHeight - 30, 150, 20, "Submit"));
 		buttonList.add(new GuiButton(1, guiX + guiWidth - 10 - 150, guiY + guiHeight - 30, 150, 20, "Clear"));
 	}
@@ -76,6 +80,18 @@ public class MOTDEditorGui extends GuiScreen {
 	}
 
 	@Override
+	protected void mouseReleased(int mouseX, int mouseY, int state) {
+		textField.mouseReleased(mouseX, mouseY, state);
+		super.mouseReleased(mouseX, mouseY, state);
+	}
+
+	@Override
+	public void handleMouseInput() throws IOException {
+		textField.mouseScrolled(Mouse.getEventDWheel());
+		super.handleMouseInput();
+	}
+
+	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
 		textField.textboxKeyTyped(typedChar, keyCode);
 		super.keyTyped(typedChar, keyCode);
@@ -96,15 +112,15 @@ public class MOTDEditorGui extends GuiScreen {
 	protected void actionPerformed(GuiButton button) {
 		if (button.id == 0) {
 			ConfigUtils.setMotdText(textField.getText());
-			mc.thePlayer.closeScreen();
+			mc.displayGuiScreen(null);
 			IChatComponent chatComponent = empty();
-			List<String> lines = textField.getLines();
-			for (int i = 0; i < lines.size(); i++) {
+			String[] lines = textField.getText().split("\n");
+			for (int i = 0; i < lines.length; i++) {
 				if (i != 0) {
 					chatComponent.appendText("\n");
 				}
 
-				String line = lines.get(i);
+				String line = lines[i];
 				chatComponent.appendSibling(
 					new ChatText(labelWithDesc("Click here to set line", "" + (i + 1)))
 						.setClickEvent(ClickEvent.Action.RUN_COMMAND, "/g motd set " + (i + 1) + " " + line)
@@ -112,9 +128,9 @@ public class MOTDEditorGui extends GuiScreen {
 				);
 			}
 
-			mc.thePlayer.addChatComponentMessage(wrapText(chatComponent));
+			mc.thePlayer.addChatMessage(wrapText(chatComponent));
 		} else if (button.id == 1) {
-			textField.setText(new String[0]);
+			textField.setText("");
 		}
 	}
 

@@ -58,7 +58,7 @@ public class PartyFinderCommand extends CommandBase {
 			labelWithDesc("Fastest F7 S+", player.getFastestF7Time()) +
 			"\n" +
 			labelWithDesc(
-				"Meta items player has",
+				"Meta items",
 				(
 					playerMetaItems != null
 						? (playerMetaItems.size() > 0 ? String.join(", ", playerMetaItems) : "None")

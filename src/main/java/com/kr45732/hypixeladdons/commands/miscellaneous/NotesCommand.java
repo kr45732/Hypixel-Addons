@@ -19,16 +19,18 @@
 package com.kr45732.hypixeladdons.commands.miscellaneous;
 
 import com.kr45732.hypixeladdons.HypixelAddons;
-import com.kr45732.hypixeladdons.gui.TodoListGui;
-import com.kr45732.hypixeladdons.utils.Utils;
+import com.kr45732.hypixeladdons.gui.NoteGui;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 
-public class TodoListCommand extends CommandBase {
+import static com.kr45732.hypixeladdons.utils.Utils.executor;
+
+public class NotesCommand extends CommandBase {
 
 	@Override
 	public String getCommandName() {
-		return "hpa:todo";
+		return "hpa:notes";
 	}
 
 	@Override
@@ -43,6 +45,6 @@ public class TodoListCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		Utils.executor.submit(() -> HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(new TodoListGui()));
+		executor.submit(() -> HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(new NoteGui(Minecraft.getMinecraft().currentScreen)));
 	}
 }

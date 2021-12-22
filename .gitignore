@@ -27,6 +27,3 @@ build
 run
 .DS_Store
 Thumbs.db
-
-/src/main/java/com/kr45732/hypixeladdons/commands/price/BidsCommand.java
-/src/main/java/com/kr45732/hypixeladdons/commands/price/BinCommand.java

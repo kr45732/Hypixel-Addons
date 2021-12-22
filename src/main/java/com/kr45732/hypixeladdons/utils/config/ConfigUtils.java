@@ -19,8 +19,6 @@
 package com.kr45732.hypixeladdons.utils.config;
 
 import com.kr45732.hypixeladdons.HypixelAddons;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ConfigUtils {
 
@@ -33,7 +31,6 @@ public class ConfigUtils {
 	public static String guildJoinMessage;
 	public static boolean toggleGuildJoinMessage;
 	public static String guildLeaveMessage;
-
 	/* Hypixel Guild Chat */
 	public static boolean toggleGuildChatResponder;
 	public static boolean toggleGuildChatCooldownMessage;
@@ -51,15 +48,10 @@ public class ConfigUtils {
 	public static double sidebarAlpha;
 	public static boolean sidebarChromaBackground;
 	public static int sidebarChromaSpeed;
-	/* To-do list */
-	public static boolean enableTodolist;
-	public static int todoListX;
-	public static int todoListY;
-	public static int todoListWidth;
-	public static int todoListMaxDisplayItems;
-	public static List<String> todoList;
 	/* MOTD */
 	public static String motdText;
+	/* Misc */
+	public static String jacobKey;
 
 	public static void initialize() {
 		try {
@@ -94,16 +86,11 @@ public class ConfigUtils {
 			sidebarChromaBackground = config.initialize("sidebar", "toggle_chroma_background", false);
 			sidebarChromaSpeed = config.initialize("sidebar", "chroma_speed", 2);
 
-			/* To-do list */
-			enableTodolist = config.initialize("todo", "toggle", false);
-			todoListX = config.initialize("todo", "x", 0);
-			todoListY = config.initialize("todo", "y", 0);
-			todoListWidth = config.initialize("todo", "width", 150);
-			todoListMaxDisplayItems = config.initialize("todo", "max_display_items", 5);
-			todoList = config.initialize("todo", "todo_list", new ArrayList<>());
-
 			/* MOTD */
 			motdText = config.initialize("motd", "text", "");
+
+			/* Misc */
+			jacobKey = config.initialize("misc", "jacob_key", "");
 		} catch (Exception e) {
 			HypixelAddons.INSTANCE.getLogger().error("An error occurred when initializing the configuration", e);
 		}
@@ -276,45 +263,6 @@ public class ConfigUtils {
 			ConfigUtils.sidebarChromaSpeed = sidebarChromaSpeed;
 			config.write("sidebar", "chroma_speed", sidebarChromaSpeed);
 		}
-	}
-
-	public static void setEnableTodolist(boolean enableTodolist) {
-		if (ConfigUtils.enableTodolist != enableTodolist) {
-			ConfigUtils.enableTodolist = enableTodolist;
-			config.write("todo", "toggle", enableTodolist);
-		}
-	}
-
-	public static void setTodoListX(int todoListX) {
-		if (ConfigUtils.todoListX != todoListX) {
-			ConfigUtils.todoListX = todoListX;
-			config.write("todo", "x", todoListX);
-		}
-	}
-
-	public static void setTodoListY(int todoListY) {
-		if (ConfigUtils.todoListY != todoListY) {
-			ConfigUtils.todoListY = todoListY;
-			config.write("todo", "y", todoListY);
-		}
-	}
-
-	public static void setTodoListWidth(int todoListWidth) {
-		if (ConfigUtils.todoListWidth != todoListWidth) {
-			ConfigUtils.todoListWidth = todoListWidth;
-			config.write("todo", "width", todoListWidth);
-		}
-	}
-
-	public static void setTodoListMaxDisplayItems(int todoListMaxDisplayItems) {
-		if (ConfigUtils.todoListMaxDisplayItems != todoListMaxDisplayItems) {
-			ConfigUtils.todoListMaxDisplayItems = todoListMaxDisplayItems;
-			config.write("todo", "max_display_items", todoListMaxDisplayItems);
-		}
-	}
-
-	public static void writeTodoList() {
-		config.write("todo", "todo_list", todoList);
 	}
 
 	public static void setMotdText(String motdText) {

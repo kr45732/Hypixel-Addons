@@ -21,7 +21,6 @@ package com.kr45732.hypixeladdons.commands.miscellaneous;
 import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 import com.kr45732.hypixeladdons.HypixelAddons;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.command.CommandBase;
@@ -29,9 +28,9 @@ import net.minecraft.command.ICommandSender;
 
 public class HelpCommand extends CommandBase {
 
-	private static final String commandHelpList;
+	private static String commandHelpList;
 
-	static {
+	public static void initialize() {
 		StringBuilder out = new StringBuilder();
 		for (CommandBase command : HypixelAddons.INSTANCE.getCommands()) {
 			String usage = command.getCommandUsage(null);

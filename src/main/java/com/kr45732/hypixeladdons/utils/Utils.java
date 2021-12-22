@@ -18,21 +18,35 @@
 
 package com.kr45732.hypixeladdons.utils;
 
-import static com.kr45732.hypixeladdons.utils.api.ApiHandler.playerFromUuid;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.kr45732.hypixeladdons.utils.api.HypixelPlayer;
 import com.kr45732.hypixeladdons.utils.api.HypixelResponse;
 import com.kr45732.hypixeladdons.utils.api.Player;
 import com.kr45732.hypixeladdons.utils.chat.C;
 import com.kr45732.hypixeladdons.utils.structs.InvItem;
 import com.kr45732.hypixeladdons.utils.structs.UsernameUuidStruct;
+import com.kr45732.hypixeladdons.utils.structs.WrappedText;
+import me.nullicorn.nedit.NBTReader;
+import me.nullicorn.nedit.type.NBTCompound;
+import me.nullicorn.nedit.type.NBTList;
+import net.minecraft.client.Minecraft;
+import net.minecraft.command.CommandBase;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.math.RoundingMode;
+import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.Duration;
@@ -43,20 +57,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import me.nullicorn.nedit.NBTReader;
-import me.nullicorn.nedit.type.NBTCompound;
-import me.nullicorn.nedit.type.NBTList;
-import net.minecraft.client.Minecraft;
-import net.minecraft.command.CommandBase;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.StringUtils;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+
+import static com.kr45732.hypixeladdons.utils.api.ApiHandler.playerFromUuid;
 
 public class Utils {
 
@@ -65,12 +67,15 @@ public class Utils {
 	public static final Gson gson = new Gson();
 	private static final Pattern SERVER_BRAND_PATTERN = Pattern.compile("(.+) <- .+");
 	public static boolean onSkyblock;
+	private static Instant bazaarJsonLastUpdated = Instant.now();
+	/* JSONs */
 	private static JsonElement levelingJson;
 	private static JsonObject internalJsonMappings;
 	private static JsonElement essenceCostsJson;
 	private static JsonElement bazaarJson;
 	private static JsonElement bitPricesJson;
-	private static Instant bazaarJsonLastUpdated = Instant.now();
+	private static JsonElement petNumsJson;
+	private static JsonElement enchantsJson;
 
 	/* Getters */
 	public static JsonElement getBitPricesJson() {
@@ -81,6 +86,14 @@ public class Utils {
 		return bitPricesJson;
 	}
 
+	public static JsonElement getEnchantsJson() {
+		if (enchantsJson == null) {
+			enchantsJson =
+					getJson("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/master/constants/enchants.json");
+		}
+		return enchantsJson;
+	}
+
 	public static JsonElement getBazaarJson() {
 		if (bazaarJson == null || Duration.between(bazaarJsonLastUpdated, Instant.now()).toMinutes() >= 1) {
 			bazaarJson = getJson("https://api.slothpixel.me/api/skyblock/bazaar");
@@ -88,6 +101,13 @@ public class Utils {
 		}
 
 		return bazaarJson;
+	}
+
+	public static JsonElement getPetNumsJson() {
+		if (petNumsJson == null) {
+			petNumsJson = getJson("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/master/constants/petnums.json");
+		}
+		return petNumsJson;
 	}
 
 	public static JsonElement getEssenceCostsJson() {
@@ -187,7 +207,6 @@ public class Utils {
 		} else if (obj instanceof HypixelPlayer) {
 			return wrapText(((HypixelPlayer) obj).getFailCause(), true);
 		}
-
 		return wrapText("Unknown Fail Cause", true);
 	}
 
@@ -775,7 +794,149 @@ public class Utils {
 	public static String[] convertArgs(String[] args, int limit) {
 		return String.join(" ", args).split(" ", limit);
 	}
+
+	public static List<String> wrapToWidth(String str, int wrapWidth) {
+		List<String> strings = new ArrayList<>();
+		StringBuilder temp = new StringBuilder();
+		for (int i = 0; i < str.length(); i++) {
+			char c = str.charAt(i);
+			if (c == '\n' || Minecraft.getMinecraft().fontRendererObj.getStringWidth(temp.toString() + c) >= wrapWidth) {
+				strings.add(temp.toString());
+				temp = new StringBuilder();
+			}
+
+			if (c != '\n') {
+				temp.append(c);
+			}
+		}
+		strings.add(temp.toString());
+		return strings;
+	}
+
+	public static List<WrappedText> wrapToWidthWithIndication(String str, int wrapWidth) {
+		List<WrappedText> strings = new ArrayList<>();
+		StringBuilder temp = new StringBuilder();
+		boolean wrapped = false;
+		for (int i = 0; i < str.length(); i++) {
+			char c = str.charAt(i);
+			if (c == '\n') {
+				strings.add(new WrappedText(temp.toString(), wrapped));
+				temp = new StringBuilder();
+				wrapped = false;
+			} else if (Minecraft.getMinecraft().fontRendererObj.getStringWidth(temp.toString() + c) >= wrapWidth) {
+				strings.add(new WrappedText(temp.toString(), wrapped));
+				temp = new StringBuilder();
+				wrapped = true;
+			}
+
+			if (c != '\n') {
+				temp.append(c);
+			}
+		}
+		strings.add(new WrappedText(temp.toString(), wrapped));
+		return strings;
+	}
+
+	public static JsonArray getBidsFromPlayer(String uuid) {
+		try {
+			HttpGet httpget = new HttpGet("https://query-api.herokuapp.com/query");
+			httpget.addHeader("content-type", "application/json; charset=UTF-8");
+
+			URI uri = new URIBuilder(httpget.getURI())
+					.addParameter("bids", uuid)
+					.addParameter("limit", "-1")
+					.build();
+			httpget.setURI(uri);
+
+			try (CloseableHttpResponse httpResponse = Utils.httpClient.execute(httpget)) {
+				return new JsonParser().parse(new InputStreamReader(httpResponse.getEntity().getContent())).getAsJsonArray();
+			}
+		} catch (Exception ignored) {}
+		return null;
+	}
+
+	public static JsonArray queryLowestBin(String query) {
+		try {
+			HttpGet httpget = new HttpGet("hhttps://query-api.herokuapp.com/query");
+			httpget.addHeader("content-type", "application/json; charset=UTF-8");
+
+			URI uri = new URIBuilder(httpget.getURI())
+					.addParameter("end", "" + Instant.now().toEpochMilli())
+					.addParameter("item_name", "%" + query + "%")
+					.addParameter("bin", "true")
+					.addParameter("sort", "ASC")
+					.build();
+			httpget.setURI(uri);
+
+			try (CloseableHttpResponse httpResponse = httpClient.execute(httpget)) {
+				return new JsonParser().parse(new InputStreamReader(httpResponse.getEntity().getContent())).getAsJsonArray();
+			}
+		} catch (Exception ignored) {}
+		return null;
+	}
+
+	public static JsonArray queryLowestBinPet(String petName, String rarity) {
+		try {
+			HttpGet httpGet = new HttpGet("https://query-api.herokuapp.com//query");
+			httpGet.addHeader("content-type", "application/json; charset=UTF-8");
+
+			URIBuilder uri = new URIBuilder(httpGet.getURI())
+					.addParameter("end", "" + Instant.now().toEpochMilli())
+					.addParameter("item_name", "%" + petName + "%")
+					.addParameter("item_id", "PET")
+					.addParameter("bin", "true")
+					.addParameter("sort", "ASC");
+			if (!rarity.equals("ANY")) {
+				uri.addParameter("tier", rarity);
+			}
+			httpGet.setURI(uri.build());
+
+			try (CloseableHttpResponse httpResponse = httpClient.execute(httpGet)) {
+				return new JsonParser().parse(new InputStreamReader(httpResponse.getEntity().getContent())).getAsJsonArray();
+			}
+		} catch (Exception ignored) {}
+		return null;
+	}
+
+	public static JsonArray queryLowestBinEnchant(String enchantId, int enchantLevel) {
+		try {
+			HttpGet httpGet = new HttpGet("https://query-api.herokuapp.com/query");
+			httpGet.addHeader("content-type", "application/json; charset=UTF-8");
+
+			URI uri = new URIBuilder(httpGet.getURI())
+					.addParameter("end", "" + Instant.now().toEpochMilli())
+					.addParameter("item_id", "ENCHANTED_BOOK")
+					.addParameter("enchants", enchantId.toUpperCase() + ";" + enchantLevel)
+					.addParameter("bin", "true")
+					.addParameter("sort", "ASC")
+					.build();
+			httpGet.setURI(uri);
+
+			try (CloseableHttpResponse httpResponse = httpClient.execute(httpGet)) {
+				return  new JsonParser().parse(new InputStreamReader(httpResponse.getEntity().getContent())).getAsJsonArray();
+			}
+		} catch (Exception ignored) {}
+		return null;
+	}
+
+	public static JsonElement postJson(String url, JsonElement body, Header... headers) {
+		try {
+			HttpPost httpPost = new HttpPost(url);
+
+			StringEntity entity = new StringEntity(body.toString());
+			httpPost.setEntity(entity);
+			httpPost.setHeaders(headers);
+			httpPost.setHeader("Content-Type", "application/json");
+			httpPost.setHeader("Accept", "application/json");
+
+			try (CloseableHttpResponse httpResponse = httpClient.execute(httpPost)) {
+				return new JsonParser().parse(new InputStreamReader(httpResponse.getEntity().getContent()));
+			}
+		} catch (Exception ignored) {}
+		return null;
+	}
 }
+
 /*
 Black         §0
 Dark Blue     §1
@@ -793,4 +954,4 @@ RED	          §c
 LIGHT_PURPLE  §d
 YELLOW	      §e
 WHITE	      §f
- */
+*/

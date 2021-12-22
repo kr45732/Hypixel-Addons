@@ -19,11 +19,12 @@
 package com.kr45732.hypixeladdons.chatcommand;
 
 import com.kr45732.hypixeladdons.HypixelAddons;
-import com.kr45732.hypixeladdons.utils.Utils;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import java.util.List;
 import java.util.function.Function;
 import net.minecraft.command.CommandBase;
+
+import static com.kr45732.hypixeladdons.utils.Utils.executor;
 
 public class ChatCommand {
 
@@ -38,16 +39,18 @@ public class ChatCommand {
 	}
 
 	public void execute(ChatCommandEvent event) {
-		Utils.executor.submit(() -> {
-			int remainingCooldown = getRemainingCooldown(event.getSender());
-			if (remainingCooldown > 0) {
-				if (ConfigUtils.toggleGuildChatCooldownMessage) {
-					event.reply("This command is on cooldown for " + remainingCooldown + " more seconds");
+		executor.submit(
+			() -> {
+				int remainingCooldown = getRemainingCooldown(event.getSender());
+				if (remainingCooldown > 0) {
+					if (ConfigUtils.toggleGuildChatCooldownMessage) {
+						event.reply("This command is on cooldown for " + remainingCooldown + " more seconds");
+					}
+				} else {
+					event.reply(execute.apply(event));
 				}
-			} else {
-				event.reply(execute.apply(event));
 			}
-		});
+		);
 	}
 
 	public boolean isForCommand(String command) {
@@ -60,7 +63,7 @@ public class ChatCommand {
 		if (remaining > 0) {
 			return remaining;
 		} else {
-			HypixelAddons.INSTANCE.getChatCommandListener().putCooldown(key, ConfigUtils.guildChatCooldown);
+			HypixelAddons.INSTANCE.getChatCommandListener().setCooldown(key, ConfigUtils.guildChatCooldown);
 		}
 
 		return 0;

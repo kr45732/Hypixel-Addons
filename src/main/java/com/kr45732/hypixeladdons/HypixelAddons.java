@@ -29,9 +29,7 @@ import com.kr45732.hypixeladdons.commands.guild.GuildCommand;
 import com.kr45732.hypixeladdons.commands.guild.MOTDCommand;
 import com.kr45732.hypixeladdons.commands.hypixel.*;
 import com.kr45732.hypixeladdons.commands.miscellaneous.*;
-import com.kr45732.hypixeladdons.commands.price.AuctionsCommand;
-import com.kr45732.hypixeladdons.commands.price.BazaarCommand;
-import com.kr45732.hypixeladdons.commands.price.BitsCommand;
+import com.kr45732.hypixeladdons.commands.price.*;
 import com.kr45732.hypixeladdons.commands.skills.HotmCommand;
 import com.kr45732.hypixeladdons.commands.skills.SkillsCommand;
 import com.kr45732.hypixeladdons.commands.slayer.SlayerCommand;
@@ -69,8 +67,7 @@ public class HypixelAddons {
 					new ChatCommand(SkillsCommand.INSTANCE, event -> SkillsCommand.INSTANCE.getSkillsChat(event.getArgs())),
 					new ChatCommand(AuctionsCommand.INSTANCE, event -> AuctionsCommand.INSTANCE.getAuctionsChat(event.getArgs())),
 					new ChatCommand(BazaarCommand.INSTANCE, event -> BazaarCommand.INSTANCE.getBazaarChat(event.getArgs())),
-					//	new ChatCommand(BidsCommand.INSTANCE, event -> BidsCommand.INSTANCE.getBidsChat(event.getArgs())),
-					//	new ChatCommand(BinCommand.INSTANCE, event -> BinCommand.INSTANCE.getBinChat(event.getArgs())),
+						new ChatCommand(BinCommand.INSTANCE, event -> BinCommand.INSTANCE.getBinChat(event.getArgs())),
 					new ChatCommand(BitsCommand.INSTANCE, event -> BitsCommand.INSTANCE.getBitsChat(event.getArgs())),
 					new ChatCommand(BankCommand.INSTANCE, event -> BankCommand.INSTANCE.getBankChat(event.getArgs())),
 					new ChatCommand(WeightCommand.INSTANCE, event -> WeightCommand.INSTANCE.getWeightChat(event.getArgs())),
@@ -89,6 +86,7 @@ public class HypixelAddons {
 		for (CommandBase command : getCommands()) {
 			ClientCommandHandler.instance.registerCommand(command);
 		}
+		HelpCommand.initialize();
 	}
 
 	@Mod.EventHandler
@@ -120,8 +118,8 @@ public class HypixelAddons {
 			// Price
 			AuctionsCommand.INSTANCE,
 			BazaarCommand.INSTANCE,
-			//	BinCommand.INSTANCE, TODO: fix?
-			//	BidsCommand.INSTANCE,
+				BinCommand.INSTANCE,
+				BidsCommand.INSTANCE,
 			BitsCommand.INSTANCE,
 			// Hypixel
 			HypixelCommand.INSTANCE,
@@ -138,8 +136,9 @@ public class HypixelAddons {
 			SkyblockCommand.INSTANCE,
 			CakesCommand.INSTANCE,
 			HarpCommand.INSTANCE,
-			new TodoListCommand(),
+				new NotesCommand(),
 			new HelpCommand(),
+				new JacobContestCommand(),
 			// Don't run this command, ok?
 			new DevCommand(),
 		};

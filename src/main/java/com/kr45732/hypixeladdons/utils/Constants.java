@@ -60,12 +60,15 @@ public class Constants {
 	public static Map<String, String> HOTM_PERK_ID_TO_NAME;
 	public static Map<String, Integer> HOTM_PERK_MAX_LEVEL;
 	public static Map<String, String> HARP_SONG_ID_TO_NAME;
+	public static Map<String, String> RARITY_TO_NUMBER_MAP;
 
 	/* Fetched from other sources */
 	public static List<String> ALL_SKILL_NAMES;
 	public static List<String> SKILL_NAMES;
 	public static List<String> ESSENCE_ITEM_NAMES;
 	public static List<String> BITS_ITEM_NAMES;
+	public static List<String> ENCHANT_NAMES;
+	public static List<String> PET_NAMES;
 
 	public static void initialize() {
 		try {
@@ -164,6 +167,9 @@ public class Constants {
 			/* HARP_SONG_ID_TO_NAME */
 			HARP_SONG_ID_TO_NAME = gson.fromJson(higherDepth(constantsJson, "HARP_SONG_ID_TO_NAME"), mapStringString);
 
+			/* RARITY_TO_NUMBER_MAP */
+			RARITY_TO_NUMBER_MAP = gson.fromJson(higherDepth(constantsJson, "RARITY_TO_NUMBER_MAP"), mapStringString);
+
 			/* ALL_SKILL_NAMES */
 			ALL_SKILL_NAMES =
 				higherDepth(getLevelingJson(), "leveling_caps")
@@ -184,6 +190,20 @@ public class Constants {
 
 			/* BITS_ITEM_NAMES */
 			BITS_ITEM_NAMES = getBitPricesJson().getAsJsonObject().entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
+
+			/* ENCHANT_NAMES */
+			ENCHANT_NAMES = new ArrayList<>();
+			for (Map.Entry<String, JsonElement> enchantArr : higherDepth(getEnchantsJson(), "enchants").getAsJsonObject().entrySet()) {
+				for (JsonElement enchantName : enchantArr.getValue().getAsJsonArray()) {
+					ENCHANT_NAMES.add(enchantName.getAsString().toUpperCase());
+				}
+			}
+			if (!ENCHANT_NAMES.contains("ULTIMATE_JERRY")) {
+				ENCHANT_NAMES.add("ULTIMATE_JERRY");
+			}
+
+			/* PET_NAMES */
+			PET_NAMES = getPetNumsJson().getAsJsonObject().entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
 		} catch (Exception e) {
 			HypixelAddons.INSTANCE.getLogger().error("An error occurred when initializing constants", e);
 		}

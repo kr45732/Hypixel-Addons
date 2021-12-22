@@ -18,12 +18,16 @@
 
 package com.kr45732.hypixeladdons.gui;
 
+import com.kr45732.hypixeladdons.gui.component.ToggleButton;
+import com.kr45732.hypixeladdons.utils.GuiUtils;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.kr45732.hypixeladdons.utils.structs.GuiPage;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -159,25 +163,6 @@ public class SettingsGui extends GuiScreen {
 						() -> addSetting("Chroma speed", "The speed of the chroma background", 8)
 					)
 			);
-
-		this.pageMap.put(
-				4,
-				new GuiPage()
-					.addButtons(() -> addButton(0, 0, ConfigUtils.enableTodolist))
-					.addTextFields(
-						() -> addTextField(0, 1, "" + ConfigUtils.todoListX),
-						() -> addTextField(1, 2, "" + ConfigUtils.todoListY),
-						() -> addTextField(2, 3, "" + ConfigUtils.todoListWidth),
-						() -> addTextField(3, 4, "" + ConfigUtils.todoListMaxDisplayItems)
-					)
-					.addSettings(
-						() -> addSetting("Todo list (toggle)", "Toggle the todo list overlay", 0),
-						() -> addSetting("X position", "The X position of the todo list", 1),
-						() -> addSetting("Y offset", "The Y position of the todo list", 2),
-						() -> addSetting("Width", "The width of the todo list", 3),
-						() -> addSetting("Max display items", "The max number of items to be displayed on the todo list", 4)
-					)
-			);
 	}
 
 	@Override
@@ -196,7 +181,6 @@ public class SettingsGui extends GuiScreen {
 		addCategory(101, 1, "Chat Commands");
 		addCategory(102, 2, "Mystery Box");
 		addCategory(103, 3, "Sidebar");
-		addCategory(104, 4, "Todo List");
 	}
 
 	@Override
@@ -210,12 +194,14 @@ public class SettingsGui extends GuiScreen {
 
 		// Background, title, and the 2 lines
 		drawRect(guiX, guiY, guiX + guiWidth, guiY + guiHeight, 0xF2181c25);
-		GuiUtils.applyGl(() -> {
-			GlStateManager.scale(2, 2, 1);
-			fontRendererObj.drawStringWithShadow("Hypixel Addons", guiX / 2F + 5, guiY / 2F + 5, 0xFF28709e);
-			GuiUtils.drawHorizontalLine(guiX / 2 + 5, (guiX + guiWidth) / 2 - 5, guiY / 2 + 16, 0xFF28709e);
-			GuiUtils.drawVerticalLine(guiX / 2 + 45, guiY / 2 + 16, (guiY + guiHeight) / 2 - 5, 0xFF28709e);
-		});
+		GuiUtils.applyGl(
+			() -> {
+				GlStateManager.scale(2, 2, 1);
+				fontRendererObj.drawStringWithShadow("Hypixel Addons", guiX / 2F + 5, guiY / 2F + 5, 0xFF28709e);
+				GuiUtils.drawHorizontalLine(guiX / 2 + 5, (guiX + guiWidth) / 2 - 5, guiY / 2 + 16, 0xFF28709e);
+				GuiUtils.drawVerticalLine(guiX / 2 + 45, guiY / 2 + 16, (guiY + guiHeight) / 2 - 5, 0xFF28709e);
+			}
+		);
 
 		// Apply GL scissors for the scrolling effect
 		GuiUtils.enableGlScissors();
@@ -292,12 +278,6 @@ public class SettingsGui extends GuiScreen {
 						break;
 				}
 				break;
-			case 4:
-				if (button.id == 0) {
-					ConfigUtils.setEnableTodolist(!ConfigUtils.enableTodolist);
-					button.displayString = ConfigUtils.enableTodolist ? "On" : "Off";
-					break;
-				}
 		}
 
 		switch (button.id) {
@@ -411,30 +391,6 @@ public class SettingsGui extends GuiScreen {
 							break;
 					}
 					break;
-				case 4:
-					switch (textField.getId()) {
-						case 0:
-							try {
-								ConfigUtils.setTodoListX(Integer.parseInt(textField.getText()));
-							} catch (Exception ignored) {}
-							break;
-						case 1:
-							try {
-								ConfigUtils.setTodoListY(Integer.parseInt(textField.getText()));
-							} catch (Exception ignored) {}
-							break;
-						case 2:
-							try {
-								ConfigUtils.setTodoListWidth(Integer.parseInt(textField.getText()));
-							} catch (Exception ignored) {}
-							break;
-						case 3:
-							try {
-								ConfigUtils.setTodoListMaxDisplayItems(Integer.parseInt(textField.getText()));
-							} catch (Exception ignored) {}
-							break;
-					}
-					break;
 			}
 		}
 	}
@@ -503,7 +459,7 @@ public class SettingsGui extends GuiScreen {
 	private void addButton(int id, int count, boolean curVal) {
 		int translateValue = count * 45 + calculateScrollTranslate();
 
-		this.buttonList.add(new GuiToggleButton(id, guiX + guiWidth - 35, guiY + 37 + translateValue, curVal ? "On" : "Off"));
+		this.buttonList.add(new ToggleButton(id, guiX + guiWidth - 35, guiY + 37 + translateValue, curVal ? "On" : "Off"));
 	}
 
 	private void addTextField(int id, int count, String curVal) {
@@ -525,7 +481,7 @@ public class SettingsGui extends GuiScreen {
 	}
 
 	private void addCategory(int id, int count, String name) {
-		this.buttonList.add(new GuiToggleButton(id, guiX + 15, guiY + 40 + count * 18, name));
+		this.buttonList.add(new ToggleButton(id, guiX + 15, guiY + 40 + count * 18, name));
 	}
 
 	/* Helper methods */
