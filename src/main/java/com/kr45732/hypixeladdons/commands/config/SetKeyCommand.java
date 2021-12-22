@@ -45,24 +45,22 @@ public class SetKeyCommand extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		executor.submit(
-			() -> {
-				EntityPlayer player = (EntityPlayer) sender;
+		executor.submit(() -> {
+			EntityPlayer player = (EntityPlayer) sender;
 
-				if (args.length != 1) {
-					player.addChatMessage(getUsage(this));
-					return;
-				}
-
-				JsonElement keyJson = getJson("https://api.hypixel.net/key?key=" + args[0]);
-				if (higherDepth(keyJson, "cause") != null) {
-					player.addChatMessage(getFailCause(higherDepth(keyJson, "cause").getAsString()));
-					return;
-				}
-
-				ConfigUtils.setHypixelKey(args[0]);
-				player.addChatMessage(wrapText(labelWithDesc("Set API key to", args[0])));
+			if (args.length != 1) {
+				player.addChatMessage(getUsage(this));
+				return;
 			}
-		);
+
+			JsonElement keyJson = getJson("https://api.hypixel.net/key?key=" + args[0]);
+			if (higherDepth(keyJson, "cause") != null) {
+				player.addChatMessage(getFailCause(higherDepth(keyJson, "cause").getAsString()));
+				return;
+			}
+
+			ConfigUtils.setHypixelKey(args[0]);
+			player.addChatMessage(wrapText(labelWithDesc("Set API key to", args[0])));
+		});
 	}
 }

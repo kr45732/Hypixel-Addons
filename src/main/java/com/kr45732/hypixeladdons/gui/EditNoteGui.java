@@ -22,14 +22,13 @@ import com.kr45732.hypixeladdons.HypixelAddons;
 import com.kr45732.hypixeladdons.gui.component.CustomTextField;
 import com.kr45732.hypixeladdons.gui.component.NoteButton;
 import com.kr45732.hypixeladdons.utils.structs.Note;
+import java.io.IOException;
+import java.util.Arrays;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-
-import java.io.IOException;
-import java.util.Arrays;
 
 public class EditNoteGui extends GuiScreen {
 
@@ -48,21 +47,33 @@ public class EditNoteGui extends GuiScreen {
 		Keyboard.enableRepeatEvents(true);
 
 		buttonList.addAll(
-				Arrays.asList(
-						new NoteButton(0, 25, 38, "Pin", () -> note.setPinned(!note.isPinned())),
-						new NoteButton(1, 25, 68, "Cancel", () -> HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(previousScreen)),
-						new NoteButton(2, 25, 98, "Delete", () -> {
-							note.delete();
-							previousScreen.loadNotes();
-							HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(previousScreen);
-						}),
-						new NoteButton(3, 25, height - 30, "Save & Back", () -> {
-							save();
-							note.save();
-							previousScreen.loadNotes();
-							HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(previousScreen);
-						})
+			Arrays.asList(
+				new NoteButton(0, 25, 38, "Pin", () -> note.setPinned(!note.isPinned())),
+				new NoteButton(1, 25, 68, "Cancel", () -> HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(previousScreen)),
+				new NoteButton(
+					2,
+					25,
+					98,
+					"Delete",
+					() -> {
+						note.delete();
+						previousScreen.loadNotes();
+						HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(previousScreen);
+					}
+				),
+				new NoteButton(
+					3,
+					25,
+					height - 30,
+					"Save & Back",
+					() -> {
+						save();
+						note.save();
+						previousScreen.loadNotes();
+						HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(previousScreen);
+					}
 				)
+			)
 		);
 
 		save();
@@ -129,10 +140,10 @@ public class EditNoteGui extends GuiScreen {
 	}
 
 	private void save() {
-		if(titleField != null){
+		if (titleField != null) {
 			note.setTitle(titleField.getText());
 		}
-		if(descriptionField != null){
+		if (descriptionField != null) {
 			note.setDescription(descriptionField.getText());
 		}
 	}

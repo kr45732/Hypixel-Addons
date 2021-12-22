@@ -35,7 +35,7 @@ public class Configuration {
 
 	public Configuration() {
 		File baseDir = new File(baseConfigPath);
-		if(!baseDir.exists()){
+		if (!baseDir.exists()) {
 			new File(baseConfigPath).mkdirs();
 		}
 

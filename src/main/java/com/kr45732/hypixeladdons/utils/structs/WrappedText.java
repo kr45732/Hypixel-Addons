@@ -20,19 +20,19 @@ package com.kr45732.hypixeladdons.utils.structs;
 
 public class WrappedText {
 
-    private final String text;
-    private final boolean wrapped;
+	private final String text;
+	private final boolean wrapped;
 
-    public WrappedText(String text, boolean wrapped) {
-        this.text = text;
-        this.wrapped = wrapped;
-    }
+	public WrappedText(String text, boolean wrapped) {
+		this.text = text;
+		this.wrapped = wrapped;
+	}
 
-    public String getText() {
-        return text;
-    }
+	public String getText() {
+		return text;
+	}
 
-    public boolean isWrapped() {
-        return wrapped;
-    }
+	public boolean isWrapped() {
+		return wrapped;
+	}
 }

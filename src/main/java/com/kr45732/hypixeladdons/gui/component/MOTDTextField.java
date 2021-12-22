@@ -39,65 +39,66 @@ package com.kr45732.hypixeladdons.gui.component;
 import java.util.Arrays;
 
 public class MOTDTextField extends CustomTextField {
-    public MOTDTextField(int x, int y, int width, int height, int margin) {
-        super(x, y, width, height, margin);
-    }
 
-    @Override
-    protected String getSelectedText() {
-        if (getSelectionStart() >= 0 && getSelectionEnd() >= 0) {
-            return text.substring(getSelectionStart(), getSelectionEnd()).replaceAll("(?i)§(?=[0-9A-FK-OR])", "&");
-        }
+	public MOTDTextField(int x, int y, int width, int height, int margin) {
+		super(x, y, width, height, margin);
+	}
 
-        return "";
-    }
+	@Override
+	protected String getSelectedText() {
+		if (getSelectionStart() >= 0 && getSelectionEnd() >= 0) {
+			return text.substring(getSelectionStart(), getSelectionEnd()).replaceAll("(?i)§(?=[0-9A-FK-OR])", "&");
+		}
 
-    @Override
-    public String getText() {
-        return text.replaceAll("(?i)§(?=[0-9A-FK-OR])", "&");
-    }
+		return "";
+	}
 
-    @Override
-    protected void insert(String newText) {
-        newText = newText.replace("\t", "    ").replace("\r", "").replace("\f","");
-        String finalText = text.substring(0, cursorPos) + newText + text.substring(cursorPos);
-        if(maxLineLength != -1){
-            if(Arrays.stream(finalText.split("\n")).anyMatch(line -> line.length() > maxLineLength)){
-                return;
-            }
-        }
-        finalText = finalText.replaceAll("(?i)&(?=[0-9A-FK-OR])", "§");
+	@Override
+	public String getText() {
+		return text.replaceAll("(?i)§(?=[0-9A-FK-OR])", "&");
+	}
 
-        deleteSelectedText();
-        setText(finalText);
-        moveCursorPosBy(newText.length());
-    }
+	@Override
+	protected void insert(String newText) {
+		newText = newText.replace("\t", "    ").replace("\r", "").replace("\f", "");
+		String finalText = text.substring(0, cursorPos) + newText + text.substring(cursorPos);
+		if (maxLineLength != -1) {
+			if (Arrays.stream(finalText.split("\n")).anyMatch(line -> line.length() > maxLineLength)) {
+				return;
+			}
+		}
+		finalText = finalText.replaceAll("(?i)&(?=[0-9A-FK-OR])", "§");
 
-    @Override
-    protected void deleteNext() {
-        String currentText = text;
-        if (!atEndOfNote() && !currentText.isEmpty()) {
-            StringBuilder sb = new StringBuilder(currentText);
-            if (cursorPos >= 1 && sb.charAt(cursorPos - 1) == '§') {
-                sb.setCharAt(cursorPos - 1, '&');
-            }
-            sb.deleteCharAt(cursorPos);
-            setText(sb.toString());
-            selectionPos--;
-        }
-    }
+		deleteSelectedText();
+		setText(finalText);
+		moveCursorPosBy(newText.length());
+	}
 
-    @Override
-    protected void deletePrev() {
-        String currentText = text;
-        if (!atBeginningOfNote() && !currentText.isEmpty()) {
-            StringBuilder sb = new StringBuilder(currentText);
-            if (cursorPos >= 2 && sb.charAt(cursorPos - 2) == '§') {
-                sb.setCharAt(cursorPos - 2, '&');
-            }
-            sb.deleteCharAt(cursorPos - 1);
-            setText(sb.toString());
-            moveLeft();
-        }
-    }
+	@Override
+	protected void deleteNext() {
+		String currentText = text;
+		if (!atEndOfNote() && !currentText.isEmpty()) {
+			StringBuilder sb = new StringBuilder(currentText);
+			if (cursorPos >= 1 && sb.charAt(cursorPos - 1) == '§') {
+				sb.setCharAt(cursorPos - 1, '&');
+			}
+			sb.deleteCharAt(cursorPos);
+			setText(sb.toString());
+			selectionPos--;
+		}
+	}
+
+	@Override
+	protected void deletePrev() {
+		String currentText = text;
+		if (!atBeginningOfNote() && !currentText.isEmpty()) {
+			StringBuilder sb = new StringBuilder(currentText);
+			if (cursorPos >= 2 && sb.charAt(cursorPos - 2) == '§') {
+				sb.setCharAt(cursorPos - 2, '&');
+			}
+			sb.deleteCharAt(cursorPos - 1);
+			setText(sb.toString());
+			moveLeft();
+		}
+	}
 }

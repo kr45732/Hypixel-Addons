@@ -51,7 +51,7 @@ public class MOTDEditorGui extends GuiScreen {
 		}
 
 		int chatWidth = (int) (mc.gameSettings.chatWidth * 280 + 40);
-		textField = new MOTDTextField( guiX + 10, guiY + 38, chatWidth, (int) (fontRendererObj.FONT_HEIGHT * 9.5), 5);
+		textField = new MOTDTextField(guiX + 10, guiY + 38, chatWidth, (int) (fontRendererObj.FONT_HEIGHT * 9.5), 5);
 		textField.setMaxLines(9);
 		textField.setMaxLineLength(100);
 		textField.setText(ConfigUtils.motdText);

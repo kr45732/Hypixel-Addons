@@ -1,5 +1,9 @@
 package com.kr45732.hypixeladdons.commands.price;
 
+import static com.kr45732.hypixeladdons.utils.Constants.*;
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+import static com.kr45732.hypixeladdons.utils.api.ApiHandler.usernameUuid;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
@@ -13,10 +17,6 @@ import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
-import static com.kr45732.hypixeladdons.utils.Constants.*;
-import static com.kr45732.hypixeladdons.utils.Utils.*;
-import static com.kr45732.hypixeladdons.utils.api.ApiHandler.usernameUuid;
-
 public class BinCommand extends CommandBase {
 
 	public static BinCommand INSTANCE = new BinCommand();
@@ -28,64 +28,64 @@ public class BinCommand extends CommandBase {
 		}
 
 		String query = args[0];
-        JsonArray lowestBinArr = null;
-        String tempName = null;
-        for (String enchantId : ENCHANT_NAMES) {
-            if (query.replace(" ", "_").toUpperCase().contains(enchantId)) {
-                int enchantLevel;
-                try {
-                    enchantLevel = Integer.parseInt(query.replaceAll("\\D+", "").trim());
-                } catch (NumberFormatException e) {
-                    enchantLevel = 1;
-                }
+		JsonArray lowestBinArr = null;
+		String tempName = null;
+		for (String enchantId : ENCHANT_NAMES) {
+			if (query.replace(" ", "_").toUpperCase().contains(enchantId)) {
+				int enchantLevel;
+				try {
+					enchantLevel = Integer.parseInt(query.replaceAll("\\D+", "").trim());
+				} catch (NumberFormatException e) {
+					enchantLevel = 1;
+				}
 
-                lowestBinArr = queryLowestBinEnchant(enchantId, enchantLevel);
-                if (lowestBinArr == null) {
-                    return getFailCause("Error fetching auctions data");
-                }
-                tempName = idToName(enchantId + ";" + enchantLevel);
-                break;
-            }
-        }
+				lowestBinArr = queryLowestBinEnchant(enchantId, enchantLevel);
+				if (lowestBinArr == null) {
+					return getFailCause("Error fetching auctions data");
+				}
+				tempName = idToName(enchantId + ";" + enchantLevel);
+				break;
+			}
+		}
 
-        if (lowestBinArr == null) {
-            for (String pet : PET_NAMES) {
-                if (query.replace(" ", "_").toUpperCase().contains(pet)) {
-                    query = query.toLowerCase();
+		if (lowestBinArr == null) {
+			for (String pet : PET_NAMES) {
+				if (query.replace(" ", "_").toUpperCase().contains(pet)) {
+					query = query.toLowerCase();
 
-                    String rarity = "ANY";
-                    for (String rarityName : RARITY_TO_NUMBER_MAP.keySet()) {
-                        if (query.contains(rarityName.toLowerCase())) {
-                            rarity = rarityName;
-                            query = query.replace(rarityName.toLowerCase(), "").trim().replaceAll("\\s+", " ");
-                            break;
-                        }
-                    }
+					String rarity = "ANY";
+					for (String rarityName : RARITY_TO_NUMBER_MAP.keySet()) {
+						if (query.contains(rarityName.toLowerCase())) {
+							rarity = rarityName;
+							query = query.replace(rarityName.toLowerCase(), "").trim().replaceAll("\\s+", " ");
+							break;
+						}
+					}
 
-                    lowestBinArr = queryLowestBinPet(query, rarity);
-                    if (lowestBinArr == null) {
-                        return getFailCause("Error fetching auctions data");
-                    }
-                    break;
-                }
-            }
-        }
+					lowestBinArr = queryLowestBinPet(query, rarity);
+					if (lowestBinArr == null) {
+						return getFailCause("Error fetching auctions data");
+					}
+					break;
+				}
+			}
+		}
 
-        if (lowestBinArr == null) {
-            lowestBinArr = queryLowestBin(query);
-            if (lowestBinArr == null) {
-                return getFailCause("Error fetching auctions data");
-            }
-        }
+		if (lowestBinArr == null) {
+			lowestBinArr = queryLowestBin(query);
+			if (lowestBinArr == null) {
+				return getFailCause("Error fetching auctions data");
+			}
+		}
 
-        if (lowestBinArr.size() == 0) {
-            return getFailCause("No bins matching '" + query + "' found");
-        }
+		if (lowestBinArr.size() == 0) {
+			return getFailCause("No bins matching '" + query + "' found");
+		}
 
 		JsonElement lowestBinJson = lowestBinArr.get(0);
 		Duration duration = Duration.between(Instant.now(), Instant.ofEpochMilli(higherDepth(lowestBinJson, "end").getAsLong()));
 		IChatComponent lowestBinStr = new ChatComponentText(
-			labelWithDesc("Name",  (tempName == null ? higherDepth(lowestBinJson, "item_name").getAsString() : tempName)) +
+			labelWithDesc("Name", (tempName == null ? higherDepth(lowestBinJson, "item_name").getAsString() : tempName)) +
 			(
 				higherDepth(lowestBinJson, "item_id").getAsString().equals("PET")
 					? "\n" + labelWithDesc("Rarity", capitalizeString(higherDepth(lowestBinJson, "tier").getAsString()))
@@ -97,9 +97,7 @@ public class BinCommand extends CommandBase {
 			labelWithDesc("Seller", usernameUuid(higherDepth(lowestBinJson, "auctioneer").getAsString()).getUsername())
 		)
 			.appendSibling(
-				new ChatText(
-					"\n" + labelWithDesc("Auction", "/viewauction " + higherDepth(lowestBinJson, "uuid").getAsString())
-				)
+				new ChatText("\n" + labelWithDesc("Auction", "/viewauction " + higherDepth(lowestBinJson, "uuid").getAsString()))
 					.setClickEvent(ClickEvent.Action.RUN_COMMAND, "/viewauction " + higherDepth(lowestBinJson, "uuid").getAsString())
 					.build()
 			)

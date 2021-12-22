@@ -67,7 +67,7 @@ public class HypixelAddons {
 					new ChatCommand(SkillsCommand.INSTANCE, event -> SkillsCommand.INSTANCE.getSkillsChat(event.getArgs())),
 					new ChatCommand(AuctionsCommand.INSTANCE, event -> AuctionsCommand.INSTANCE.getAuctionsChat(event.getArgs())),
 					new ChatCommand(BazaarCommand.INSTANCE, event -> BazaarCommand.INSTANCE.getBazaarChat(event.getArgs())),
-						new ChatCommand(BinCommand.INSTANCE, event -> BinCommand.INSTANCE.getBinChat(event.getArgs())),
+					new ChatCommand(BinCommand.INSTANCE, event -> BinCommand.INSTANCE.getBinChat(event.getArgs())),
 					new ChatCommand(BitsCommand.INSTANCE, event -> BitsCommand.INSTANCE.getBitsChat(event.getArgs())),
 					new ChatCommand(BankCommand.INSTANCE, event -> BankCommand.INSTANCE.getBankChat(event.getArgs())),
 					new ChatCommand(WeightCommand.INSTANCE, event -> WeightCommand.INSTANCE.getWeightChat(event.getArgs())),
@@ -118,8 +118,8 @@ public class HypixelAddons {
 			// Price
 			AuctionsCommand.INSTANCE,
 			BazaarCommand.INSTANCE,
-				BinCommand.INSTANCE,
-				BidsCommand.INSTANCE,
+			BinCommand.INSTANCE,
+			BidsCommand.INSTANCE,
 			BitsCommand.INSTANCE,
 			// Hypixel
 			HypixelCommand.INSTANCE,
@@ -136,9 +136,9 @@ public class HypixelAddons {
 			SkyblockCommand.INSTANCE,
 			CakesCommand.INSTANCE,
 			HarpCommand.INSTANCE,
-				new NotesCommand(),
+			new NotesCommand(),
 			new HelpCommand(),
-				new JacobContestCommand(),
+			new JacobContestCommand(),
 			// Don't run this command, ok?
 			new DevCommand(),
 		};

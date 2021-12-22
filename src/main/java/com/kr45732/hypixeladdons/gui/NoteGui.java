@@ -18,12 +18,12 @@
 
 package com.kr45732.hypixeladdons.gui;
 
+import static com.kr45732.hypixeladdons.utils.Utils.gson;
+import static com.kr45732.hypixeladdons.utils.config.Configuration.baseConfigPath;
+
 import com.kr45732.hypixeladdons.HypixelAddons;
 import com.kr45732.hypixeladdons.gui.component.NoteButton;
 import com.kr45732.hypixeladdons.utils.structs.Note;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-
 import java.awt.*;
 import java.io.*;
 import java.time.Instant;
@@ -34,9 +34,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import static com.kr45732.hypixeladdons.utils.Utils.gson;
-import static com.kr45732.hypixeladdons.utils.config.Configuration.baseConfigPath;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 
 public class NoteGui extends GuiScreen {
 
@@ -48,15 +47,15 @@ public class NoteGui extends GuiScreen {
 		this.previousScreen = previousScreen;
 
 		File notesDir = getNotesDir();
-		if(!notesDir.exists()){
-			if(!notesDir.mkdirs()){
+		if (!notesDir.exists()) {
+			if (!notesDir.mkdirs()) {
 				HypixelAddons.INSTANCE.getLogger().error("Unable to create notes directory");
 				HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(previousScreen);
 				return;
 			}
 		}
 
-		if( notesDir.listFiles() == null){
+		if (notesDir.listFiles() == null) {
 			HypixelAddons.INSTANCE.getLogger().error("Unable to read notes directory");
 			HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(previousScreen);
 			return;
@@ -68,98 +67,113 @@ public class NoteGui extends GuiScreen {
 	@Override
 	public void initGui() {
 		buttonList.addAll(
-				Arrays.asList(
-						new NoteButton(0, 25, 38, "New", () -> HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(new EditNoteGui(this, new Note()))),
-						new NoteButton(
-								1,
-								25,
-								68,
-								"Edit",
-								() -> {
-									if (notes.size() > index) {
-										HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(new EditNoteGui(this, notes.get(index)));
-									}
-								}
-						),
-						new NoteButton(
-								2,
-								25,
-								98,
-								"Delete",
-								() -> {
-									if (notes.size() > index) {
-										notes.get(index).delete();
-										index = Math.max(index - 1, 0);
-										loadNotes();
-									}
-								}
-						),
-						new NoteButton(
-								3,
-								25,
-								128,
-								"Export Notes",
-								() -> {
-									List<File> notesArr = Arrays.stream(getNotesDir().listFiles()).filter(noteFile -> {
-										Note note = null;
-										try {
-											note = gson.fromJson(new FileReader(noteFile), Note.class);
-										}catch (Exception ignored){}
-										return note != null;
-									}).collect(Collectors.toList());
+			Arrays.asList(
+				new NoteButton(
+					0,
+					25,
+					38,
+					"New",
+					() -> HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(new EditNoteGui(this, new Note()))
+				),
+				new NoteButton(
+					1,
+					25,
+					68,
+					"Edit",
+					() -> {
+						if (notes.size() > index) {
+							HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(new EditNoteGui(this, notes.get(index)));
+						}
+					}
+				),
+				new NoteButton(
+					2,
+					25,
+					98,
+					"Delete",
+					() -> {
+						if (notes.size() > index) {
+							notes.get(index).delete();
+							index = Math.max(index - 1, 0);
+							loadNotes();
+						}
+					}
+				),
+				new NoteButton(
+					3,
+					25,
+					128,
+					"Export Notes",
+					() -> {
+						List<File> notesArr = Arrays
+							.stream(getNotesDir().listFiles())
+							.filter(noteFile -> {
+								Note note = null;
+								try {
+									note = gson.fromJson(new FileReader(noteFile), Note.class);
+								} catch (Exception ignored) {}
+								return note != null;
+							})
+							.collect(Collectors.toList());
 
-									File notesDir = new File(baseConfigPath + "/notes_export");
-									if(!notesDir.exists()){
-										notesDir.mkdirs();
-									}
-									try(FileOutputStream fos = new FileOutputStream(notesDir.getAbsolutePath() + "/notes_" + Instant.now() + ".zip")) {
-										try(ZipOutputStream zipOut = new ZipOutputStream(fos)) {
-											for (File noteFile : notesArr) {
-												try(FileInputStream fis = new FileInputStream(noteFile)) {
-													ZipEntry zipEntry = new ZipEntry(noteFile.getName());
-													zipOut.putNextEntry(zipEntry);
+						File notesDir = new File(baseConfigPath + "/notes_export");
+						if (!notesDir.exists()) {
+							notesDir.mkdirs();
+						}
+						try (FileOutputStream fos = new FileOutputStream(notesDir.getAbsolutePath() + "/notes_" + Instant.now() + ".zip")) {
+							try (ZipOutputStream zipOut = new ZipOutputStream(fos)) {
+								for (File noteFile : notesArr) {
+									try (FileInputStream fis = new FileInputStream(noteFile)) {
+										ZipEntry zipEntry = new ZipEntry(noteFile.getName());
+										zipOut.putNextEntry(zipEntry);
 
-													byte[] bytes = new byte[1024];
-													int length;
-													while ((length = fis.read(bytes)) >= 0) {
-														zipOut.write(bytes, 0, length);
-													}
-												}
-											}
+										byte[] bytes = new byte[1024];
+										int length;
+										while ((length = fis.read(bytes)) >= 0) {
+											zipOut.write(bytes, 0, length);
 										}
-									}catch (Exception e){
-										HypixelAddons.INSTANCE.getLogger().error("Exception while compressing notes to a ZIP", e);
-										return;
-									}
-
-									try {
-										Desktop.getDesktop().open(notesDir);
-									} catch (Exception e) {
-										HypixelAddons.INSTANCE.getLogger().error("Exception while opening notes ZIP", e);
 									}
 								}
-						),
-						new NoteButton(4, 25, height - 30, "Cancel", () -> {
-							if (previousScreen != null) {
-								HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(previousScreen);
-							} else {
-								mc.displayGuiScreen(null);
 							}
-						})
+						} catch (Exception e) {
+							HypixelAddons.INSTANCE.getLogger().error("Exception while compressing notes to a ZIP", e);
+							return;
+						}
+
+						try {
+							Desktop.getDesktop().open(notesDir);
+						} catch (Exception e) {
+							HypixelAddons.INSTANCE.getLogger().error("Exception while opening notes ZIP", e);
+						}
+					}
+				),
+				new NoteButton(
+					4,
+					25,
+					height - 30,
+					"Cancel",
+					() -> {
+						if (previousScreen != null) {
+							HypixelAddons.INSTANCE.getEventListener().setGuiToOpen(previousScreen);
+						} else {
+							mc.displayGuiScreen(null);
+						}
+					}
 				)
+			)
 		);
 	}
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		drawCenteredString(fontRendererObj, "Notes", width / 2 + 60, 15, 0xFF28709e);
-		if(notes.size() == 0){
+		if (notes.size() == 0) {
 			int maxWidth = width - 10;
 			drawRect(135, 38, maxWidth, 76, 0xFF303b52);
 			drawRect(135, 38, maxWidth, 56, 0xFF212939);
 			fontRendererObj.drawString("No notes", 140, 43, 0xFFffffff);
 			fontRendererObj.drawString("Click the 'new' button to create a note!", 140, 62, 0xFF808080);
-		}else {
+		} else {
 			for (int i = 0; i < notes.size(); i++) {
 				Note note = notes.get(i);
 				int translateValue = i * 45;
@@ -211,7 +225,7 @@ public class NoteGui extends GuiScreen {
 		super.keyTyped(typedChar, keyCode);
 	}
 
-	public void loadNotes(){
+	public void loadNotes() {
 		notes.clear();
 		for (File noteFile : getNotesDir().listFiles()) {
 			try {
@@ -223,8 +237,8 @@ public class NoteGui extends GuiScreen {
 
 		notes.sort(Comparator.comparingLong(Note::getLastModified).reversed());
 	}
-	
-	public static File getNotesDir(){
+
+	public static File getNotesDir() {
 		return new File(baseConfigPath + "notes/");
 	}
 }

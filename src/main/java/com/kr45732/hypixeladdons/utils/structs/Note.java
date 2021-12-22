@@ -36,8 +36,10 @@
 
 package com.kr45732.hypixeladdons.utils.structs;
 
-import com.kr45732.hypixeladdons.HypixelAddons;
+import static com.kr45732.hypixeladdons.gui.NoteGui.getNotesDir;
+import static com.kr45732.hypixeladdons.utils.Utils.gson;
 
+import com.kr45732.hypixeladdons.HypixelAddons;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -46,9 +48,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static com.kr45732.hypixeladdons.gui.NoteGui.getNotesDir;
-import static com.kr45732.hypixeladdons.utils.Utils.gson;
 
 public class Note {
 
@@ -100,7 +99,11 @@ public class Note {
 
 	public void save() {
 		if (uuid == null) {
-			List<String> noteUuids = Arrays.stream(getNotesDir().listFiles()).filter(file -> file.getName().endsWith(".json")).map(file -> file.getName().replace(".json", "")).collect(Collectors.toList());
+			List<String> noteUuids = Arrays
+				.stream(getNotesDir().listFiles())
+				.filter(file -> file.getName().endsWith(".json"))
+				.map(file -> file.getName().replace(".json", ""))
+				.collect(Collectors.toList());
 			do {
 				uuid = UUID.randomUUID().toString();
 			} while (noteUuids.contains(uuid));
@@ -108,7 +111,7 @@ public class Note {
 
 		lastModified = Instant.now().toEpochMilli();
 
-		try (FileWriter writer =  new FileWriter(getNotesDir().getAbsolutePath() + "/" + uuid + ".json")){
+		try (FileWriter writer = new FileWriter(getNotesDir().getAbsolutePath() + "/" + uuid + ".json")) {
 			gson.toJson(this, writer);
 			writer.flush();
 		} catch (IOException e) {
@@ -118,7 +121,11 @@ public class Note {
 
 	public void delete() {
 		if (uuid != null) {
-			Arrays.stream(getNotesDir().listFiles()).filter(file -> file.getName().equals(uuid + ".json")).findFirst().ifPresent(File::delete);
+			Arrays
+				.stream(getNotesDir().listFiles())
+				.filter(file -> file.getName().equals(uuid + ".json"))
+				.findFirst()
+				.ifPresent(File::delete);
 		}
 	}
 }

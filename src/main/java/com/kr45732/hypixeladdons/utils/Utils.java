@@ -18,6 +18,8 @@
 
 package com.kr45732.hypixeladdons.utils;
 
+import static com.kr45732.hypixeladdons.utils.api.ApiHandler.playerFromUuid;
+
 import com.google.gson.*;
 import com.kr45732.hypixeladdons.utils.api.HypixelPlayer;
 import com.kr45732.hypixeladdons.utils.api.HypixelResponse;
@@ -26,6 +28,20 @@ import com.kr45732.hypixeladdons.utils.chat.C;
 import com.kr45732.hypixeladdons.utils.structs.InvItem;
 import com.kr45732.hypixeladdons.utils.structs.UsernameUuidStruct;
 import com.kr45732.hypixeladdons.utils.structs.WrappedText;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+import java.math.RoundingMode;
+import java.net.URI;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import me.nullicorn.nedit.NBTReader;
 import me.nullicorn.nedit.type.NBTCompound;
 import me.nullicorn.nedit.type.NBTList;
@@ -42,23 +58,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
-import java.math.RoundingMode;
-import java.net.URI;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static com.kr45732.hypixeladdons.utils.api.ApiHandler.playerFromUuid;
 
 public class Utils {
 
@@ -89,7 +88,7 @@ public class Utils {
 	public static JsonElement getEnchantsJson() {
 		if (enchantsJson == null) {
 			enchantsJson =
-					getJson("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/master/constants/enchants.json");
+				getJson("https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/master/constants/enchants.json");
 		}
 		return enchantsJson;
 	}
@@ -842,10 +841,7 @@ public class Utils {
 			HttpGet httpget = new HttpGet("https://query-api.herokuapp.com/query");
 			httpget.addHeader("content-type", "application/json; charset=UTF-8");
 
-			URI uri = new URIBuilder(httpget.getURI())
-					.addParameter("bids", uuid)
-					.addParameter("limit", "-1")
-					.build();
+			URI uri = new URIBuilder(httpget.getURI()).addParameter("bids", uuid).addParameter("limit", "-1").build();
 			httpget.setURI(uri);
 
 			try (CloseableHttpResponse httpResponse = Utils.httpClient.execute(httpget)) {
@@ -861,11 +857,11 @@ public class Utils {
 			httpget.addHeader("content-type", "application/json; charset=UTF-8");
 
 			URI uri = new URIBuilder(httpget.getURI())
-					.addParameter("end", "" + Instant.now().toEpochMilli())
-					.addParameter("item_name", "%" + query + "%")
-					.addParameter("bin", "true")
-					.addParameter("sort", "ASC")
-					.build();
+				.addParameter("end", "" + Instant.now().toEpochMilli())
+				.addParameter("item_name", "%" + query + "%")
+				.addParameter("bin", "true")
+				.addParameter("sort", "ASC")
+				.build();
 			httpget.setURI(uri);
 
 			try (CloseableHttpResponse httpResponse = httpClient.execute(httpget)) {
@@ -881,11 +877,11 @@ public class Utils {
 			httpGet.addHeader("content-type", "application/json; charset=UTF-8");
 
 			URIBuilder uri = new URIBuilder(httpGet.getURI())
-					.addParameter("end", "" + Instant.now().toEpochMilli())
-					.addParameter("item_name", "%" + petName + "%")
-					.addParameter("item_id", "PET")
-					.addParameter("bin", "true")
-					.addParameter("sort", "ASC");
+				.addParameter("end", "" + Instant.now().toEpochMilli())
+				.addParameter("item_name", "%" + petName + "%")
+				.addParameter("item_id", "PET")
+				.addParameter("bin", "true")
+				.addParameter("sort", "ASC");
 			if (!rarity.equals("ANY")) {
 				uri.addParameter("tier", rarity);
 			}
@@ -904,16 +900,16 @@ public class Utils {
 			httpGet.addHeader("content-type", "application/json; charset=UTF-8");
 
 			URI uri = new URIBuilder(httpGet.getURI())
-					.addParameter("end", "" + Instant.now().toEpochMilli())
-					.addParameter("item_id", "ENCHANTED_BOOK")
-					.addParameter("enchants", enchantId.toUpperCase() + ";" + enchantLevel)
-					.addParameter("bin", "true")
-					.addParameter("sort", "ASC")
-					.build();
+				.addParameter("end", "" + Instant.now().toEpochMilli())
+				.addParameter("item_id", "ENCHANTED_BOOK")
+				.addParameter("enchants", enchantId.toUpperCase() + ";" + enchantLevel)
+				.addParameter("bin", "true")
+				.addParameter("sort", "ASC")
+				.build();
 			httpGet.setURI(uri);
 
 			try (CloseableHttpResponse httpResponse = httpClient.execute(httpGet)) {
-				return  new JsonParser().parse(new InputStreamReader(httpResponse.getEntity().getContent())).getAsJsonArray();
+				return new JsonParser().parse(new InputStreamReader(httpResponse.getEntity().getContent())).getAsJsonArray();
 			}
 		} catch (Exception ignored) {}
 		return null;
@@ -936,7 +932,6 @@ public class Utils {
 		return null;
 	}
 }
-
 /*
 Black         §0
 Dark Blue     §1

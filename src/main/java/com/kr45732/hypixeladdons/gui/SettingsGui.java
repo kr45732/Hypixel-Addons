@@ -21,13 +21,12 @@ package com.kr45732.hypixeladdons.gui;
 import com.kr45732.hypixeladdons.gui.component.ToggleButton;
 import com.kr45732.hypixeladdons.utils.GuiUtils;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
+import com.kr45732.hypixeladdons.utils.structs.GuiPage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.kr45732.hypixeladdons.utils.structs.GuiPage;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -194,14 +193,12 @@ public class SettingsGui extends GuiScreen {
 
 		// Background, title, and the 2 lines
 		drawRect(guiX, guiY, guiX + guiWidth, guiY + guiHeight, 0xF2181c25);
-		GuiUtils.applyGl(
-			() -> {
-				GlStateManager.scale(2, 2, 1);
-				fontRendererObj.drawStringWithShadow("Hypixel Addons", guiX / 2F + 5, guiY / 2F + 5, 0xFF28709e);
-				GuiUtils.drawHorizontalLine(guiX / 2 + 5, (guiX + guiWidth) / 2 - 5, guiY / 2 + 16, 0xFF28709e);
-				GuiUtils.drawVerticalLine(guiX / 2 + 45, guiY / 2 + 16, (guiY + guiHeight) / 2 - 5, 0xFF28709e);
-			}
-		);
+		GuiUtils.applyGl(() -> {
+			GlStateManager.scale(2, 2, 1);
+			fontRendererObj.drawStringWithShadow("Hypixel Addons", guiX / 2F + 5, guiY / 2F + 5, 0xFF28709e);
+			GuiUtils.drawHorizontalLine(guiX / 2 + 5, (guiX + guiWidth) / 2 - 5, guiY / 2 + 16, 0xFF28709e);
+			GuiUtils.drawVerticalLine(guiX / 2 + 45, guiY / 2 + 16, (guiY + guiHeight) / 2 - 5, 0xFF28709e);
+		});
 
 		// Apply GL scissors for the scrolling effect
 		GuiUtils.enableGlScissors();

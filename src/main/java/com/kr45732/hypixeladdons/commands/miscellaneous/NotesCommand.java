@@ -18,13 +18,13 @@
 
 package com.kr45732.hypixeladdons.commands.miscellaneous;
 
+import static com.kr45732.hypixeladdons.utils.Utils.executor;
+
 import com.kr45732.hypixeladdons.HypixelAddons;
 import com.kr45732.hypixeladdons.gui.NoteGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-
-import static com.kr45732.hypixeladdons.utils.Utils.executor;
 
 public class NotesCommand extends CommandBase {
 
