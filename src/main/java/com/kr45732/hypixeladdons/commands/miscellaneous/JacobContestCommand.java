@@ -43,6 +43,7 @@ import net.minecraft.util.StringUtils;
 import org.apache.http.message.BasicHeader;
 
 public class JacobContestCommand extends CommandBase {
+
 	public static JacobContestCommand INSTANCE = new JacobContestCommand();
 
 	private boolean enable;
@@ -102,7 +103,8 @@ public class JacobContestCommand extends CommandBase {
 						} else {
 							sender.addChatMessage(
 								wrapText(
-									"Failed to send jacob data with reason: " + higherDepth(responseJson, "cause", "No response from server")
+									"Failed to send jacob data with reason: " +
+									higherDepth(responseJson, "cause", "No response from server")
 								)
 							);
 						}
@@ -186,14 +188,10 @@ public class JacobContestCommand extends CommandBase {
 	public void keyHPressed() {
 		if (enable && !keyPressed) {
 			keyPressed = true;
-			Minecraft
-				.getMinecraft()
-				.thePlayer.addChatMessage(wrapText("H key press detected - proceed to cycle through the pages"));
+			Minecraft.getMinecraft().thePlayer.addChatMessage(wrapText("H key press detected - proceed to cycle through the pages"));
 			processOpenGui();
 		}
 	}
-
-
 
 	private long parseTime(String timeStr) {
 		long seconds = 0;

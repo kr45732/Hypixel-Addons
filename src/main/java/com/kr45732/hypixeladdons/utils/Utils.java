@@ -65,7 +65,7 @@ public class Utils {
 
 	public static final CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 	public static final ExecutorService executor = new ExceptionExecutor();
-	public static final ScheduledExecutorService scheduler =  Executors.newScheduledThreadPool(1);
+	public static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	public static final Gson gson = new Gson();
 	private static final Pattern SERVER_BRAND_PATTERN = Pattern.compile("(.+) <- .+");
 	public static boolean onSkyblock;
