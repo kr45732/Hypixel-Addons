@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
@@ -48,6 +49,7 @@ public class JacobContestCommand extends CommandBase {
 	private static List<String> missingSeasons;
 	private static boolean keyPressed;
 	private static int year = 0;
+	public static ScheduledFuture<?> jacobChecker;
 
 	public JacobContestCommand() {
 		reset();
@@ -92,11 +94,12 @@ public class JacobContestCommand extends CommandBase {
 							out,
 							new BasicHeader("key", ConfigUtils.jacobKey)
 						);
+						ConfigUtils.setJacobLastYear(year);
 						if (higherDepth(responseJson, "success", false)) {
 							sender.addChatMessage(wrapText("Successfully POSTed jacob data & reset jacob tracker"));
 							reset();
 						} else {
-							sender.addChatMessage(wrapText("Failed to POST jacob data"));
+							sender.addChatMessage(wrapText("Failed to POST jacob data. Reason: " + higherDepth(responseJson, "cause", "No response from server")));
 						}
 						return;
 					case "reset":
@@ -176,7 +179,7 @@ public class JacobContestCommand extends CommandBase {
 	}
 
 	public static void keyHPressed() {
-		if (enable) {
+		if (enable && !keyPressed) {
 			keyPressed = true;
 			Minecraft
 				.getMinecraft()
@@ -221,5 +224,11 @@ public class JacobContestCommand extends CommandBase {
 			);
 		keyPressed = false;
 		enable = false;
+	}
+
+	public static int getSkyblockYear() {
+		long now = Instant.now().toEpochMilli();
+		long currentYear = Math.floorDiv(now - 1560275700000L, 446400000L);
+		return (int) (currentYear + 1);
 	}
 }

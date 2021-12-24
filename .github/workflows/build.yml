@@ -34,7 +34,6 @@ jobs:
           commit_message: Automatically format code
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          path: build/libs/*.jar
-# TODO: Uncomment when november starts because of Tyman >:C
+      - uses: actions/upload-artifact@v2
+        with:
+          path: build/libs/*.jar

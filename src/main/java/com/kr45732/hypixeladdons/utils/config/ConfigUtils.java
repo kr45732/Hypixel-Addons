@@ -52,6 +52,7 @@ public class ConfigUtils {
 	public static String motdText;
 	/* Misc */
 	public static String jacobKey;
+	public static int jacobLastYear;
 
 	public static void initialize() {
 		try {
@@ -91,6 +92,7 @@ public class ConfigUtils {
 
 			/* Misc */
 			jacobKey = config.initialize("misc", "jacob_key", "");
+			jacobLastYear = config.initialize("misc", "jacob_last_year", -1);
 		} catch (Exception e) {
 			HypixelAddons.INSTANCE.getLogger().error("An error occurred when initializing the configuration", e);
 		}
@@ -269,6 +271,13 @@ public class ConfigUtils {
 		if (!ConfigUtils.motdText.equals(motdText)) {
 			ConfigUtils.motdText = motdText;
 			config.write("motd", "text", motdText);
+		}
+	}
+
+	public static void setJacobLastYear(int jacobLastYear) {
+		if (ConfigUtils.jacobLastYear != jacobLastYear) {
+			ConfigUtils.jacobLastYear = jacobLastYear;
+			config.write("misc", "jacob_last_year", jacobLastYear);
 		}
 	}
 }
