@@ -99,7 +99,11 @@ public class JacobContestCommand extends CommandBase {
 							sender.addChatMessage(wrapText("Successfully POSTed jacob data & reset jacob tracker"));
 							reset();
 						} else {
-							sender.addChatMessage(wrapText("Failed to POST jacob data. Reason: " + higherDepth(responseJson, "cause", "No response from server")));
+							sender.addChatMessage(
+								wrapText(
+									"Failed to POST jacob data. Reason: " + higherDepth(responseJson, "cause", "No response from server")
+								)
+							);
 						}
 						return;
 					case "reset":

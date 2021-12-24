@@ -18,6 +18,11 @@
 
 package com.kr45732.hypixeladdons.listeners;
 
+import static com.kr45732.hypixeladdons.commands.miscellaneous.JacobContestCommand.getSkyblockYear;
+import static com.kr45732.hypixeladdons.commands.miscellaneous.JacobContestCommand.jacobChecker;
+import static com.kr45732.hypixeladdons.utils.Constants.*;
+import static com.kr45732.hypixeladdons.utils.Utils.*;
+
 import com.google.common.collect.Sets;
 import com.kr45732.hypixeladdons.commands.hypixel.BedwarsCommand;
 import com.kr45732.hypixeladdons.commands.hypixel.SkywarsCommand;
@@ -29,6 +34,12 @@ import com.kr45732.hypixeladdons.utils.chat.C;
 import com.kr45732.hypixeladdons.utils.chat.ChatText;
 import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import com.kr45732.hypixeladdons.utils.structs.SkillsStruct;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.scoreboard.ScoreObjective;
@@ -42,18 +53,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.lwjgl.input.Keyboard;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.kr45732.hypixeladdons.commands.miscellaneous.JacobContestCommand.getSkyblockYear;
-import static com.kr45732.hypixeladdons.commands.miscellaneous.JacobContestCommand.jacobChecker;
-import static com.kr45732.hypixeladdons.utils.Constants.*;
-import static com.kr45732.hypixeladdons.utils.Utils.*;
 
 public class EventListener {
 
@@ -136,25 +135,37 @@ public class EventListener {
 	}
 
 	@SubscribeEvent
-	public void onServerJoinEvent(FMLNetworkEvent.ClientConnectedToServerEvent event){
-		if(!event.isLocal){
-			jacobChecker = Executors.newScheduledThreadPool(1).schedule(
-					() -> {
-						if(!ConfigUtils.jacobKey.isEmpty() && isOnHypixel()){
-							if(ConfigUtils.jacobLastYear != getSkyblockYear()){
-								Minecraft.getMinecraft().thePlayer.addChatMessage(wrapText("Please send new jacob data to the server! Last year received was " + ConfigUtils.jacobLastYear + " and this year is now " + getSkyblockYear()));
+	public void onServerJoinEvent(FMLNetworkEvent.ClientConnectedToServerEvent event) {
+		if (!event.isLocal) {
+			jacobChecker =
+				Executors
+					.newScheduledThreadPool(1)
+					.schedule(
+						() -> {
+							if (!ConfigUtils.jacobKey.isEmpty() && isOnHypixel()) {
+								if (ConfigUtils.jacobLastYear != getSkyblockYear()) {
+									Minecraft
+										.getMinecraft()
+										.thePlayer.addChatMessage(
+											wrapText(
+												"Please send new jacob data to the server! Last year received was " +
+												ConfigUtils.jacobLastYear +
+												" and this year is now " +
+												getSkyblockYear()
+											)
+										);
+								}
 							}
-						}
-					},
-					30,
-					TimeUnit.SECONDS
-			);
+						},
+						30,
+						TimeUnit.SECONDS
+					);
 		}
 	}
 
 	@SubscribeEvent
-	public void onServerLeaveEvent(FMLNetworkEvent.ClientDisconnectionFromServerEvent event){
-		if(!ConfigUtils.jacobKey.isEmpty() && isOnHypixel()) {
+	public void onServerLeaveEvent(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+		if (!ConfigUtils.jacobKey.isEmpty() && isOnHypixel()) {
 			if (jacobChecker != null && !jacobChecker.isDone()) {
 				jacobChecker.cancel(true);
 			}
