@@ -43,13 +43,14 @@ import net.minecraft.util.StringUtils;
 import org.apache.http.message.BasicHeader;
 
 public class JacobContestCommand extends CommandBase {
+	public static JacobContestCommand INSTANCE = new JacobContestCommand();
 
-	private static boolean enable;
-	private static JsonArray contestsJson;
-	private static List<String> missingSeasons;
-	private static boolean keyPressed;
-	private static int year = 0;
-	public static ScheduledFuture<?> jacobChecker;
+	private boolean enable;
+	private JsonArray contestsJson;
+	private List<String> missingSeasons;
+	private boolean keyPressed;
+	private int year = 0;
+	public ScheduledFuture<?> future;
 
 	public JacobContestCommand() {
 		reset();
@@ -80,12 +81,12 @@ public class JacobContestCommand extends CommandBase {
 						enable = true;
 						sender.addChatMessage(
 							wrapText(
-								"Started processing. To start, open the full calender GUI, go to the first page, press 'h', and cycle through all pages. Use hpa:jacob reset to force stop and reset"
+								"Started processing. Open the full calender GUI, go to the first page, press 'h', and cycle through all pages (when you reach the end, go one page back to finish). Use hpa:jacob reset to force stop & reset"
 							)
 						);
 						return;
 					case "send":
-						sender.addChatMessage(wrapText("POSTing data..."));
+						sender.addChatMessage(wrapText("Sending data..."));
 						JsonObject out = new JsonObject();
 						out.addProperty("year", year);
 						out.add("contests", contestsJson);
@@ -96,28 +97,28 @@ public class JacobContestCommand extends CommandBase {
 						);
 						ConfigUtils.setJacobLastYear(year);
 						if (higherDepth(responseJson, "success", false)) {
-							sender.addChatMessage(wrapText("Successfully POSTed jacob data & reset jacob tracker"));
+							sender.addChatMessage(wrapText("Successfully sent data & reset tracker"));
 							reset();
 						} else {
 							sender.addChatMessage(
 								wrapText(
-									"Failed to POST jacob data. Reason: " + higherDepth(responseJson, "cause", "No response from server")
+									"Failed to send jacob data with reason: " + higherDepth(responseJson, "cause", "No response from server")
 								)
 							);
 						}
 						return;
 					case "reset":
 						reset();
-						sender.addChatMessage(wrapText("Reset jacob tracking"));
+						sender.addChatMessage(wrapText("Reset jacob tracker"));
 						return;
 				}
 			}
 
-			sender.addChatMessage(getFailCause("No subcommand from 'start', 'send', or 'rest' provided"));
+			sender.addChatMessage(getFailCause("Error, no subcommand from 'start', 'send', or 'rest' provided"));
 		});
 	}
 
-	public static void processGui() {
+	public void processOpenGui() {
 		if (!enable) {
 			return;
 		}
@@ -177,22 +178,24 @@ public class JacobContestCommand extends CommandBase {
 		if (missingSeasons.size() == 0) {
 			Minecraft
 				.getMinecraft()
-				.thePlayer.addChatMessage(wrapText("Finished processing all seasons. Run hpa:jacob send to send the data"));
+				.thePlayer.addChatMessage(wrapText("Finished processing the entire year. Run hpa:jacob send to send the data"));
 			enable = false;
 		}
 	}
 
-	public static void keyHPressed() {
+	public void keyHPressed() {
 		if (enable && !keyPressed) {
 			keyPressed = true;
 			Minecraft
 				.getMinecraft()
-				.thePlayer.addChatMessage(wrapText("H key press detected... you may now start scrolling through the pages"));
-			processGui();
+				.thePlayer.addChatMessage(wrapText("H key press detected - proceed to cycle through the pages"));
+			processOpenGui();
 		}
 	}
 
-	private static long parseTime(String timeStr) {
+
+
+	private long parseTime(String timeStr) {
 		long seconds = 0;
 		for (String s : timeStr.split(" ")) {
 			long num = Integer.parseInt(s.substring(0, s.length() - 1));
@@ -207,7 +210,7 @@ public class JacobContestCommand extends CommandBase {
 		return seconds;
 	}
 
-	private static void reset() {
+	private void reset() {
 		contestsJson = new JsonArray();
 		missingSeasons =
 			new ArrayList<>(
@@ -230,9 +233,11 @@ public class JacobContestCommand extends CommandBase {
 		enable = false;
 	}
 
-	public static int getSkyblockYear() {
-		long now = Instant.now().toEpochMilli();
-		long currentYear = Math.floorDiv(now - 1560275700000L, 446400000L);
-		return (int) (currentYear + 1);
+	public ScheduledFuture<?> getFuture() {
+		return future;
+	}
+
+	public void setFuture(ScheduledFuture<?> future) {
+		this.future = future;
 	}
 }

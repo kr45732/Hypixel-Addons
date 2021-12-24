@@ -38,6 +38,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -63,6 +65,7 @@ public class Utils {
 
 	public static final CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 	public static final ExecutorService executor = new ExceptionExecutor();
+	public static final ScheduledExecutorService scheduler =  Executors.newScheduledThreadPool(1);
 	public static final Gson gson = new Gson();
 	private static final Pattern SERVER_BRAND_PATTERN = Pattern.compile("(.+) <- .+");
 	public static boolean onSkyblock;
@@ -930,6 +933,10 @@ public class Utils {
 			}
 		} catch (Exception ignored) {}
 		return null;
+	}
+
+	public static int getSkyblockYear() {
+		return (int) (Math.floorDiv(Instant.now().minusMillis(1560275700000L).toEpochMilli(), 446400000L) + 1);
 	}
 }
 /*

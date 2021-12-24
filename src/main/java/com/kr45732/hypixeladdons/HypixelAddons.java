@@ -138,7 +138,7 @@ public class HypixelAddons {
 			HarpCommand.INSTANCE,
 			new NotesCommand(),
 			new HelpCommand(),
-			new JacobContestCommand(),
+			JacobContestCommand.INSTANCE,
 			// Don't run this command, ok?
 			new DevCommand(),
 		};

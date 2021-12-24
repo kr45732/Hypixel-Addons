@@ -18,8 +18,6 @@
 
 package com.kr45732.hypixeladdons.listeners;
 
-import static com.kr45732.hypixeladdons.commands.miscellaneous.JacobContestCommand.getSkyblockYear;
-import static com.kr45732.hypixeladdons.commands.miscellaneous.JacobContestCommand.jacobChecker;
 import static com.kr45732.hypixeladdons.utils.Constants.*;
 import static com.kr45732.hypixeladdons.utils.Utils.*;
 
@@ -36,7 +34,6 @@ import com.kr45732.hypixeladdons.utils.config.ConfigUtils;
 import com.kr45732.hypixeladdons.utils.structs.SkillsStruct;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -124,51 +121,42 @@ public class EventListener {
 			MysteryBoxOverlay.INSTANCE = new MysteryBoxOverlay();
 		}
 
-		JacobContestCommand.processGui();
+		JacobContestCommand.INSTANCE.processOpenGui();
 	}
 
 	@SubscribeEvent
 	public void keyEvent(GuiScreenEvent.KeyboardInputEvent event) {
 		if (Keyboard.isKeyDown(Keyboard.KEY_H)) {
-			JacobContestCommand.keyHPressed();
+			JacobContestCommand.INSTANCE.keyHPressed();
 		}
 	}
 
 	@SubscribeEvent
 	public void onServerJoinEvent(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-		if (!event.isLocal) {
-			jacobChecker =
-				Executors
-					.newScheduledThreadPool(1)
-					.schedule(
-						() -> {
-							if (!ConfigUtils.jacobKey.isEmpty() && isOnHypixel()) {
-								if (ConfigUtils.jacobLastYear != getSkyblockYear()) {
-									Minecraft
-										.getMinecraft()
-										.thePlayer.addChatMessage(
-											wrapText(
-												"Please send new jacob data to the server! Last year received was " +
-												ConfigUtils.jacobLastYear +
-												" and this year is now " +
-												getSkyblockYear()
-											)
-										);
-								}
-							}
-						},
-						30,
-						TimeUnit.SECONDS
-					);
+		if (!event.isLocal && !ConfigUtils.jacobKey.isEmpty() && isOnHypixel() && ConfigUtils.jacobLastYear != getSkyblockYear()) {
+			JacobContestCommand.INSTANCE.setFuture(
+					scheduler
+							.schedule(
+									() -> Minecraft
+											.getMinecraft()
+											.thePlayer.addChatMessage(
+													wrapText(
+															"Please send new jacob data to the server! Last year received was " +
+																	ConfigUtils.jacobLastYear +
+																	" and this year is " +
+																	getSkyblockYear()
+													)
+											),
+									17,
+									TimeUnit.SECONDS
+							));
 		}
 	}
 
 	@SubscribeEvent
 	public void onServerLeaveEvent(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-		if (!ConfigUtils.jacobKey.isEmpty() && isOnHypixel()) {
-			if (jacobChecker != null && !jacobChecker.isDone()) {
-				jacobChecker.cancel(true);
-			}
+		if (!ConfigUtils.jacobKey.isEmpty() && isOnHypixel() && JacobContestCommand.INSTANCE.getFuture() != null && !JacobContestCommand.INSTANCE.getFuture().isDone()) {
+			JacobContestCommand.INSTANCE.getFuture().cancel(true);
 		}
 	}
 
