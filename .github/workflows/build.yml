@@ -18,15 +18,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
-          java-version: "17"
-          distribution: "zulu"
-          cache: "gradle"
+          java-version: 17
+          distribution: temurin
+          cache: gradle
       - name: Build with Gradle
-        run: chmod +x gradlew && ./gradlew setupCIWorkspace build --no-daemon
+        run: chmod +x ./gradlew && ./gradlew clean test remapJar --no-daemon
       - name: Format code
         uses: lwerner-lshigh/prettier_action_java@v1.1.1
         with:
@@ -34,6 +33,6 @@ jobs:
           commit_message: Automatically format code
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
-          path: build/libs/*.jar
+          path: build/libs/*-dep.jar
