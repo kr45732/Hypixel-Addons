@@ -52,6 +52,7 @@ public class ConfigUtils {
 	public static String motdText;
 	/* Misc */
 	public static String jacobKey;
+	public static String jacobUrl;
 	public static int jacobLastYear;
 
 	public static void initialize() {
@@ -92,6 +93,7 @@ public class ConfigUtils {
 
 			/* Misc */
 			jacobKey = config.initialize("misc", "jacob_key", "");
+			jacobUrl = config.initialize("misc", "jacob_url", "");
 			jacobLastYear = config.initialize("misc", "jacob_last_year", -1);
 		} catch (Exception e) {
 			HypixelAddons.INSTANCE.getLogger().error("An error occurred when initializing the configuration", e);

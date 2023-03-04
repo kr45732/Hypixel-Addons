@@ -92,7 +92,7 @@ public class JacobContestCommand extends CommandBase {
 						out.addProperty("year", year);
 						out.add("contests", contestsJson);
 						JsonElement responseJson = postJson(
-							"https://skyblock-plus.ml/api/public/post/jacob",
+							jacobUrl,
 							out,
 							new BasicHeader("key", ConfigUtils.jacobKey)
 						);
