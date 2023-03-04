@@ -92,7 +92,7 @@ public class JacobContestCommand extends CommandBase {
 						out.addProperty("year", year);
 						out.add("contests", contestsJson);
 						JsonElement responseJson = postJson(
-							jacobUrl,
+							ConfigUtils.jacobUrl,
 							out,
 							new BasicHeader("key", ConfigUtils.jacobKey)
 						);
