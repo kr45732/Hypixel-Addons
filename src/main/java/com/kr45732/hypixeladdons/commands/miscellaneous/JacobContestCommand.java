@@ -91,11 +91,7 @@ public class JacobContestCommand extends CommandBase {
 						JsonObject out = new JsonObject();
 						out.addProperty("year", year);
 						out.add("contests", contestsJson);
-						JsonElement responseJson = postJson(
-							ConfigUtils.jacobUrl,
-							out,
-							new BasicHeader("key", ConfigUtils.jacobKey)
-						);
+						JsonElement responseJson = postJson(ConfigUtils.jacobUrl, out, new BasicHeader("key", ConfigUtils.jacobKey));
 						ConfigUtils.setJacobLastYear(year);
 						if (higherDepth(responseJson, "success", false)) {
 							sender.addChatMessage(wrapText("Successfully sent data & reset tracker"));
